@@ -56,7 +56,7 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<Jar> {
-    archiveBaseName.set("NaturalBank")
+    archiveFileName.set("NaturalBank.jar")
 }
 
 tasks.processResources {
