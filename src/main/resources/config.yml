@@ -375,7 +375,7 @@ BankTop:
 
   # The message to display the banktop.
   Format:
-  - "<dark_gray><st>---------</st>[<b><green> Bank<blue>Plus <gold>BankTop </b><dark_gray>]<st>---------"
+  - "<dark_gray><st>---------</st>[<b><gradient:green:blue:green>NaturalBank</gradient> <gold>BankTop </b><dark_gray>]<st>---------"
   - "<gold>1# <white>%NaturalBank_banktop_name_1%<dark_gray>: <green>%NaturalBank_banktop_money_1%"
   - "<green>2# <white>%NaturalBank_banktop_name_2%<dark_gray>: <green>%NaturalBank_banktop_money_2%"
   - "<aqua>3# <white>%NaturalBank_banktop_name_3%<dark_gray>: <green>%NaturalBank_banktop_money_3%"

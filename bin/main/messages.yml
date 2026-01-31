@@ -3,7 +3,7 @@
 # use every type of placeholder inside the messages.
 
 # The main plugin prefix.
-Prefix: "<b><green>Bank<blue>Plus</blue></green></b>"
+Prefix: "<b><gradient:green:blue:green>NaturalBank</gradient></b>"
 
 # Notify the player in case a message is missing.
 Enable-Missing-Message-Alert: true
