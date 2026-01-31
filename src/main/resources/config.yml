@@ -1,4 +1,4 @@
-# Configuration File of BankPlus
+# Configuration File of NaturalBank
 
 # Check for new updates of the plugin.
 Update-Checker: true
@@ -15,7 +15,7 @@ General-Settings:
   # player transactions to the logs folder.
   Log-Transactions: true
 
-  # Notify with a console message when bankplus register a new player.
+  # Notify with a console message when NaturalBank register a new player.
   Notify-Registered-Player: true
 
   # Silent some messages that are sent to the console for info
@@ -26,33 +26,33 @@ General-Settings:
   # Enable this option to show the help message when the player has no banks to open.
   Show-Help-Message-When-No-Available-Banks: true
 
-  # If enabled, to open a bank the player will also need the permission bankplus.open to open it.
+  # If enabled, to open a bank the player will also need the permission NaturalBank.open to open it.
   Need-Open-Permission-To-Open: true
 
   # Settings to enable and manage MySQL
   MySQL:
-    # Enabling this option will stop BankPlus from storing data in
+    # Enabling this option will stop NaturalBank from storing data in
     # the player files and will start storing it in the database.
     #
     # WARNING!
-    # This will reset the bankplus data! It won't delete the data in the files, but will start
+    # This will reset the NaturalBank data! It won't delete the data in the files, but will start
     # using the data of the database that will be empty if that's your first time enabling it!
     #
-    # To transfer the data from the files to the database type the command "/bankplus transferData filesToDatabase"
+    # To transfer the data from the files to the database type the command "/NaturalBank transferData filesToDatabase"
     Enabled: false
 
     Username: "root"
     Host: "localhost"
     Port: 3306
-    Database: "bankplus"
+    Database: "NaturalBank"
     # If you are not using one, put ""
-    Password: "bankplusbestplugin"
+    Password: "NaturalBankbestplugin"
     Use-SSL: false
 
   # Enable this option if you want to make a player execute
   # gui actions only if he has the correct permissions.
   # (Example: If true the player will only be able to
-  # withdraw if he has the permission bankplus.withdraw,
+  # withdraw if he has the permission NaturalBank.withdraw,
   # otherwise he will be able to withdraw without the
   # permission but only through the gui)
   #
@@ -93,9 +93,9 @@ General-Settings:
   # Put 0 to disable this option.
   #
   # It is strongly advice to NOT disable this option to avoid data loss
-  # problems in case the server restart: disabling it will result in bankplus
+  # problems in case the server restart: disabling it will result in NaturalBank
   # saving all the data when the server restart, in that short period of
-  # time, bankplus may fail saving all the data if many players joined.
+  # time, NaturalBank may fail saving all the data if many players joined.
   Save-Delay: 10
 
   # This option is not recommended, however; in cases where you are not
@@ -184,7 +184,7 @@ General-Settings:
 #
 # To restart the interest type /bank restartInterest.
 #
-# Players must have the "bankplus.receive.interest" permission to receive the interest.
+# Players must have the "NaturalBank.receive.interest" permission to receive the interest.
 Interest:
   # Enable or disable the interest feature.
   Enabled: true
@@ -237,7 +237,7 @@ Interest:
 
   # The permission for offline players to receive interest.
   # You can put "" if you don't want to use a permission.
-  Offline-Permission: "bankplus.receive.interest"
+  Offline-Permission: "NaturalBank.receive.interest"
 
   # If you enable this, all the interest percentages will be
   # overridden if the player's money is between the 2 specified amounts.
@@ -284,7 +284,7 @@ Interest:
     AFK-Rate: "4%"
 
 # The player needs to have the permission
-# "bankplus.deposit" to be able to deposit.
+# "NaturalBank.deposit" to be able to deposit.
 Deposit-Settings:
   # The max amount to deposit per time, use 0 to disable.
   Max-Deposit-Amount: "0"
@@ -295,12 +295,12 @@ Deposit-Settings:
   # The money that a player will lose for taxes
   # when depositing, use 0 to disable.
   #
-  # Use the permission "bankplus.deposit.bypass-taxes"
+  # Use the permission "NaturalBank.deposit.bypass-taxes"
   # to bypass the deposit taxes.
   Deposit-Taxes: "0%"
 
 # The player needs to have the permission
-# "bankplus.withdraw" to be able to deposit.
+# "NaturalBank.withdraw" to be able to deposit.
 Withdraw-Settings:
   # The max amount to withdraw per time, use 0 to disable.
   Max-Withdraw-Amount: "0"
@@ -311,7 +311,7 @@ Withdraw-Settings:
   # The money that a player will lose for taxes
   # when withdrawing, use 0 to disable.
   #
-  # Use the permission "bankplus.withdraw.bypass-taxes"
+  # Use the permission "NaturalBank.withdraw.bypass-taxes"
   # to bypass the deposit taxes.
   Withdraw-Taxes: "0%"
 
@@ -376,16 +376,16 @@ BankTop:
   # The message to display the banktop.
   Format:
   - "<dark_gray><st>---------</st>[<b><green> Bank<blue>Plus <gold>BankTop </b><dark_gray>]<st>---------"
-  - "<gold>1# <white>%bankplus_banktop_name_1%<dark_gray>: <green>%bankplus_banktop_money_1%"
-  - "<green>2# <white>%bankplus_banktop_name_2%<dark_gray>: <green>%bankplus_banktop_money_2%"
-  - "<aqua>3# <white>%bankplus_banktop_name_3%<dark_gray>: <green>%bankplus_banktop_money_3%"
-  - "<gray>4# <white>%bankplus_banktop_name_4%<dark_gray>: <green>%bankplus_banktop_money_4%"
-  - "<gray>5# <white>%bankplus_banktop_name_5%<dark_gray>: <green>%bankplus_banktop_money_5%"
-  - "<gray>6# <white>%bankplus_banktop_name_6%<dark_gray>: <green>%bankplus_banktop_money_6%"
-  - "<gray>7# <white>%bankplus_banktop_name_7%<dark_gray>: <green>%bankplus_banktop_money_7%"
-  - "<gray>8# <white>%bankplus_banktop_name_8%<dark_gray>: <green>%bankplus_banktop_money_8%"
-  - "<gray>9# <white>%bankplus_banktop_name_9%<dark_gray>: <green>%bankplus_banktop_money_9%"
-  - "<gray>10# <white>%bankplus_banktop_name_10%<dark_gray>: <green>%bankplus_banktop_money_10%"
+  - "<gold>1# <white>%NaturalBank_banktop_name_1%<dark_gray>: <green>%NaturalBank_banktop_money_1%"
+  - "<green>2# <white>%NaturalBank_banktop_name_2%<dark_gray>: <green>%NaturalBank_banktop_money_2%"
+  - "<aqua>3# <white>%NaturalBank_banktop_name_3%<dark_gray>: <green>%NaturalBank_banktop_money_3%"
+  - "<gray>4# <white>%NaturalBank_banktop_name_4%<dark_gray>: <green>%NaturalBank_banktop_money_4%"
+  - "<gray>5# <white>%NaturalBank_banktop_name_5%<dark_gray>: <green>%NaturalBank_banktop_money_5%"
+  - "<gray>6# <white>%NaturalBank_banktop_name_6%<dark_gray>: <green>%NaturalBank_banktop_money_6%"
+  - "<gray>7# <white>%NaturalBank_banktop_name_7%<dark_gray>: <green>%NaturalBank_banktop_money_7%"
+  - "<gray>8# <white>%NaturalBank_banktop_name_8%<dark_gray>: <green>%NaturalBank_banktop_money_8%"
+  - "<gray>9# <white>%NaturalBank_banktop_name_9%<dark_gray>: <green>%NaturalBank_banktop_money_9%"
+  - "<gray>10# <white>%NaturalBank_banktop_name_10%<dark_gray>: <green>%NaturalBank_banktop_money_10%"
   - "    <gray><i>(( The BankTop will update every 10m ))"
 
 # You can use color codes.

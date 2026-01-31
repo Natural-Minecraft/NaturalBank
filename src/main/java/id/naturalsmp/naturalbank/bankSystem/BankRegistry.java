@@ -22,14 +22,16 @@ public class BankRegistry {
     }
 
     public static void loadBanks() {
-        Set<String> currentBanks = new HashSet<>(banks.keySet()), newBanks = new HashSet<>();;
+        Set<String> currentBanks = new HashSet<>(banks.keySet()), newBanks = new HashSet<>();
+        ;
 
         // Get the folder of the bank files.
         File banksFolder = new File(NaturalBank.INSTANCE().getDataFolder(), "banks");
 
         List<File> bankFiles = new ArrayList<>();
         File[] availableFiles = banksFolder.listFiles(); // Get the list of files created in the banks folder.
-        if (availableFiles != null && availableFiles.length > 0) bankFiles.addAll(Arrays.asList(availableFiles));
+        if (availableFiles != null && availableFiles.length > 0)
+            bankFiles.addAll(Arrays.asList(availableFiles));
 
         File defaultBankFile = new File(banksFolder, ConfigValues.getMainGuiName() + ".yml");
         if (!defaultBankFile.exists()) { // If the default bank file is missing, generate it.
@@ -43,7 +45,8 @@ public class BankRegistry {
                     add = false;
                     break;
                 }
-            if (add) bankFiles.add(defaultBankFile);
+            if (add)
+                bankFiles.add(defaultBankFile);
         }
 
         for (File bankFile : bankFiles) {
@@ -60,17 +63,20 @@ public class BankRegistry {
             banks.put(identifier, bank);
 
             for (Player p : Bukkit.getOnlinePlayers()) // Load the players to the bank economy once registered.
-                PlayerRegistry.loadPlayer(p, bank,true);
+                PlayerRegistry.loadPlayer(p, bank, true);
         }
 
         for (String bank : currentBanks)
-            // Remove the banks that are no more in the files but are still in the bank holder.
-            if (!newBanks.contains(bank)) banks.remove(bank);
+            // Remove the banks that are no more in the files but are still in the bank
+            // holder.
+            if (!newBanks.contains(bank))
+                banks.remove(bank);
     }
 
     private static void generateMainBankFile(File file) {
-        NaturalBank.INSTANCE().saveResource("banks" + File.separator + "NaturalBank_main_gui_base_file.yml", false);
-        File baseBankFile = new File(NaturalBank.INSTANCE().getDataFolder(), "banks" + File.separator + "NaturalBank_main_gui_base_file.yml");
+        NaturalBank.INSTANCE().saveResource("banks/NaturalBank_main_gui_base_file.yml", false);
+        File baseBankFile = new File(NaturalBank.INSTANCE().getDataFolder(),
+                "banks/NaturalBank_main_gui_base_file.yml");
         baseBankFile.renameTo(file);
     }
 }

@@ -44,8 +44,9 @@ public class BPLogger {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             day = format.format(System.currentTimeMillis());
 
-            logFile = new File(NaturalBank.INSTANCE().getDataFolder() + File.separator + "logs", day + ".txt");
-            if (logFile.exists()) return;
+            logFile = new File(NaturalBank.INSTANCE().getDataFolder(), "logs" + File.separator + day + ".txt");
+            if (logFile.exists())
+                return;
 
             logFile.getParentFile().mkdirs();
             try {
@@ -64,9 +65,11 @@ public class BPLogger {
         }
 
         public static void error(boolean logToFile, Object error) {
-            if (error == null) error = "null";
+            if (error == null)
+                error = "null";
             log(BPChat.PREFIX + " <dark_gray>[<red>ERROR</red>] <red>" + error);
-            if (logToFile) LogsFile.log("[ERROR] " + error);
+            if (logToFile)
+                LogsFile.log("[ERROR] " + error);
         }
 
         public static void error(Throwable e, Object error) {
@@ -80,12 +83,14 @@ public class BPLogger {
             int priority = 1;
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 String path = stackTraceElement.getClassName();
-                if (!path.contains("me.pulsi_.NaturalBank")) continue;
+                if (!path.contains("id.naturalsmp.naturalbank"))
+                    continue;
 
                 String name = path.substring(path.lastIndexOf(".") + 1), method = stackTraceElement.getMethodName();
                 int line = stackTraceElement.getLineNumber();
 
-                error("| | [" + priority + "*] " + path + " - " + name + "#" + method + "(); [<white>" + line + "<red>]");
+                error("| | [" + priority + "*] " + path + " - " + name + "#" + method + "(); [<white>" + line
+                        + "<red>]");
                 priority++;
             }
         }
@@ -95,9 +100,11 @@ public class BPLogger {
         }
 
         public static void warn(boolean logToFile, Object warn) {
-            if (warn == null) warn = "null";
+            if (warn == null)
+                warn = "null";
             log(BPChat.PREFIX + "<dark_gray>[<yellow>WARN</yellow>] <yellow>" + warn);
-            if (logToFile) LogsFile.log("[WARN] " + warn);
+            if (logToFile)
+                LogsFile.log("[WARN] " + warn);
         }
 
         public static void warn(Throwable e, Object warn) {
@@ -111,12 +118,14 @@ public class BPLogger {
             int priority = 1;
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
                 String path = stackTraceElement.getClassName();
-                if (!path.contains("me.pulsi_.NaturalBank")) continue;
+                if (!path.contains("id.naturalsmp.naturalbank"))
+                    continue;
 
                 String name = path.substring(path.lastIndexOf(".") + 1), method = stackTraceElement.getMethodName();
                 int line = stackTraceElement.getLineNumber();
 
-                warn("| | [" + priority + "*] " + path + " - " + name + "#" + method + "(); [<white>" + line + "<yellow>]");
+                warn("| | [" + priority + "*] " + path + " - " + name + "#" + method + "(); [<white>" + line
+                        + "<yellow>]");
                 priority++;
             }
         }
@@ -126,9 +135,11 @@ public class BPLogger {
         }
 
         public static void info(boolean logToFile, Object info) {
-            if (info == null) info = "null";
+            if (info == null)
+                info = "null";
             log(BPChat.PREFIX + " <dark_gray>[<blue>INFO</blue>] <blue>" + info);
-            if (logToFile) LogsFile.log("[INFO] " + info);
+            if (logToFile)
+                LogsFile.log("[INFO] " + info);
         }
 
         public static void log(String message) {
