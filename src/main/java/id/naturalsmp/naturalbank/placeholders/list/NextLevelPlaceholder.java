@@ -1,0 +1,26 @@
+package id.naturalsmp.naturalbank.placeholders.list;
+
+import id.naturalsmp.naturalbank.bankSystem.Bank;
+import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
+import id.naturalsmp.naturalbank.bankSystem.BankUtils;
+import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
+import id.naturalsmp.naturalbank.values.ConfigValues;
+import org.bukkit.entity.Player;
+
+public class NextLevelPlaceholder extends BPPlaceholder {
+
+    @Override
+    public String getIdentifier() {
+        return "next_level";
+    }
+
+    @Override
+    public String getPlaceholder(Player p, String target, String identifier) {
+        if (!BankUtils.exist(target)) return bankDoesNotExist;
+
+        Bank bank = BankRegistry.getBank(target);
+        if (!BankUtils.hasNextLevel(bank, p)) return ConfigValues.getUpgradesMaxedPlaceholder();
+
+        return (BankUtils.getCurrentLevel(bank, p) + 1) + "";
+    }
+}

@@ -1,9 +1,9 @@
-name: BankPlus
-version: '${version}' # Remember to change the one in BankPlus main class.
-main: me.pulsi_.bankplus.BankPlus
+name: NaturalBank
+version: '${version}'
+main: id.naturalsmp.naturalbank.NaturalBank
 api-version: '1.21'
-authors: [ Pulsi_ ]
-description: The best free bank plugin on internet!
+authors: [ Natural Dev Creative ]
+description: Advanced banking system for Minecraft servers
 depend:
   - Vault
 softdepend:
@@ -13,8 +13,8 @@ softdepend:
   - CMI
 load: POSTWORLD
 commands:
-  bankplus:
-    aliases: [bankp, bank, bp]
+  naturalbank:
+    aliases: [nbank, bank, bp, bankplus]
 
   banktop:
     aliases: [btop]

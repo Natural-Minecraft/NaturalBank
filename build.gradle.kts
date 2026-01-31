@@ -1,11 +1,7 @@
 plugins { java }
 
-group = "me.pulsi_"
-version = "6.5-Alpha3"
-
-/*tasks.withType<Jar> { // To simplify the testing, set the path directly into the plugins folder.
-    destinationDirectory.set(File("C:\\Users\\faste\\Desktop\\Test Servers\\1.21.4\\plugins"))
-}*/
+group = "id.naturalsmp"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -29,14 +25,12 @@ repositories {
     }
 }
 
-// group:artifact:version
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     implementation("net.essentialsx:EssentialsX:2.21.0") {
-        // It is requesting spigot api, but it goes in conflict with paper api.
         exclude("org.spigotmc")
     }
 
@@ -59,6 +53,10 @@ tasks.withType<JavaCompile>().configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
         options.release.set(targetJavaVersion)
     }
+}
+
+tasks.withType<Jar> {
+    archiveBaseName.set("NaturalBank")
 }
 
 tasks.processResources {
