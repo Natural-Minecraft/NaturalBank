@@ -1,0 +1,49 @@
+# If this feature is enabled, typing /bank will open a
+# gui with a list of all available banks, otherwise will
+# open the main bank even if there are more banks.
+# (You can always open other banks with /bank open <bank>)
+Enabled: true
+
+# Choose if showing or hiding a bank if it's not accessible.
+Shows-Not-Available-Banks: true
+
+# If having only one bank available, this option will
+# make the player directly open that one instead of
+# opening the banks-gui with just the 1 gui available.
+Directly-Open-If-1-Is-Available: true
+
+# The gui that contains the different banks.
+#
+# To add more banks, go to the "banks" folder and
+# add more files following the default bank format.
+Banks-Gui:
+  Title: '&a&lBANKS LIST'
+
+  # If the number of banks is higher
+  # than the gui slots, it will
+  # separate the banks in more pages.
+  Lines: 1
+
+  # In ticks.
+  Update-Delay: 20
+
+  Filler:
+    Enabled: true
+    Material: WHITE_STAINED_GLASS_PANE
+    Glowing: false
+
+  Previous-Page:
+    Material: ARROW
+    Displayname: '&aPrevious page &8(&7%previous_page%/%all_pages%&8)'
+    Lore:
+      - '&7Go to the previous page'
+    Glowing: false
+    Slot: 1
+
+  Next-Page:
+    Material: ARROW
+    Displayname: '&aNext page &8(&7%nex_page%/%all_pages%&8)'
+    Lore:
+      - '&7Go to the next page'
+    Glowing: false
+    Slot: 9
