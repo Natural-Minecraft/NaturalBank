@@ -34,7 +34,6 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.Zrips:CMI-API:9.7.4.1")
 
     implementation("net.essentialsx:EssentialsX:2.21.0") {
         // It is requesting spigot api, but it goes in conflict with paper api.
