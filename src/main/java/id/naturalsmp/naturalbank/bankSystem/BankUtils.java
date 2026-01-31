@@ -26,10 +26,11 @@ import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static me.pulsi_.NaturalBank.bankSystem.BPItems.AMOUNT_KEY;
+import static id.naturalsmp.naturalbank.bankSystem.BPItems.AMOUNT_KEY;
 
 /**
- * Class containing tons of useful methods to manage banks and retrieve useful information.
+ * Class containing tons of useful methods to manage banks and retrieve useful
+ * information.
  */
 public class BankUtils {
 
@@ -67,7 +68,8 @@ public class BankUtils {
      */
     public static boolean exist(Bank bank, CommandSender s) {
         boolean exist = bank != null;
-        if (!exist) BPMessages.sendIdentifier(s, "Invalid-Bank");
+        if (!exist)
+            BPMessages.sendIdentifier(s, "Invalid-Bank");
         return exist;
     }
 
@@ -82,14 +84,16 @@ public class BankUtils {
     }
 
     /**
-     * Checks if the selected bank name is registered, and automatically alert the command sender, if specified, its non-existence.
+     * Checks if the selected bank name is registered, and automatically alert the
+     * command sender, if specified, its non-existence.
      *
      * @param bankName The bank name.
      * @return true if it is registered, false otherwise.
      */
     public static boolean exist(String bankName, CommandSender s) {
         boolean exist = BankRegistry.getBank(bankName) != null;
-        if (!exist) BPMessages.sendIdentifier(s, "Invalid-Bank");
+        if (!exist)
+            BPMessages.sendIdentifier(s, "Invalid-Bank");
         return exist;
     }
 
@@ -126,7 +130,8 @@ public class BankUtils {
     }
 
     /**
-     * Get the bank max interest amount based on the bank level of the selected player.
+     * Get the bank max interest amount based on the bank level of the selected
+     * player.
      *
      * @param bank The bank name.
      * @param p    The player.
@@ -150,8 +155,10 @@ public class BankUtils {
 
     /**
      * Get the bank interest rate based on the bank level of the selected player.
-     * This method requires specifying a player because it needs his money to make calculations.
-     * It also already checks if the interest limiter is enabled and returns an amount based on that.
+     * This method requires specifying a player because it needs his money to make
+     * calculations.
+     * It also already checks if the interest limiter is enabled and returns an
+     * amount based on that.
      *
      * @param bank The bank name.
      * @param p    The player.
@@ -163,8 +170,10 @@ public class BankUtils {
 
     /**
      * Get the bank interest rate at the selected level.
-     * This method requires specifying a player because it needs his money to make calculations.
-     * It also already checks if the interest limiter is enabled and returns an amount based on that.
+     * This method requires specifying a player because it needs his money to make
+     * calculations.
+     * It also already checks if the interest limiter is enabled and returns an
+     * amount based on that.
      *
      * @param bank  The bank.
      * @param p     The player.
@@ -175,16 +184,20 @@ public class BankUtils {
         if (ConfigValues.isInterestLimiterEnabled())
             return getLimitedInterest(bank, p, level, ConfigValues.getInterestRate());
 
-        if (bank == null) return ConfigValues.getInterestRate();
+        if (bank == null)
+            return ConfigValues.getInterestRate();
 
         Bank.BankLevel bankLevel = bank.getBankLevel(level);
         return bankLevel == null ? ConfigValues.getInterestRate() : bankLevel.interest;
     }
 
     /**
-     * Get the bank offline interest rate based on the bank level of the selected player.
-     * This method requires specifying a player because it needs his money to make calculations.
-     * It also already checks if the interest limiter is enabled and returns an amount based on that.
+     * Get the bank offline interest rate based on the bank level of the selected
+     * player.
+     * This method requires specifying a player because it needs his money to make
+     * calculations.
+     * It also already checks if the interest limiter is enabled and returns an
+     * amount based on that.
      *
      * @param bank The bank.
      * @param p    The player.
@@ -196,8 +209,10 @@ public class BankUtils {
 
     /**
      * Get the bank offline interest rate at the selected level.
-     * This method requires specifying a player because it needs his money to make calculations.
-     * It also already checks if the interest limiter is enabled and returns an amount based on that.
+     * This method requires specifying a player because it needs his money to make
+     * calculations.
+     * It also already checks if the interest limiter is enabled and returns an
+     * amount based on that.
      *
      * @param bank  The bank.
      * @param p     The player.
@@ -213,9 +228,12 @@ public class BankUtils {
     }
 
     /**
-     * Get the bank afk interest rate based on the bank level of the selected player.
-     * This method requires specifying a player because it needs his money to make calculations.
-     * It also already checks if the interest limiter is enabled and returns an amount based on that.
+     * Get the bank afk interest rate based on the bank level of the selected
+     * player.
+     * This method requires specifying a player because it needs his money to make
+     * calculations.
+     * It also already checks if the interest limiter is enabled and returns an
+     * amount based on that.
      *
      * @param bank The bank.
      * @param p    The player.
@@ -227,8 +245,10 @@ public class BankUtils {
 
     /**
      * Get the bank afk interest rate at the selected level.
-     * This method requires specifying a player because it needs his money to make calculations.
-     * It also already checks if the interest limiter is enabled and returns an amount based on that.
+     * This method requires specifying a player because it needs his money to make
+     * calculations.
+     * It also already checks if the interest limiter is enabled and returns an
+     * amount based on that.
      *
      * @param bank  The bank.
      * @param p     The player.
@@ -280,11 +300,13 @@ public class BankUtils {
     }
 
     /**
-     * Check if the bank at the selected level takes from the player inventory the required items when upgrading.
+     * Check if the bank at the selected level takes from the player inventory the
+     * required items when upgrading.
      *
      * @param bank  The bank.
      * @param level The level to check.
-     * @return true if in the selected bank level is specified to remove the items, false otherwise.
+     * @return true if in the selected bank level is specified to remove the items,
+     *         false otherwise.
      */
     public static boolean isRemovingRequiredItems(Bank bank, int level) {
         Bank.BankLevel bankLevel = bank.getBankLevel(level);
@@ -299,9 +321,11 @@ public class BankUtils {
      */
     public static List<String> getLevels(Bank bank) {
         List<String> levels = new ArrayList<>();
-        if (bank == null) return levels;
+        if (bank == null)
+            return levels;
 
-        for (int level : bank.getBankLevels().keySet()) levels.add(level + "");
+        for (int level : bank.getBankLevels().keySet())
+            levels.add(level + "");
         return levels;
     }
 
@@ -313,7 +337,8 @@ public class BankUtils {
      * @return The player bank level of the selected bank.
      */
     public static int getCurrentLevel(Bank bank, OfflinePlayer p) {
-        if (bank == null) return 1;
+        if (bank == null)
+            return 1;
 
         BPEconomy economy = bank.getBankEconomy();
         return economy == null ? 1 : economy.getBankLevel(p);
@@ -371,10 +396,12 @@ public class BankUtils {
      */
     public static List<Bank> getAvailableBanks(OfflinePlayer p) {
         List<Bank> availableBanks = new ArrayList<>();
-        if (p == null) return availableBanks;
+        if (p == null)
+            return availableBanks;
 
         for (Bank bank : BankRegistry.getBanks().values())
-            if (isAvailable(bank, p)) availableBanks.add(bank);
+            if (isAvailable(bank, p))
+                availableBanks.add(bank);
 
         return availableBanks;
     }
@@ -387,10 +414,12 @@ public class BankUtils {
      */
     public static List<String> getAvailableBankNames(OfflinePlayer p) {
         List<String> availableBanks = new ArrayList<>();
-        if (p == null) return availableBanks;
+        if (p == null)
+            return availableBanks;
 
         for (String bankName : BankRegistry.getBanks().keySet())
-            if (isAvailable(bankName, p)) availableBanks.add(bankName);
+            if (isAvailable(bankName, p))
+                availableBanks.add(bankName);
 
         return availableBanks;
     }
@@ -414,10 +443,12 @@ public class BankUtils {
      * @return true if available, false otherwise.
      */
     public static boolean isAvailable(Bank bank, OfflinePlayer p) {
-        if (bank == null) return false;
+        if (bank == null)
+            return false;
 
         String permission = bank.getAccessPermission();
-        if (permission == null || permission.isEmpty()) return true;
+        if (permission == null || permission.isEmpty())
+            return true;
 
         Player oP = p.getPlayer();
         return oP != null ? oP.hasPermission(permission) : BPUtils.hasOfflinePermission(p, permission);
@@ -450,7 +481,8 @@ public class BankUtils {
      * Method to upgrade the selected bank for the selected player,
      * the player must be online because of the possible required
      * items and values that are required to upgrade, to set the
-     * level of the bank to an offline player use {@link BankUtils#setLevel(Bank, OfflinePlayer, int)}
+     * level of the bank to an offline player use
+     * {@link BankUtils#setLevel(Bank, OfflinePlayer, int)}
      *
      * @param bank The bank.
      * @param p    The player.
@@ -474,15 +506,18 @@ public class BankUtils {
 
                 boolean hasItem = false;
                 for (ItemStack item : p.getInventory().getContents()) {
-                    if (item == null || !isRequiredItem(requiredItem, item)) continue;
+                    if (item == null || !isRequiredItem(requiredItem, item))
+                        continue;
                     playerAmount += item.getAmount();
 
-                    if (playerAmount < amount) continue;
+                    if (playerAmount < amount)
+                        continue;
                     hasItem = true;
                     break;
                 }
                 if (!hasItem) {
-                    BPMessages.sendIdentifier(p, "Insufficient-Items", "%items%$" + BPUtils.getRequiredItemsFormatted(requiredItems));
+                    BPMessages.sendIdentifier(p, "Insufficient-Items",
+                            "%items%$" + BPUtils.getRequiredItemsFormatted(requiredItems));
                     return;
                 }
             }
@@ -515,18 +550,21 @@ public class BankUtils {
         }
 
         if (isRemovingRequiredItems(bank, nextLevel) && canRemoveSafely)
-            for (Bank.RequiredItem requiredItem : requiredItems) p.getInventory().removeItem(requiredItem.item);
+            for (Bank.RequiredItem requiredItem : requiredItems)
+                p.getInventory().removeItem(requiredItem.item);
 
         setLevel(bank, p, nextLevel);
         BPMessages.sendIdentifier(p, "Bank-Upgraded");
 
         if (!hasNextLevel(bank, nextLevel)) {
             for (String line : MultipleBanksValues.getAutoBanksUnlocker()) {
-                if (!line.contains(":")) continue;
+                if (!line.contains(":"))
+                    continue;
 
                 String[] parts = line.split(":");
                 String name = parts[0];
-                if (!name.equals(bank.getIdentifier())) continue;
+                if (!name.equals(bank.getIdentifier()))
+                    continue;
 
                 for (int i = 1; i < parts.length; i++) {
                     String cmd = parts[i].replace("%player%", p.getName());
@@ -540,7 +578,8 @@ public class BankUtils {
      * Create a BankLevel object from a level section.
      *
      * @param levelSection The level section.
-     * @param bankName     The name shown in the console if something goes wrong while getting the level.
+     * @param bankName     The name shown in the console if something goes wrong
+     *                     while getting the level.
      * @return A bank level.
      */
     public static Bank.BankLevel buildBankLevel(ConfigurationSection levelSection, String bankName) {
@@ -549,19 +588,24 @@ public class BankUtils {
         bankLevel.cost = BPFormatter.getStyledBigDecimal(levelSection.getString(COST_FIELD));
 
         String capacity = levelSection.getString(CAPACITY_FIELD);
-        bankLevel.capacity = capacity == null ? ConfigValues.getMaxBankCapacity() : BPFormatter.getStyledBigDecimal(capacity);
+        bankLevel.capacity = capacity == null ? ConfigValues.getMaxBankCapacity()
+                : BPFormatter.getStyledBigDecimal(capacity);
 
         String interest = levelSection.getString(INTEREST_FIELD);
-        bankLevel.interest = interest == null ? ConfigValues.getInterestRate() : BPFormatter.getStyledBigDecimal(interest.replace("%", ""));
+        bankLevel.interest = interest == null ? ConfigValues.getInterestRate()
+                : BPFormatter.getStyledBigDecimal(interest.replace("%", ""));
 
         String offlineInterest = levelSection.getString(OFFLINE_INTEREST_FIELD);
-        bankLevel.offlineInterest = offlineInterest == null ? ConfigValues.getOfflineInterestRate() : BPFormatter.getStyledBigDecimal(offlineInterest.replace("%", ""));
+        bankLevel.offlineInterest = offlineInterest == null ? ConfigValues.getOfflineInterestRate()
+                : BPFormatter.getStyledBigDecimal(offlineInterest.replace("%", ""));
 
         String afkInterest = levelSection.getString(AFK_INTEREST_FIELD);
-        bankLevel.afkInterest = afkInterest == null ? ConfigValues.getAfkInterestRate() : BPFormatter.getStyledBigDecimal(afkInterest.replace("%", ""));
+        bankLevel.afkInterest = afkInterest == null ? ConfigValues.getAfkInterestRate()
+                : BPFormatter.getStyledBigDecimal(afkInterest.replace("%", ""));
 
         String maxInterestAmount = levelSection.getString(MAX_INTEREST_AMOUNT_FIELD);
-        bankLevel.maxInterestAmount = maxInterestAmount == null ? ConfigValues.getInterestMaxAmount() : BPFormatter.getStyledBigDecimal(maxInterestAmount);
+        bankLevel.maxInterestAmount = maxInterestAmount == null ? ConfigValues.getInterestMaxAmount()
+                : BPFormatter.getStyledBigDecimal(maxInterestAmount);
 
         bankLevel.requiredItems = retrieveRequiredItems(levelSection, bankName);
 
@@ -581,34 +625,44 @@ public class BankUtils {
      */
     public static HashMap<Integer, List<Component>> getLevelLore(ConfigurationSection itemSection) {
         HashMap<Integer, List<Component>> lore = new HashMap<>();
-        if (itemSection == null) return lore;
+        if (itemSection == null)
+            return lore;
 
         List<String> configLore = itemSection.getStringList(BPItems.LORE_KEY);
-        if (!configLore.isEmpty()) lore.put(0, BPUtils.stringListToComponentList(configLore));
+        if (!configLore.isEmpty())
+            lore.put(0, BPUtils.stringListToComponentList(configLore));
         else { // If its empty and the path exist, it contains level lore.
             ConfigurationSection loreSection = itemSection.getConfigurationSection(BPItems.LORE_KEY);
-            if (loreSection == null) return lore;
+            if (loreSection == null)
+                return lore;
 
             for (String level : loreSection.getKeys(false)) {
                 List<Component> levelLore = BPUtils.stringListToComponentList(loreSection.getStringList(level));
 
                 // If it's the default, place it at position 0.
-                if (level.equalsIgnoreCase("Default")) lore.put(0, levelLore);
-                else if (!BPUtils.isInvalidNumber(level)) lore.put(Integer.parseInt(level), levelLore);
+                if (level.equalsIgnoreCase("Default"))
+                    lore.put(0, levelLore);
+                else if (!BPUtils.isInvalidNumber(level))
+                    lore.put(Integer.parseInt(level), levelLore);
             }
         }
         return lore;
     }
 
     /**
-     * Method to retrieve required items both from short (ItemType-Amount) and long method (ConfigurationSection).
-     * Custom items are now marked with a unique pdc key to make them not replicable and faster to check.
+     * Method to retrieve required items both from short (ItemType-Amount) and long
+     * method (ConfigurationSection).
+     * Custom items are now marked with a unique pdc key to make them not replicable
+     * and faster to check.
      *
-     * @param levelSection The section of the bank level where to get the required items.
-     * @param bankName     The name of the bank where to retrieve the items (used for debugging).
+     * @param levelSection The section of the bank level where to get the required
+     *                     items.
+     * @param bankName     The name of the bank where to retrieve the items (used
+     *                     for debugging).
      * @return A list of required items.
      */
-    public static @Nonnull HashMap<String, Bank.RequiredItem> retrieveRequiredItems(ConfigurationSection levelSection, String bankName) {
+    public static @Nonnull HashMap<String, Bank.RequiredItem> retrieveRequiredItems(ConfigurationSection levelSection,
+            String bankName) {
         HashMap<String, Bank.RequiredItem> requiredItems = new HashMap<>();
 
         ConfigurationSection requiredItemsSection = levelSection.getConfigurationSection(REQUIRED_ITEMS_FIELD);
@@ -627,25 +681,26 @@ public class BankUtils {
                 PersistentDataContainer data = meta.getPersistentDataContainer();
 
                 // If an item specify ONLY Material or Amount, don't add the custom unique id.
-                // Custom required items are only items with meta modified. (lore, name, glowing..)
-                if (
-                        itemSection.get(BPItems.DISPLAYNAME_KEY) != null ||
+                // Custom required items are only items with meta modified. (lore, name,
+                // glowing..)
+                if (itemSection.get(BPItems.DISPLAYNAME_KEY) != null ||
                         itemSection.get(BPItems.LORE_KEY) != null ||
                         itemSection.get(BPItems.GLOWING_KEY) != null ||
                         itemSection.get(BPItems.CUSTOM_MODEL_DATA_KEY) != null ||
-                        itemSection.get(BPItems.ITEM_FLAGS_KEY) != null
-                ) {
-                    // Set an unique custom item ID to make it not replicable: bankName_bankLevel_itemName
+                        itemSection.get(BPItems.ITEM_FLAGS_KEY) != null) {
+                    // Set an unique custom item ID to make it not replicable:
+                    // bankName_bankLevel_itemName
                     data.set(customItemKey, PersistentDataType.STRING, startingItemID + itemName);
                 }
                 item.setItemMeta(meta);
 
-
-                // Create the required item with amount separated to solve the amount limit of 99.
+                // Create the required item with amount separated to solve the amount limit of
+                // 99.
                 Bank.RequiredItem requiredItem = new Bank.RequiredItem(item);
 
                 int amount = itemSection.getInt(AMOUNT_KEY);
-                if (amount > 1) requiredItem.amount = amount;
+                if (amount > 1)
+                    requiredItem.amount = amount;
 
                 requiredItems.put(itemName, requiredItem);
             }
@@ -654,18 +709,23 @@ public class BankUtils {
 
         // Once here, the short format is the only one left.
         String requiredItemsString = levelSection.getString(REQUIRED_ITEMS_FIELD);
-        if (requiredItemsString == null || requiredItemsString.isEmpty()) return requiredItems;
+        if (requiredItemsString == null || requiredItemsString.isEmpty())
+            return requiredItems;
 
         List<String> items = new ArrayList<>();
-        if (!requiredItemsString.contains(",")) items.add(requiredItemsString);
-        else items.addAll(Arrays.asList(requiredItemsString.split(",")));
+        if (!requiredItemsString.contains(","))
+            items.add(requiredItemsString);
+        else
+            items.addAll(Arrays.asList(requiredItemsString.split(",")));
 
         for (String itemID : items) {
             if (!itemID.contains("-")) {
                 try {
                     requiredItems.put(itemID, new Bank.RequiredItem(new ItemStack(Material.valueOf(itemID))));
                 } catch (IllegalArgumentException e) {
-                    BPLogger.Console.warn("The bank \"" + bankName + "\" contains an invalid item in the \"Required-Items\" path at level *" + levelSection.getName() + ".");
+                    BPLogger.Console.warn("The bank \"" + bankName
+                            + "\" contains an invalid item in the \"Required-Items\" path at level *"
+                            + levelSection.getName() + ".");
                 }
             } else {
                 String[] split = itemID.split("-");
@@ -676,7 +736,9 @@ public class BankUtils {
                     id = String.valueOf(material);
                     item = new ItemStack(material);
                 } catch (IllegalArgumentException e) {
-                    BPLogger.Console.warn("The bank \"" + bankName + "\" contains an invalid item in the \"Required-Items\" path at level *" + levelSection.getName() + ".");
+                    BPLogger.Console.warn("The bank \"" + bankName
+                            + "\" contains an invalid item in the \"Required-Items\" path at level *"
+                            + levelSection.getName() + ".");
                     continue;
                 }
 
@@ -684,7 +746,9 @@ public class BankUtils {
                 try {
                     amount = Integer.parseInt(split[1]);
                 } catch (NumberFormatException e) {
-                    BPLogger.Console.warn("The bank \"" + bankName + "\" contains an invalid number in the \"Required-Items\" path at level *" + levelSection.getName() + ".");
+                    BPLogger.Console.warn("The bank \"" + bankName
+                            + "\" contains an invalid number in the \"Required-Items\" path at level *"
+                            + levelSection.getName() + ".");
                 }
 
                 Bank.RequiredItem requiredItem = new Bank.RequiredItem(item);
@@ -710,7 +774,8 @@ public class BankUtils {
             // Check if it's a custom item, otherwise just check for the material.
             if (requiredId != null) {
                 ItemMeta checkMeta = itemToCheck.getItemMeta();
-                if (checkMeta == null) return false;
+                if (checkMeta == null)
+                    return false;
 
                 String checkId = checkMeta.getPersistentDataContainer().get(customItemKey, PersistentDataType.STRING);
                 return requiredId.equals(checkId);
@@ -731,16 +796,20 @@ public class BankUtils {
     private static BigDecimal getLimitedInterest(Bank bank, OfflinePlayer p, int level, BigDecimal fallBack) {
         BigDecimal balance = bank.getBankEconomy().getBankBalance(p);
         for (String limiter : getInterestLimiter(bank, level)) {
-            if (!limiter.contains(":")) continue;
+            if (!limiter.contains(":"))
+                continue;
 
             String[] split1 = limiter.split(":");
-            if (BPUtils.isInvalidNumber(split1[1])) continue;
+            if (BPUtils.isInvalidNumber(split1[1]))
+                continue;
 
             String[] split2 = split1[0].split("-");
-            if (BPUtils.isInvalidNumber(split2[0]) || BPUtils.isInvalidNumber(split2[1])) continue;
+            if (BPUtils.isInvalidNumber(split2[0]) || BPUtils.isInvalidNumber(split2[1]))
+                continue;
 
             String interest = split1[1].replace("%", ""), from = split2[0], to = split2[1];
-            BigDecimal interestRate = new BigDecimal(interest), fromNumber = new BigDecimal(from), toNumber = new BigDecimal(to);
+            BigDecimal interestRate = new BigDecimal(interest), fromNumber = new BigDecimal(from),
+                    toNumber = new BigDecimal(to);
 
             if (fromNumber.compareTo(toNumber) > 0) {
                 BigDecimal temp = fromNumber;
@@ -748,7 +817,8 @@ public class BankUtils {
                 toNumber = temp;
             }
 
-            if (fromNumber.compareTo(balance) <= 0 && toNumber.compareTo(balance) >= 0) return interestRate;
+            if (fromNumber.compareTo(balance) <= 0 && toNumber.compareTo(balance) >= 0)
+                return interestRate;
         }
         return fallBack;
     }

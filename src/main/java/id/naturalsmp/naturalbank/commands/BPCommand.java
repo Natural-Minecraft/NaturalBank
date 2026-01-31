@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static me.pulsi_.NaturalBank.commands.BPCmdRegistry.commands;
+import static id.naturalsmp.naturalbank.commands.BPCmdRegistry.commands;
 
 public abstract class BPCommand {
 
@@ -49,7 +49,8 @@ public abstract class BPCommand {
     }
 
     /**
-     * Get the specified list, or if not found, place and return the fall-back value.
+     * Get the specified list, or if not found, place and return the fall-back
+     * value.
      *
      * @param config   The config where to take the list.
      * @param path     The path where to get the list.
@@ -58,12 +59,14 @@ public abstract class BPCommand {
      */
     private List<String> getListOrSetDefault(FileConfiguration config, String path, List<String> fallBack) {
         List<String> result = fallBack;
-        if (!BPUtils.pathExist(config, path)) config.set(path, result);
+        if (!BPUtils.pathExist(config, path))
+            config.set(path, result);
         else {
             result = config.getStringList(path);
             if (result.isEmpty()) {
                 String string = config.getString(path);
-                if (string != null && !string.isEmpty()) result.add(string);
+                if (string != null && !string.isEmpty())
+                    result.add(string);
             }
         }
         return result;
@@ -79,16 +82,20 @@ public abstract class BPCommand {
      */
     private int getIntOrSetDefault(FileConfiguration config, String path, int fallBack) {
         int result = fallBack;
-        if (BPUtils.pathExist(config, path)) result = config.getInt(path);
-        else config.set(path, result);
+        if (BPUtils.pathExist(config, path))
+            result = config.getInt(path);
+        else
+            config.set(path, result);
         return result;
     }
 
     /**
-     * Check if the selected argument position exist and use that bank, otherwise use the main bank.
+     * Check if the selected argument position exist and use that bank, otherwise
+     * use the main bank.
      *
      * @param args             The cmd arguments.
-     * @param argumentPosition The argument position where the bank name should be present.
+     * @param argumentPosition The argument position where the bank name should be
+     *                         present.
      * @return A bank name.
      */
     public String getPossibleBank(String[] args, int argumentPosition) {
@@ -100,7 +107,9 @@ public abstract class BPCommand {
      */
     public void register() {
         commands.put(commandID.toLowerCase(), this);
-        if (aliases != null) for (String alias : aliases) commands.put(alias.toLowerCase(), this);
+        if (aliases != null)
+            for (String alias : aliases)
+                commands.put(alias.toLowerCase(), this);
     }
 
     /**
@@ -114,8 +123,10 @@ public abstract class BPCommand {
         if (confirmCooldown > 0) {
             String name = s.getName();
             if (!confirm.contains(name)) {
-                Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> confirm.remove(name), confirmCooldown * 20L);
-                for (String message : confirmMessage) BPMessages.sendMessage(s, message);
+                Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> confirm.remove(name),
+                        confirmCooldown * 20L);
+                for (String message : confirmMessage)
+                    BPMessages.sendMessage(s, message);
                 confirm.add(name);
                 return false;
             }
@@ -125,52 +136,60 @@ public abstract class BPCommand {
     }
 
     /**
-     * Execute the command, only, and only if it passes all the required checks (permission, cooldown, confirm).
+     * Execute the command, only, and only if it passes all the required checks
+     * (permission, cooldown, confirm).
      * The cmd arguments starts from [2], the first argument is the cmd identifier.
      *
      * @param s    The command sender.
      * @param args The cmd arguments.
      */
     public void execute(CommandSender s, String[] args) {
-        if (!BPUtils.hasPermission(s, permission) || (playerOnly() && !BPUtils.isPlayer(s))) return;
+        if (!BPUtils.hasPermission(s, permission) || (playerOnly() && !BPUtils.isPlayer(s)))
+            return;
 
         if (!skipUsage() && args.length == 1) {
             for (String usage : usage) {
                 BPMessages.sendMessage(
                         s,
                         usage
-                        .replace("[", "<dark_gray>[</dark_gray>")
-                        .replace("]", "<dark_gray>]</dark_gray>")
-                );
+                                .replace("[", "<dark_gray>[</dark_gray>")
+                                .replace("]", "<dark_gray>]</dark_gray>"));
             }
             return;
         }
-        if (isInCooldown(s)) return;
+        if (isInCooldown(s))
+            return;
 
         BPCmdExecution execution = onExecution(s, args);
-        if (execution.executionType == BPCmdExecution.ExecutionType.INVALID_EXECUTION) return;
-        if (!hasConfirmed(s)) return;
+        if (execution.executionType == BPCmdExecution.ExecutionType.INVALID_EXECUTION)
+            return;
+        if (!hasConfirmed(s))
+            return;
 
         execution.execute();
         if (cooldown > 0 && !(s instanceof ConsoleCommandSender)) {
             cooldowns.put(s.getName(), System.currentTimeMillis() + (cooldown * 1000L));
-            Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> cooldowns.remove(s.getName()), cooldown * 20L);
+            Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> cooldowns.remove(s.getName()),
+                    cooldown * 20L);
         }
     }
 
     /**
      * Check if the cmd sender is still in cooldown.
-     * This method automatically send a message to the sender in case he's in cooldown.
+     * This method automatically send a message to the sender in case he's in
+     * cooldown.
      *
      * @param s The command sender.
      * @return true if in cooldown, false otherwise.
      */
     public boolean isInCooldown(CommandSender s) {
         String name = s.getName();
-        if (!cooldowns.containsKey(name)) return false;
+        if (!cooldowns.containsKey(name))
+            return false;
 
         long get = cooldowns.get(name), cur = System.currentTimeMillis();
-        if (get <= cur) return false;
+        if (get <= cur)
+            return false;
 
         for (String message : cooldownMessage)
             BPMessages.sendMessage(s, message, "%time%$" + BPFormatter.formatTime(get - cur));
@@ -178,7 +197,9 @@ public abstract class BPCommand {
     }
 
     public boolean argsContains(String check, String[] args) {
-        for (String arg : args) if (arg.equalsIgnoreCase(check)) return true;
+        for (String arg : args)
+            if (arg.equalsIgnoreCase(check))
+                return true;
         return false;
     }
 
@@ -200,10 +221,12 @@ public abstract class BPCommand {
 
     /**
      * Check if that command will skip the usage message.
-     * The usage message appears when typing only the cmd identifier. (Example: /bp deposit)
+     * The usage message appears when typing only the cmd identifier. (Example: /bp
+     * deposit)
      * <p>
      * If the usage has been skipped, there is a chance that args[1] is null.
-     * So when setting this to true, you should be careful and check for the existence of the first cmd argument.
+     * So when setting this to true, you should be careful and check for the
+     * existence of the first cmd argument.
      *
      * @return true if skips the usage message, false otherwise.
      */
