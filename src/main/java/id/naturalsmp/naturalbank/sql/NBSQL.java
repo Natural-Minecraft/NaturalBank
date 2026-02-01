@@ -219,10 +219,10 @@ public class NBSQL {
         String sql;
         if (ConfigValues.isMySqlEnabled()) {
             sql = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) VALUES (?, ?, ?, ?) " +
-                  "ON DUPLICATE KEY UPDATE bank_level = ?, debt = ?, money = ?";
+                    "ON DUPLICATE KEY UPDATE bank_level = ?, debt = ?, money = ?";
         } else {
             sql = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) VALUES (?, ?, ?, ?) " +
-                  "ON CONFLICT(uuid) DO UPDATE SET bank_level = ?, debt = ?, money = ?";
+                    "ON CONFLICT(uuid) DO UPDATE SET bank_level = ?, debt = ?, money = ?";
         }
 
         try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -231,7 +231,7 @@ public class NBSQL {
             pstmt.setInt(2, level);
             pstmt.setString(3, debt);
             pstmt.setString(4, money);
-            
+
             // UPDATE values
             pstmt.setInt(5, level);
             pstmt.setString(6, debt);
@@ -276,8 +276,8 @@ public class NBSQL {
      */
     public static void fillRecords(OfflinePlayer player) {
         String sql = ConfigValues.isMySqlEnabled()
-                ? "INSERT IGNORE INTO %table% (uuid, name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)"
-                : "INSERT OR IGNORE INTO %table% (uuid, name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)";
+                ? "INSERT IGNORE INTO %table% (uuid, account_name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)"
+                : "INSERT OR IGNORE INTO %table% (uuid, account_name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)";
 
         for (String bank : NBEconomy.nameList()) {
             if (connection == null)
@@ -427,10 +427,10 @@ public class NBSQL {
 
         String sql;
         if (ConfigValues.isMySqlEnabled()) {
-            sql = "INSERT INTO " + bankName + " (uuid, name, " + columnName
+            sql = "INSERT INTO " + bankName + " (uuid, account_name, " + columnName
                     + ") VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE " + columnName + " = ?";
         } else {
-            sql = "INSERT INTO " + bankName + " (uuid, name, " + columnName
+            sql = "INSERT INTO " + bankName + " (uuid, account_name, " + columnName
                     + ") VALUES (?, ?, ?) ON CONFLICT(uuid) DO UPDATE SET " + columnName + " = ?";
         }
 
