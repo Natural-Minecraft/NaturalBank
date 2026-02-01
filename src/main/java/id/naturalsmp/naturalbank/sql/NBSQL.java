@@ -65,12 +65,12 @@ public class NBSQL {
      * @return The argument based on the specified player.
      */
     public static String GET_DEFAULT_PLAYER_ARGUMENTS(OfflinePlayer p, String bankName) {
-        return p.getUniqueId() + "," +
-                p.getName() + "," +
+        return "'" + p.getUniqueId() + "','" +
+                p.getName() + "'," +
                 "1," +
-                (ConfigValues.getMainGuiName().equals(bankName) ? ConfigValues.getStartAmount() : "0") + "," +
-                "0," +
-                "0";
+                "'" + (ConfigValues.getMainGuiName().equals(bankName) ? ConfigValues.getStartAmount() : "0") + "'," +
+                "'0'," +
+                "'0'";
     }
 
     private static Connection connection;
@@ -267,30 +267,24 @@ public class NBSQL {
      * @param player The player to register.
      */
     public static void fillRecords(OfflinePlayer player) {
-        if (ConfigValues.isMySqlEnabled())
-            for (String bank : NBEconomy.nameList()) {
-                try {
-                    connection.prepareStatement(
-                            "INSERT IGNORE INTO " + bank + " VALUES (" + GET_DEFAULT_PLAYER_ARGUMENTS(player, bank)
-                                    + ")")
-                            .executeUpdate();
-                } catch (SQLException e) {
-                    NBLogger.Console.error(e,
-                            "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
-                }
+        String sql = ConfigValues.isMySqlEnabled()
+                ? "INSERT IGNORE INTO %table% (uuid, name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)"
+                : "INSERT OR IGNORE INTO %table% (uuid, name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)";
+
+        for (String bank : NBEconomy.nameList()) {
+            try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql.replace("%table%", bank))) {
+                pstmt.setString(1, player.getUniqueId().toString());
+                pstmt.setString(2, player.getName());
+                pstmt.setInt(3, 1);
+                pstmt.setString(4, (ConfigValues.getMainGuiName().equals(bank) ? ConfigValues.getStartAmount() : "0"));
+                pstmt.setString(5, "0");
+                pstmt.setString(6, "0");
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                NBLogger.Console.error(e,
+                        "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
             }
-        else
-            for (String bank : NBEconomy.nameList()) {
-                try {
-                    connection.prepareStatement(
-                            "INSERT OR IGNORE INTO " + bank + " VALUES (" + GET_DEFAULT_PLAYER_ARGUMENTS(player, bank)
-                                    + ")")
-                            .executeUpdate();
-                } catch (SQLException e) {
-                    NBLogger.Console.error(e,
-                            "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
-                }
-            }
+        }
     }
 
     public static class MySQL {
@@ -410,26 +404,27 @@ public class NBSQL {
             case DEBT -> columnName = "debt";
             case INTEREST -> columnName = "interest";
             case MONEY -> columnName = "money";
-
             default -> {
                 NBLogger.Console.warn("Invalid SQLSearch specified as parameter for query.");
                 return;
             }
         }
 
-        String query;
+        String sql;
+        if (ConfigValues.isMySqlEnabled()) {
+            sql = "INSERT INTO " + bankName + " (uuid, name, " + columnName
+                    + ") VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE " + columnName + " = ?";
+        } else {
+            sql = "INSERT INTO " + bankName + " (uuid, name, " + columnName
+                    + ") VALUES (?, ?, ?) ON CONFLICT(uuid) DO UPDATE SET " + columnName + " = ?";
+        }
 
-        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES('" + player.getUniqueId()
-                + "', '"
-                + newValue + "')";
-        String set = columnName + "='" + newValue + "'";
-        if (ConfigValues.isMySqlEnabled())
-            query = insert + " ON DUPLICATE KEY UPDATE " + set;
-        else
-            query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
-
-        try {
-            connection.prepareStatement(query).executeUpdate();
+        try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, player.getUniqueId().toString());
+            pstmt.setString(2, player.getName());
+            pstmt.setString(3, newValue);
+            pstmt.setString(4, newValue);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             NBLogger.Console.error(e,
                     "Cannot set " + columnName + " for player " + player.getName() + " in bank " + bankName + ".");

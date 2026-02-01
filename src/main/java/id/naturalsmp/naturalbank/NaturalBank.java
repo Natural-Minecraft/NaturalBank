@@ -22,7 +22,7 @@ import java.net.URI;
 
 public final class NaturalBank extends JavaPlugin {
 
-    public static final String actualVersion = "6.4";
+    public static final String actualVersion = "1.0.0";
 
     private static String serverVersion;
     private static NaturalBank INSTANCE;
@@ -208,7 +208,7 @@ public final class NaturalBank extends JavaPlugin {
             // because it is important to keep users at the latest version.
             NBLogger.Console.info("New version of the plugin available! (v" + newVersion + ").");
             NBLogger.Console.info(
-                    "Please download the latest version here: https://www.spigotmc.org/resources/%E2%9C%A8-NaturalBank-%E2%9C%A8.93130/.");
+                    "Please download the latest version from our official source.");
         }
         return updated;
     }

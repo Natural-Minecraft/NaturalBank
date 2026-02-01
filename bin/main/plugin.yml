@@ -14,7 +14,7 @@ softdepend:
 load: POSTWORLD
 commands:
   naturalbank:
-    aliases: [nbank, bank, bp, bankplus]
+    aliases: [nbank, bank, nb, naturalbank, nabank]
 
   banktop:
     aliases: [btop]

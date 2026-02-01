@@ -3,7 +3,7 @@
 # use every type of placeholder inside the messages.
 
 # The main plugin prefix.
-Prefix: "<b><gradient:green:blue:green>NaturalBank</gradient></b>"
+Prefix: "<b><gradient:green:blue>NaturalBank</gradient></b>"
 
 # Notify the player in case a message is missing.
 Enable-Missing-Message-Alert: true
@@ -96,12 +96,15 @@ Interest-Broadcast:
 
 # Help Message
 Help-Message:
-  - "%prefix% <green>Help page"
-  - "<green>/bank deposit <amount> <gray>Deposit an amount of Money."
-  - "<green>/bank withdraw <amount> <gray>Withdraw an amount of Money."
-  - "<green>/bank view <player> <gray>View the balance of a player."
-  - "<gray>Plugin made by Pulsi_"
-  - "<green>Rate 5 Star!"
+  - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  - "                 <gradient:#00ff00:#00bcff><b>NATURALBANK HELP</b></gradient>"
+  - ""
+  - "  <gradient:#00ff00:#00bcff>»</gradient> <white>/bank deposit <amount> <dark_gray>● <gray>Deposit money."
+  - "  <gradient:#00ff00:#00bcff>»</gradient> <white>/bank withdraw <amount> <dark_gray>● <gray>Withdraw money."
+  - "  <gradient:#00ff00:#00bcff>»</gradient> <white>/bank view <player> <dark_gray>● <gray>View player balance."
+  - ""
+  - "  <gray>Plugin developed by <gradient:#00ff00:#00bcff><b>NaturalDev</b></gradient>"
+  - "<dark_gray>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 
 # Errors
 Interest-Disabled: "%prefix% <red>The interest is disabled!"
