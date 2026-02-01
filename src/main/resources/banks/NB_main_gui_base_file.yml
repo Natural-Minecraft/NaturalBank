@@ -56,7 +56,7 @@ Items:
 
   WithdrawButton1:
     Material: "PAPER"
-    CustomModelData: 10001 # Assuming custom textures for NaturalCore
+    CustomModelData: 10021 # Assuming custom textures for NaturalCore
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK TUNAI</b></gradient> <white>$500"
     Slot: 11
     Lore:
@@ -71,7 +71,7 @@ Items:
 
   WithdrawButton2:
     Material: "PAPER"
-    CustomModelData: 10001
+    CustomModelData: 10021
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK TUNAI</b></gradient> <white>25%"
     Slot: 12
     Lore:
@@ -86,7 +86,7 @@ Items:
 
   WithdrawButton3:
     Material: "PAPER"
-    CustomModelData: 10001
+    CustomModelData: 10022
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK TUNAI</b></gradient> <white>SEMUA"
     Slot: 20
     Lore:
@@ -101,7 +101,7 @@ Items:
 
   WithdrawButton4:
     Material: "PAPER"
-    CustomModelData: 10002
+    CustomModelData: 10000
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK CUSTOM</b></gradient>"
     Slot: 21
     Lore:
@@ -133,7 +133,7 @@ Items:
   Upgrade:
     Material: "NETHER_STAR"
     Displayname: "<gradient:#fbff00:#ffaa00><b>UPGRADE BANK</b></gradient>"
-    Slot: 23
+    Slot: 10131
     Lore:
       Default:
         - "<dark_gray>Tingkatkan kapasitas bank anda."
@@ -158,7 +158,7 @@ Items:
 
   DepositButton1:
     Material: "PAPER"
-    CustomModelData: 10003
+    CustomModelData: 10021
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>$500"
     Slot: 16
     Lore:
@@ -173,7 +173,7 @@ Items:
 
   DepositButton2:
     Material: "PAPER"
-    CustomModelData: 10003
+    CustomModelData: 10021
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>25%"
     Slot: 17
     Lore:
@@ -188,7 +188,7 @@ Items:
 
   DepositButton3:
     Material: "PAPER"
-    CustomModelData: 10003
+    CustomModelData: 10022
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>SEMUA"
     Slot: 26
     Lore:
@@ -203,7 +203,7 @@ Items:
 
   DepositButton4:
     Material: "PAPER"
-    CustomModelData: 10004
+    CustomModelData: 10000
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN CUSTOM</b></gradient>"
     Slot: 25
     Lore:
@@ -212,5 +212,4 @@ Items:
       - " <gradient:#00ff00:#006400>•</gradient> <gray>Metode: <white>Ketik di Chat"
       - ""
       - "<gradient:#00ff00:#006400>» Klik untuk menyimpan</gradient>"
-    Actions:
-      - "[DEPOSIT] CUSTOM"
+    Actions:     - "[DEPOSIT] CUSTOM"
