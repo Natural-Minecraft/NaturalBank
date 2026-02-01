@@ -105,8 +105,8 @@ public class NBSQL {
      */
     public static int getBankLevel(OfflinePlayer player, String bankName) {
         String level = get(player, bankName, SQLSearch.BANK_LEVEL);
-        if (level.isEmpty())
-            return 0;
+        if (level == null || level.isEmpty())
+            return 1;
 
         return Integer.parseInt(level);
     }
@@ -120,7 +120,7 @@ public class NBSQL {
      */
     public static BigDecimal getDebt(OfflinePlayer player, String bankName) {
         String debt = get(player, bankName, SQLSearch.DEBT);
-        if (debt.isEmpty())
+        if (debt == null || debt.isEmpty())
             return BigDecimal.ZERO;
 
         return new BigDecimal(debt);
@@ -135,7 +135,7 @@ public class NBSQL {
      */
     public static BigDecimal getInterest(OfflinePlayer player, String bankName) {
         String interest = get(player, bankName, SQLSearch.INTEREST);
-        if (interest.isEmpty())
+        if (interest == null || interest.isEmpty())
             return BigDecimal.ZERO;
 
         return new BigDecimal(interest);
@@ -150,7 +150,7 @@ public class NBSQL {
      */
     public static BigDecimal getMoney(OfflinePlayer player, String bankName) {
         String money = get(player, bankName, SQLSearch.MONEY);
-        if (money.isEmpty())
+        if (money == null || money.isEmpty())
             return BigDecimal.ZERO;
 
         return new BigDecimal(money);
@@ -382,15 +382,12 @@ public class NBSQL {
 
         String query = "SELECT " + columnName + " FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "'";
 
-        ResultSet set;
-        try {
-            set = connection.prepareStatement(query).executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            return set.getString(columnName);
+        try (ResultSet set = connection.prepareStatement(query).executeQuery()) {
+            if (set.next()) {
+                String result = set.getString(columnName);
+                return result == null ? "" : result;
+            }
+            return "";
         } catch (SQLException e) {
             NBLogger.Console.error(e, "Could not get data for player " + player.getName() + ".");
             return "";
@@ -422,8 +419,9 @@ public class NBSQL {
 
         String query;
 
-        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES(" + player.getUniqueId() + ", "
-                + newValue + ")";
+        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES('" + player.getUniqueId()
+                + "', '"
+                + newValue + "')";
         String set = columnName + "='" + newValue + "'";
         if (ConfigValues.isMySqlEnabled())
             query = insert + " ON DUPLICATE KEY UPDATE " + set;
