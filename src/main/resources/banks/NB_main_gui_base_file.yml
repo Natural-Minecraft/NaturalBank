@@ -100,7 +100,7 @@ Items:
       - "[WITHDRAW] 100%"
 
   WithdrawButton4:
-    Material: "WRITEABLE_BOOK"
+    Material: "WRITABLE_BOOK"
     CustomModelData: 10000
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK CUSTOM</b></gradient>"
     Slot: 21
@@ -133,7 +133,7 @@ Items:
   Upgrade:
     Material: "PAPER"
     Displayname: "<gradient:#fbff00:#ffaa00><b>UPGRADE BANK</b></gradient>"
-    Slot: 10131
+    Slot: 23
     Lore:
       Default:
         - "<dark_gray>Tingkatkan kapasitas bank anda."
@@ -157,8 +157,8 @@ Items:
       - "[UPGRADE]"
 
   DepositButton1:
-    Material: "STICK"
-    CustomModelData: 10021
+    Material: "PAPER"
+    CustomModelData: 10003
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>$500"
     Slot: 16
     Lore:
@@ -172,8 +172,8 @@ Items:
       - "[DEPOSIT] 500"
 
   DepositButton2:
-    Material: "STICK"
-    CustomModelData: 10021
+    Material: "PAPER"
+    CustomModelData: 10003
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>25%"
     Slot: 17
     Lore:
@@ -187,8 +187,8 @@ Items:
       - "[DEPOSIT] 25%"
 
   DepositButton3:
-    Material: "STICK"
-    CustomModelData: 10022
+    Material: "PAPER"
+    CustomModelData: 10003
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>SEMUA"
     Slot: 26
     Lore:
@@ -202,7 +202,7 @@ Items:
       - "[DEPOSIT] 100%"
 
   DepositButton4:
-    Material: "WRITEABLE_BOOK"
+    Material: "WRITABLE_BOOK"
     CustomModelData: 10000
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN CUSTOM</b></gradient>"
     Slot: 25
@@ -212,4 +212,5 @@ Items:
       - " <gradient:#00ff00:#006400>•</gradient> <gray>Metode: <white>Ketik di Chat"
       - ""
       - "<gradient:#00ff00:#006400>» Klik untuk menyimpan</gradient>"
-    Actions:     - "[DEPOSIT] CUSTOM"
+    Actions:
+      - "[DEPOSIT] CUSTOM"
