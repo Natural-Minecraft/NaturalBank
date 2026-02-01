@@ -243,12 +243,14 @@ public class NBSQL {
      * @return true if a record with its uuid exists, false otherwise.
      */
     public static boolean isRegistered(OfflinePlayer player, String bankName) {
-        try {
-            ResultSet set = connection
-                    .prepareStatement(
-                            "SELECT 1 FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "' LIMIT 1")
-                    .executeQuery();
-            return set.next();
+        if (connection == null)
+            return false;
+        try (java.sql.PreparedStatement pstmt = connection
+                .prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid=? LIMIT 1")) {
+            pstmt.setString(1, player.getUniqueId().toString());
+            try (ResultSet set = pstmt.executeQuery()) {
+                return set.next();
+            }
         } catch (SQLException e) {
             NBLogger.Console.error(e,
                     "Cannot check if player " + player.getName() + " is registered in the bank " + bankName + ".");
@@ -269,6 +271,8 @@ public class NBSQL {
                 : "INSERT OR IGNORE INTO %table% (uuid, name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)";
 
         for (String bank : NBEconomy.nameList()) {
+            if (connection == null)
+                return;
             try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql.replace("%table%", bank))) {
                 pstmt.setString(1, player.getUniqueId().toString());
                 pstmt.setString(2, player.getName());
@@ -359,7 +363,8 @@ public class NBSQL {
      * @return A string representing the bank level, debt, interest or money value.
      */
     private static String get(OfflinePlayer player, String bankName, SQLSearch search) {
-        if (connection == null) return "";
+        if (connection == null)
+            return "";
         String columnName;
         switch (search) {
             case BANK_LEVEL -> columnName = "bank_level";
@@ -397,7 +402,8 @@ public class NBSQL {
      * @param newValue The new value.
      */
     private static void set(OfflinePlayer player, String bankName, SQLSearch search, String newValue) {
-        if (connection == null) return;
+        if (connection == null)
+            return;
         String columnName;
         switch (search) {
             case BANK_LEVEL -> columnName = "bank_level";
