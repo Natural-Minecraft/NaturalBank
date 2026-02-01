@@ -1,7 +1,6 @@
 package id.naturalsmp.naturalbank.sql;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.economy.NBEconomy;
 import id.naturalsmp.naturalbank.utils.NBLogger;
 import id.naturalsmp.naturalbank.values.ConfigValues;
@@ -13,8 +12,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * NaturalBank MySQL system save both database and files to synchronize
@@ -276,7 +273,8 @@ public class NBSQL {
                 pstmt.setString(1, player.getUniqueId().toString());
                 pstmt.setString(2, player.getName());
                 pstmt.setInt(3, 1);
-                pstmt.setString(4, (ConfigValues.getMainGuiName().equals(bank) ? ConfigValues.getStartAmount() : "0"));
+                pstmt.setString(4,
+                        (ConfigValues.getMainGuiName().equals(bank) ? ConfigValues.getStartAmount().toString() : "0"));
                 pstmt.setString(5, "0");
                 pstmt.setString(6, "0");
                 pstmt.executeUpdate();

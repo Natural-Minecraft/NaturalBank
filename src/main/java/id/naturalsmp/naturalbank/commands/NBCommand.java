@@ -31,7 +31,7 @@ public abstract class NBCommand {
     private final Set<String> confirm = new HashSet<>();
 
     public NBCommand(FileConfiguration commandsConfig, String commandID) {
-        this(commandsConfig, commandID, null);
+        this(commandsConfig, commandID, (String) null);
     }
 
     public NBCommand(FileConfiguration commandsConfig, String commandID, String... aliases) {
