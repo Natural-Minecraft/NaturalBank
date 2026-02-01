@@ -1,6 +1,6 @@
 package id.naturalsmp.naturalbank.listeners;
 
-import id.naturalsmp.naturalbank.account.BPPlayer;
+import id.naturalsmp.naturalbank.account.NBPlayer;
 import id.naturalsmp.naturalbank.account.PlayerRegistry;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +14,7 @@ public class InventoryCloseListener implements Listener {
     public void onClose(InventoryCloseEvent e) {
         Player p = (Player) e.getPlayer();
 
-        BPPlayer player = PlayerRegistry.get(p);
+        NBPlayer player = PlayerRegistry.get(p);
         if (player == null) return;
 
         BukkitTask updating = player.getBankUpdatingTask();

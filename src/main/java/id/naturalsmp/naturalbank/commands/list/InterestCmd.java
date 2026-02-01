@@ -1,10 +1,10 @@
 package id.naturalsmp.naturalbank.commands.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Collections;
 import java.util.List;
 
-public class InterestCmd extends BPCommand {
+public class InterestCmd extends NBCommand {
 
     public InterestCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -58,16 +58,16 @@ public class InterestCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         if (!ConfigValues.isInterestEnabled()) {
-            BPMessages.sendIdentifier(s, "Interest-Disabled");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Interest-Disabled");
+            return NBCmdExecution.invalidExecution();
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                BPMessages.sendIdentifier(s, "Interest-Time", "%time%$" + BPFormatter.formatTime(NaturalBank.INSTANCE().getInterest().getInterestCooldownMillis()));
+                NBMessages.sendIdentifier(s, "Interest-Time", "%time%$" + NBFormatter.formatTime(NaturalBank.INSTANCE().getInterest().getInterestCooldownMillis()));
             }
         };
     }

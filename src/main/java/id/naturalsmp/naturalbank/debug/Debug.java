@@ -2,8 +2,8 @@ package id.naturalsmp.naturalbank.debug;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankTop.BankTopPlayer;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 
@@ -15,16 +15,16 @@ import java.util.List;
 public class Debug {
 
     public static void debugBankTop(Object debugReceiver) {
-        BPMessages.sendMessage(debugReceiver, "Simulating a banktop update:");
-        BPMessages.sendMessage(debugReceiver, " ");
+        NBMessages.sendMessage(debugReceiver, "Simulating a banktop update:");
+        NBMessages.sendMessage(debugReceiver, " ");
 
         Bukkit.getScheduler().runTaskAsynchronously(NaturalBank.INSTANCE(), () -> {
-            HashMap<String, BigDecimal> balances = BPEconomy.getAllEconomiesBankBalances();
-            BPMessages.sendMessage(debugReceiver, "|  All player balances: " + balances.size());
+            HashMap<String, BigDecimal> balances = NBEconomy.getAllEconomiesBankBalances();
+            NBMessages.sendMessage(debugReceiver, "|  All player balances: " + balances.size());
 
             List<BankTopPlayer> players = new ArrayList<>();
 
-            BPMessages.sendMessage(debugReceiver, "|  Players with 0 balance skipped.");
+            NBMessages.sendMessage(debugReceiver, "|  Players with 0 balance skipped.");
             for (String name : balances.keySet()) {
                 BigDecimal balance = balances.get(name);
                 if (balance.compareTo(BigDecimal.ZERO) <= 0) continue;
@@ -35,12 +35,12 @@ public class Debug {
 
                 players.add(bankTopPlayer);
 
-                BPMessages.sendMessage(debugReceiver, "|    Player \"" + name + "\" loaded with \"" + balance + "\" total balance.");
+                NBMessages.sendMessage(debugReceiver, "|    Player \"" + name + "\" loaded with \"" + balance + "\" total balance.");
             }
 
-            BPMessages.sendMessage(debugReceiver, "|  BankTopPlayer instances loaded: " + players.size());
-            BPMessages.sendMessage(debugReceiver, " ");
-            BPMessages.sendMessage(debugReceiver, "|  Sorting the first " + ConfigValues.getBankTopSize() + " players with the highest balance.");
+            NBMessages.sendMessage(debugReceiver, "|  BankTopPlayer instances loaded: " + players.size());
+            NBMessages.sendMessage(debugReceiver, " ");
+            NBMessages.sendMessage(debugReceiver, "|  Sorting the first " + ConfigValues.getBankTopSize() + " players with the highest balance.");
             for (int i = 1; i <= ConfigValues.getBankTopSize(); i++) {
                 BankTopPlayer highestPlayerBal = players.getFirst();
 
@@ -49,11 +49,11 @@ public class Debug {
                         highestPlayerBal = player;
 
                 players.remove(highestPlayerBal);
-                BPMessages.sendMessage(debugReceiver, "|    BankTop Position #" + i + ": " + highestPlayerBal.getName() + " with " + highestPlayerBal.getBalance() + " balance.");
+                NBMessages.sendMessage(debugReceiver, "|    BankTop Position #" + i + ": " + highestPlayerBal.getName() + " with " + highestPlayerBal.getBalance() + " balance.");
             }
 
-            BPMessages.sendMessage(debugReceiver, " ");
-            BPMessages.sendMessage(debugReceiver, "BankTop simulation ended.");
+            NBMessages.sendMessage(debugReceiver, " ");
+            NBMessages.sendMessage(debugReceiver, "BankTop simulation ended.");
         });
     }
 }

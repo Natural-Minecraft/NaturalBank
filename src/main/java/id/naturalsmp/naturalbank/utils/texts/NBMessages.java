@@ -2,7 +2,7 @@ package id.naturalsmp.naturalbank.utils.texts;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.utils.BPLogger;
+import id.naturalsmp.naturalbank.utils.NBLogger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class BPMessages {
+public class NBMessages {
 
     public static final String DEFAULT_GRADIENT = "<gradient:green:blue:green>";
 
@@ -24,8 +24,8 @@ public class BPMessages {
     /**
      * Send the desired message to the specified receiver.
      *
-     * @param receiver   The receiver (Player or CommandSender).
-     * @param text The text.
+     * @param receiver The receiver (Player or CommandSender).
+     * @param text     The text.
      */
     public static void sendMessage(Object receiver, String text) {
         sendMessage(receiver, text, null);
@@ -34,14 +34,16 @@ public class BPMessages {
     /**
      * Send the desired message to the specified receiver.
      *
-     * @param receiver   The receiver (Player or CommandSender).
-     * @param text The text.
-     * @param replacers  A list of possible replacements.
+     * @param receiver  The receiver (Player or CommandSender).
+     * @param text      The text.
+     * @param replacers A list of possible replacements.
      */
     public static void sendMessage(Object receiver, String text, Object... replacers) {
-        if (receiver == null || text == null || text.isEmpty()) return;
+        if (receiver == null || text == null || text.isEmpty())
+            return;
 
-        for (String message : getReplacedMessages(text, false, replacers)) send(receiver, message);
+        for (String message : getReplacedMessages(text, false, replacers))
+            send(receiver, message);
     }
 
     /**
@@ -62,21 +64,23 @@ public class BPMessages {
      * @param replacers  A list of possible replacements.
      */
     public static void sendIdentifier(Object receiver, String identifier, Object... replacers) {
-        if (receiver == null || identifier == null || identifier.isEmpty()) return;
+        if (receiver == null || identifier == null || identifier.isEmpty())
+            return;
 
         if (alertMissingMessages && !messages.containsKey(identifier)) {
-                sendMessage(
-                        receiver,
-                        "%prefix% <red>The message \"" + identifier + "\" is missing in the messages file!"
-                );
+            sendMessage(
+                    receiver,
+                    "%prefix% <red>The message \"" + identifier + "\" is missing in the messages file!");
             return;
         }
 
-        for (String message : getReplacedMessages(identifier, true, replacers)) send(receiver, message);
+        for (String message : getReplacedMessages(identifier, true, replacers))
+            send(receiver, message);
     }
 
     /**
-     * Get a list of all messages from the identifier, with all the replacement applied.
+     * Get a list of all messages from the identifier, with all the replacement
+     * applied.
      * The replacer format is: [oldValue$newValue]
      *
      * @param identifier       The message identifier.
@@ -86,22 +90,28 @@ public class BPMessages {
      */
     public static List<String> getReplacedMessages(String identifier, boolean searchInMessages, Object... replacers) {
         List<String> messagesToSend = new ArrayList<>();
-        if (searchInMessages) messagesToSend.addAll(messages.get(identifier));
-        else messagesToSend.add(DEFAULT_GRADIENT + identifier);
+        if (searchInMessages)
+            messagesToSend.addAll(messages.get(identifier));
+        else
+            messagesToSend.add(DEFAULT_GRADIENT + identifier);
 
         List<String> finalMessages = new ArrayList<>();
         for (String message : messagesToSend) {
             if (replacers != null) {
                 for (Object object : replacers) {
-                    if (object == null) continue;
+                    if (object == null)
+                        continue;
                     List<String> possibleReplacers = new ArrayList<>();
 
-                    if (!(object instanceof Collection)) possibleReplacers.add(object.toString());
-                    else for (Object collectionObject : ((Collection<?>) object).toArray())
-                        possibleReplacers.add(collectionObject.toString());
+                    if (!(object instanceof Collection))
+                        possibleReplacers.add(object.toString());
+                    else
+                        for (Object collectionObject : ((Collection<?>) object).toArray())
+                            possibleReplacers.add(collectionObject.toString());
 
                     for (String replacer : possibleReplacers) {
-                        if (!replacer.contains("$")) continue;
+                        if (!replacer.contains("$"))
+                            continue;
 
                         String[] split = replacer.split("\\$");
                         String target = split[0], replacement = split[1];
@@ -109,7 +119,8 @@ public class BPMessages {
                     }
                 }
             }
-            if (!message.isEmpty()) finalMessages.add(message);
+            if (!message.isEmpty())
+                finalMessages.add(message);
         }
         return finalMessages;
     }
@@ -123,16 +134,18 @@ public class BPMessages {
 
             if (configMessages.isEmpty()) {
                 String singleMessage = config.getString(identifier);
-                if (singleMessage != null && !singleMessage.isEmpty()) configMessages.add(singleMessage);
+                if (singleMessage != null && !singleMessage.isEmpty())
+                    configMessages.add(singleMessage);
             }
 
             messages.put(identifier, configMessages);
         }
 
-        if (!messages.containsKey("Prefix")) messagesPrefix = BPChat.PREFIX;
+        if (!messages.containsKey("Prefix"))
+            messagesPrefix = NBChat.PREFIX;
         else {
             List<String> prefixes = messages.get("Prefix");
-            messagesPrefix = prefixes.isEmpty() ? BPChat.PREFIX : prefixes.getFirst();
+            messagesPrefix = prefixes.isEmpty() ? NBChat.PREFIX : prefixes.getFirst();
         }
 
         alertMissingMessages = config.getBoolean("Enable-Missing-Message-Alert");
@@ -151,16 +164,17 @@ public class BPMessages {
         if (receiver instanceof Player player) {
             if (NaturalBank.INSTANCE().isPlaceholderApiHooked())
                 message = PlaceholderAPI.setPlaceholders(player, message);
-            player.sendMessage(BPChat.color(message));
+            player.sendMessage(NBChat.color(message));
             return;
         }
 
         if (receiver instanceof CommandSender sender) {
-            sender.sendMessage(BPChat.color(message));
+            sender.sendMessage(NBChat.color(message));
             return;
         }
 
-        BPLogger.Console.error("Could not send message because receiver is neither a Player or CommandSender: " + receiver.toString());
+        NBLogger.Console.error(
+                "Could not send message because receiver is neither a Player or CommandSender: " + receiver.toString());
     }
 
     /**

@@ -1,10 +1,10 @@
 package id.naturalsmp.naturalbank.bankTop;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.managers.BPTaskManager;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.managers.NBTaskManager;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -16,10 +16,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class BPBankTop {
+public class NBBankTop {
 
     /**
-     * A hashmap containing as Key the bank top position (always starting from 1 and increasing) and Value the BankTopPlayer object.
+     * A hashmap containing as Key the bank top position (always starting from 1 and
+     * increasing) and Value the BankTopPlayer object.
      */
     private static final HashMap<Integer, BankTopPlayer> bankTop = new HashMap<>();
 
@@ -28,12 +29,13 @@ public class BPBankTop {
      */
     public static void updateBankTop() {
         Bukkit.getScheduler().runTaskAsynchronously(NaturalBank.INSTANCE(), () -> {
-            HashMap<String, BigDecimal> balances = BPEconomy.getAllEconomiesBankBalances();
+            HashMap<String, BigDecimal> balances = NBEconomy.getAllEconomiesBankBalances();
             List<BankTopPlayer> players = new ArrayList<>();
 
             for (String name : balances.keySet()) {
                 BigDecimal balance = balances.get(name);
-                if (balance.compareTo(BigDecimal.ZERO) <= 0) continue;
+                if (balance.compareTo(BigDecimal.ZERO) <= 0)
+                    continue;
 
                 BankTopPlayer bankTopPlayer = new BankTopPlayer();
                 bankTopPlayer.setName(name);
@@ -54,12 +56,14 @@ public class BPBankTop {
                 bankTop.put(i, highestPlayerBal);
             }
 
-            if (!ConfigValues.isBankTopUpdateBroadcastEnabled()) return;
+            if (!ConfigValues.isBankTopUpdateBroadcastEnabled())
+                return;
 
             String message = ConfigValues.getBankTopUpdateBroadcastMessage();
             if (!ConfigValues.isBankTopUpdateBroadcastSilentConsole())
-                BPLogger.Console.log(BPMessages.applyMessagesPrefix(message));
-            for (Player p : Bukkit.getOnlinePlayers()) BPMessages.sendMessage(p, message);
+                NBLogger.Console.log(NBMessages.applyMessagesPrefix(message));
+            for (Player p : Bukkit.getOnlinePlayers())
+                NBMessages.sendMessage(p, message);
         });
     }
 
@@ -68,7 +72,8 @@ public class BPBankTop {
      */
     public static void restartBankTopUpdateTask() {
         long delay = ConfigValues.getUpdateBankTopDelay();
-        BPTaskManager.setTask(BPTaskManager.BANKTOP_BROADCAST_TASK, Bukkit.getScheduler().runTaskTimer(NaturalBank.INSTANCE(), BPBankTop::updateBankTop, delay, delay));
+        NBTaskManager.setTask(NBTaskManager.BANKTOP_BROADCAST_TASK,
+                Bukkit.getScheduler().runTaskTimer(NaturalBank.INSTANCE(), NBBankTop::updateBankTop, delay, delay));
     }
 
     /**
@@ -112,7 +117,8 @@ public class BPBankTop {
     public static int getPlayerBankTopPosition(String name) {
         for (int i = 1; i <= bankTop.size(); i++) {
             BankTopPlayer p = bankTop.get(i);
-            if (p != null && p.getName() != null && p.getName().equals(name)) return i;
+            if (p != null && p.getName() != null && p.getName().equals(name))
+                return i;
         }
         return -1;
     }

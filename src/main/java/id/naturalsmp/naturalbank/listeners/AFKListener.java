@@ -1,7 +1,7 @@
 package id.naturalsmp.naturalbank.listeners;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.utils.BPUtils;
+import id.naturalsmp.naturalbank.utils.NBUtils;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +23,7 @@ public class AFKListener implements Listener {
         if (!ConfigValues.isIgnoringAfkPlayers() || ConfigValues.isUsingEssentialsXAFK()) return;
 
         Player p = e.getPlayer();
-        long time = System.currentTimeMillis() + BPUtils.minutesInMilliseconds(ConfigValues.getAfkPlayersTime());
+        long time = System.currentTimeMillis() + NBUtils.minutesInMilliseconds(ConfigValues.getAfkPlayersTime());
         plugin.getAfkManager().getAfkCooldown().put(p.getUniqueId(), time);
     }
 
@@ -32,7 +32,7 @@ public class AFKListener implements Listener {
         if (!ConfigValues.isIgnoringAfkPlayers() || ConfigValues.isUsingEssentialsXAFK()) return;
 
         Player p = e.getPlayer();
-        long time = System.currentTimeMillis() + BPUtils.minutesInMilliseconds(ConfigValues.getAfkPlayersTime());
+        long time = System.currentTimeMillis() + NBUtils.minutesInMilliseconds(ConfigValues.getAfkPlayersTime());
         plugin.getAfkManager().getAfkCooldown().put(p.getUniqueId(), time);
     }
 
@@ -41,7 +41,7 @@ public class AFKListener implements Listener {
         if (!ConfigValues.isIgnoringAfkPlayers() || ConfigValues.isUsingEssentialsXAFK()) return;
 
         Player p = e.getPlayer();
-        long time = System.currentTimeMillis() + BPUtils.minutesInMilliseconds(ConfigValues.getAfkPlayersTime());
+        long time = System.currentTimeMillis() + NBUtils.minutesInMilliseconds(ConfigValues.getAfkPlayersTime());
         plugin.getAfkManager().getAfkCooldown().put(p.getUniqueId(), time);
     }
 }

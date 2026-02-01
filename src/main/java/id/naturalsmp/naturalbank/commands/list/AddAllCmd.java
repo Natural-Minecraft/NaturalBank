@@ -2,12 +2,12 @@ package id.naturalsmp.naturalbank.commands.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class AddAllCmd extends BPCommand {
+public class AddAllCmd extends NBCommand {
 
     public AddAllCmd(FileConfiguration commandsConfig, String commandID, String... aliases) {
         super(commandsConfig, commandID, aliases);
@@ -41,7 +41,8 @@ public class AddAllCmd extends BPCommand {
 
     @Override
     public List<String> defaultConfirmMessage() {
-        return Collections.singletonList("%prefix% Type the command again within 5 seconds to add to every online player (%server_online% players) the specified amount.");
+        return Collections.singletonList(
+                "%prefix% Type the command again within 5 seconds to add to every online player (%server_online% players) the specified amount.");
     }
 
     @Override
@@ -65,18 +66,21 @@ public class AddAllCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         String amount = args[1];
-        if (BPUtils.isInvalidNumber(amount, s)) return BPCmdExecution.invalidExecution();
+        if (NBUtils.isInvalidNumber(amount, s))
+            return NBCmdExecution.invalidExecution();
 
         String bankName = getPossibleBank(args, 2);
-        if (!BankUtils.exist(bankName, s)) return BPCmdExecution.invalidExecution();
+        if (!BankUtils.exist(bankName, s))
+            return NBCmdExecution.invalidExecution();
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                BPMessages.sendMessage(s, "%prefix% Successfully added <white>" + amount + "</white> money to all online players!");
-                addAll(Bukkit.getOnlinePlayers(), new BigDecimal(amount), BPEconomy.get(bankName));
+                NBMessages.sendMessage(s,
+                        "%prefix% Successfully added <white>" + amount + "</white> money to all online players!");
+                addAll(Bukkit.getOnlinePlayers(), new BigDecimal(amount), NBEconomy.get(bankName));
             }
         };
     }
@@ -84,10 +88,10 @@ public class AddAllCmd extends BPCommand {
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
         if (args.length == 2)
-            return BPArgs.getArgs(args, "1", "2", "3");
+            return NBArgs.getArgs(args, "1", "2", "3");
 
         if (args.length == 3)
-            return BPArgs.getBanks(args);
+            return NBArgs.getBanks(args);
         return null;
     }
 
@@ -99,11 +103,12 @@ public class AddAllCmd extends BPCommand {
      * @param amount        The selected amount to add.
      * @param economy       The bank economy where to add the money.
      */
-    private void addAll(Collection<? extends Player> onlinePlayers, BigDecimal amount, BPEconomy economy) {
+    private void addAll(Collection<? extends Player> onlinePlayers, BigDecimal amount, NBEconomy economy) {
         List<Player> copy = new ArrayList<>(onlinePlayers);
 
         for (int i = 0; i < 50; i++) {
-            if (copy.isEmpty()) return;
+            if (copy.isEmpty())
+                return;
             economy.addBankBalance(copy.removeFirst(), amount);
         }
 

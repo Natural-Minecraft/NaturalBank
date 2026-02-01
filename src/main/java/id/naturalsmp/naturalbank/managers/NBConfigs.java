@@ -1,7 +1,7 @@
 package id.naturalsmp.naturalbank.managers;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.utils.BPLogger;
+import id.naturalsmp.naturalbank.utils.NBLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.FileUtil;
@@ -13,14 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-public class BPConfigs {
+public class NBConfigs {
 
     private static boolean updated = false;
     private boolean autoUpdateFiles = true;
 
     private final NaturalBank plugin;
 
-    public BPConfigs(NaturalBank plugin) {
+    public NBConfigs(NaturalBank plugin) {
         this.plugin = plugin;
     }
 
@@ -42,7 +42,7 @@ public class BPConfigs {
                 file.getParentFile().mkdir();
                 file.createNewFile();
             } catch (IOException e) {
-                BPLogger.Console.error(e, "Failed to to create the saves.yml file! ");
+                NBLogger.Console.error(e, "Failed to to create the saves.yml file! ");
             }
             updated = false;
         }
@@ -59,18 +59,22 @@ public class BPConfigs {
         try {
             savesConfig.save(file);
         } catch (IOException e) {
-            BPLogger.Console.error(e, "Could not save \"saves.yml\" file!");
+            NBLogger.Console.error(e, "Could not save \"saves.yml\" file!");
         }
     }
 
     /**
-     * Initialize the selected file, create a new from origin if not exist, or check if the
-     * plugin is updated before going through the setup phase and adding possible missing paths.
+     * Initialize the selected file, create a new from origin if not exist, or check
+     * if the
+     * plugin is updated before going through the setup phase and adding possible
+     * missing paths.
+     * 
      * @param fileName The file nane.
      */
     public void checkAndCreateFile(String fileName) {
         boolean alreadyExist = getFile(fileName).exists();
-        if (!alreadyExist || (!updated && autoUpdateFiles)) setupFile(fileName, alreadyExist);
+        if (!alreadyExist || (!updated && autoUpdateFiles))
+            setupFile(fileName, alreadyExist);
     }
 
     public File getFile(String path) {
@@ -87,15 +91,17 @@ public class BPConfigs {
         try {
             config.load(file);
         } catch (Exception e) {
-            BPLogger.Console.error(e, "Could not load configuration file \"" + file + "\".");
+            NBLogger.Console.error(e, "Could not load configuration file \"" + file + "\".");
         }
         return config;
     }
 
     /**
-     * Initialize an existing file from the resource folder and add possible missing paths.
+     * Initialize an existing file from the resource folder and add possible missing
+     * paths.
+     * 
      * @param fileName The file name.
-     * @param backup Choose if creating a backup of the previous file or not.
+     * @param backup   Choose if creating a backup of the previous file or not.
      */
     public void setupFile(String fileName, boolean backup) {
         File folderFile = getFile(fileName);
@@ -127,7 +133,7 @@ public class BPConfigs {
             fileToScan = File.createTempFile(fileName, null);
             fileToScan.deleteOnExit();
         } catch (IOException e) {
-            BPLogger.Console.warn(e, "Could not load \"" + fileName + "\" file!");
+            NBLogger.Console.warn(e, "Could not load \"" + fileName + "\" file!");
             return;
         }
 
@@ -135,7 +141,7 @@ public class BPConfigs {
         try {
             out = new FileOutputStream(fileToScan);
         } catch (FileNotFoundException e) {
-            BPLogger.Console.warn(e, "Could not load \"" + fileName + "\" file!");
+            NBLogger.Console.warn(e, "Could not load \"" + fileName + "\" file!");
             return;
         }
         copyStream(plugin.getResource(fileName), out);
@@ -144,14 +150,16 @@ public class BPConfigs {
         try {
             scanner = new Scanner(fileToScan, "UTF-8");
         } catch (FileNotFoundException e) {
-            BPLogger.Console.warn(e, "Could not find \"" + fileName + "\" file!");
+            NBLogger.Console.warn(e, "Could not find \"" + fileName + "\" file!");
             return;
         }
-        while (scanner.hasNext()) fileAsList.add(scanner.nextLine());
+        while (scanner.hasNext())
+            fileAsList.add(scanner.nextLine());
 
         for (int i = 0; i < fileAsList.size(); i++) {
             String line = fileAsList.get(i);
-            if (isListContent(line)) continue;
+            if (isListContent(line))
+                continue;
 
             if (!line.isEmpty() && !isComment(line) && line.contains(":")) {
                 String[] split = line.split(":");
@@ -168,16 +176,19 @@ public class BPConfigs {
             positions++;
         }
 
-        YamlConfiguration folderConfig = YamlConfiguration.loadConfiguration(folderFile), jarConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(fileName), StandardCharsets.UTF_8));
+        YamlConfiguration folderConfig = YamlConfiguration.loadConfiguration(folderFile), jarConfig = YamlConfiguration
+                .loadConfiguration(new InputStreamReader(plugin.getResource(fileName), StandardCharsets.UTF_8));
 
         boolean hasChanges = false;
         for (String key : jarConfig.getKeys(true)) {
-            if (folderConfig.get(key) != null) continue;
+            if (folderConfig.get(key) != null)
+                continue;
 
             folderConfig.set(key, jarConfig.get(key));
             hasChanges = true;
         }
-        if (!hasChanges) return;
+        if (!hasChanges)
+            return;
 
         StringBuilder builder = new StringBuilder();
         HashMap<Integer, String> headers = new HashMap<>();
@@ -193,29 +204,36 @@ public class BPConfigs {
 
             int spaces = 0;
             for (char c : line.toCharArray()) {
-                if (c == ' ') spaces++;
-                else break;
+                if (c == ' ')
+                    spaces++;
+                else
+                    break;
             }
 
             int point = spaces / 2;
             String identifier = line.substring(spaces).split(":")[0];
-            if (fileLine.isHeader()) headers.put(point, identifier);
+            if (fileLine.isHeader())
+                headers.put(point, identifier);
 
             if (fileLine.isValue()) {
                 StringBuilder path = new StringBuilder();
 
                 for (int i = 0; i <= point - 1; i++) {
                     String header = headers.get(i);
-                    if (header != null) path.append(header).append(".");
+                    if (header != null)
+                        path.append(header).append(".");
                 }
                 path.append(identifier);
 
-                for (int i = 0; i < spaces; i++) builder.append(" ");
+                for (int i = 0; i < spaces; i++)
+                    builder.append(" ");
                 builder.append(identifier).append(": ");
 
                 Object value = folderConfig.get(path.toString());
-                if (value instanceof String) builder.append("\"").append(value).append("\"\n");
-                else builder.append(value).append("\n");
+                if (value instanceof String)
+                    builder.append("\"").append(value).append("\"\n");
+                else
+                    builder.append(value).append("\n");
                 continue;
             }
 
@@ -224,20 +242,24 @@ public class BPConfigs {
 
                 for (int i = 0; i <= point - 1; i++) {
                     String header = headers.get(i);
-                    if (header != null) path.append(header).append(".");
+                    if (header != null)
+                        path.append(header).append(".");
                 }
                 path.append(identifier);
 
-                for (int i = 0; i < spaces; i++) builder.append(" ");
+                for (int i = 0; i < spaces; i++)
+                    builder.append(" ");
                 builder.append(identifier).append(":");
 
                 List<String> value = folderConfig.getStringList(path.toString());
 
-                if (value.isEmpty()) builder.append(" []\n");
+                if (value.isEmpty())
+                    builder.append(" []\n");
                 else {
                     builder.append("\n");
                     for (String listLine : value) {
-                        for (int i = 0; i < spaces; i++) builder.append(" ");
+                        for (int i = 0; i < spaces; i++)
+                            builder.append(" ");
                         builder.append("- \"").append(listLine).append("\"\n");
                     }
                 }
@@ -250,14 +272,15 @@ public class BPConfigs {
     }
 
     public void recreateFile(File file, String fileBuilder) {
-        if (fileBuilder == null) return;
+        if (fileBuilder == null)
+            return;
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
             writer.write(fileBuilder);
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            BPLogger.Console.error(e, e.getMessage());
+            NBLogger.Console.error(e, e.getMessage());
         }
     }
 
@@ -280,7 +303,7 @@ public class BPConfigs {
             while ((read = in.read(buffer)) != -1)
                 out.write(buffer, 0, read);
         } catch (Exception e) {
-            BPLogger.Console.warn(e, "Could not copy stream!");
+            NBLogger.Console.warn(e, "Could not copy stream!");
         }
     }
 

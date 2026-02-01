@@ -74,9 +74,9 @@ public class BankRegistry {
     }
 
     private static void generateMainBankFile(File file) {
-        NaturalBank.INSTANCE().saveResource("banks/NaturalBank_main_gui_base_file.yml", false);
+        NaturalBank.INSTANCE().saveResource("banks/NB_main_gui_base_file.yml", false);
         File baseBankFile = new File(NaturalBank.INSTANCE().getDataFolder(),
-                "banks/NaturalBank_main_gui_base_file.yml");
+                "banks/NB_main_gui_base_file.yml");
         baseBankFile.renameTo(file);
     }
 }

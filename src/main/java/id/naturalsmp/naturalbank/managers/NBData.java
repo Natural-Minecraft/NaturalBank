@@ -1,69 +1,69 @@
 package id.naturalsmp.naturalbank.managers;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.account.BPPlayer;
+import id.naturalsmp.naturalbank.account.NBPlayer;
 import id.naturalsmp.naturalbank.account.PlayerRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
-import id.naturalsmp.naturalbank.bankTop.BPBankTop;
-import id.naturalsmp.naturalbank.commands.BPCmdRegistry;
+import id.naturalsmp.naturalbank.bankTop.NBBankTop;
+import id.naturalsmp.naturalbank.commands.NBCmdRegistry;
 import id.naturalsmp.naturalbank.commands.BankTopCmd;
 import id.naturalsmp.naturalbank.commands.MainCmd;
 import id.naturalsmp.naturalbank.economy.EconomyUtils;
 import id.naturalsmp.naturalbank.external.UpdateChecker;
 import id.naturalsmp.naturalbank.external.bStats;
-import id.naturalsmp.naturalbank.interest.BPInterest;
+import id.naturalsmp.naturalbank.interest.NBInterest;
 import id.naturalsmp.naturalbank.listeners.AFKListener;
-import id.naturalsmp.naturalbank.listeners.BPTransactionListener;
+import id.naturalsmp.naturalbank.listeners.NBTransactionListener;
 import id.naturalsmp.naturalbank.listeners.InventoryCloseListener;
 import id.naturalsmp.naturalbank.listeners.PlayerServerListener;
 import id.naturalsmp.naturalbank.listeners.bankListener.*;
 import id.naturalsmp.naturalbank.listeners.playerChat.*;
-import id.naturalsmp.naturalbank.loanSystem.BPLoanRegistry;
-import id.naturalsmp.naturalbank.sql.BPSQL;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.texts.BPChat;
+import id.naturalsmp.naturalbank.loanSystem.NBLoanRegistry;
+import id.naturalsmp.naturalbank.sql.NBSQL;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.texts.NBChat;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import id.naturalsmp.naturalbank.values.MessageValues;
 import id.naturalsmp.naturalbank.values.MultipleBanksValues;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
-public class BPData {
+public class NBData {
 
     private boolean start = true;
 
     private final NaturalBank plugin;
 
-    public BPData(NaturalBank plugin) {
+    public NBData(NaturalBank plugin) {
         this.plugin = plugin;
     }
 
     public void setupPlugin() {
         long startTime = System.currentTimeMillis();
 
-        BPLogger.Console.log("");
-        BPLogger.Console.log("    " + BPChat.PREFIX + " <green>Enabling plugin...");
-        BPLogger.Console
+        NBLogger.Console.log("");
+        NBLogger.Console.log("    " + NBChat.PREFIX + " <green>Enabling plugin...");
+        NBLogger.Console
                 .log("    <green>Running on version <white>" + plugin.getDescription().getVersion() + "</white>!");
-        BPLogger.Console.log("    <green>Detected server version: <white>" + NaturalBank.getServerVersion());
-        BPLogger.Console.log("    <green>Setting up the plugin...");
-        BPLogger.Console.log("");
+        NBLogger.Console.log("    <green>Detected server version: <white>" + NaturalBank.getServerVersion());
+        NBLogger.Console.log("    <green>Setting up the plugin...");
+        NBLogger.Console.log("");
 
         new bStats(plugin);
         plugin.getConfigs().setupConfigs();
         reloadPlugin();
 
-        BPLoanRegistry.loadAllLoans();
+        NBLoanRegistry.loadAllLoans();
 
         registerEvents();
         setupCommands();
 
-        BPLogger.Console
+        NBLogger.Console
                 .log("    <green>Done! <dark_gray>(<aqua>" + (System.currentTimeMillis() - startTime) + "ms</aqua>)");
-        BPLogger.Console.log("");
+        NBLogger.Console.log("");
 
         if (ConfigValues.isBankTopEnabled())
-            BPBankTop.updateBankTop();
+            NBBankTop.updateBankTop();
         start = false;
     }
 
@@ -71,11 +71,11 @@ public class BPData {
         EconomyUtils.saveEveryone(false);
         if (ConfigValues.isInterestEnabled())
             plugin.getInterest().saveInterest();
-        BPLoanRegistry.saveAllLoans();
+        NBLoanRegistry.saveAllLoans();
 
-        BPLogger.Console.log("");
-        BPLogger.Console.log("    " + BPChat.PREFIX + " <red>Plugin successfully disabled!");
-        BPLogger.Console.log("");
+        NBLogger.Console.log("");
+        NBLogger.Console.log("    " + NBChat.PREFIX + " <red>Plugin successfully disabled!");
+        NBLogger.Console.log("");
     }
 
     public boolean reloadPlugin() {
@@ -85,19 +85,19 @@ public class BPData {
             MessageValues.setupValues();
             MultipleBanksValues.setupValues();
 
-            BPCmdRegistry.registerPluginCommands();
-            BPLogger.LogsFile.setupLoggerFile();
+            NBCmdRegistry.registerPluginCommands();
+            NBLogger.LogsFile.setupLoggerFile();
 
             if (ConfigValues.isIgnoringAfkPlayers())
                 plugin.getAfkManager().startCountdown();
-            if (ConfigValues.isBankTopEnabled() && !BPTaskManager.contains(BPTaskManager.BANKTOP_BROADCAST_TASK))
-                BPBankTop.restartBankTopUpdateTask();
+            if (ConfigValues.isBankTopEnabled() && !NBTaskManager.contains(NBTaskManager.BANKTOP_BROADCAST_TASK))
+                NBBankTop.restartBankTopUpdateTask();
 
-            BPAFK BPAFK = plugin.getAfkManager();
-            if (!BPAFK.isPlayerCountdownActive())
-                BPAFK.startCountdown();
+            NBAFK nbAfk = plugin.getAfkManager();
+            if (!nbAfk.isPlayerCountdownActive())
+                nbAfk.startCountdown();
 
-            BPInterest interest = plugin.getInterest();
+            NBInterest interest = plugin.getInterest();
             if (ConfigValues.isInterestEnabled() && interest.wasDisabled())
                 interest.restartInterest(start);
 
@@ -105,24 +105,24 @@ public class BPData {
             // tables.
             BankRegistry.loadBanks();
 
-            BPSQL.disconnect();
+            NBSQL.disconnect();
             if (ConfigValues.isMySqlEnabled())
-                BPSQL.MySQL.connect();
+                NBSQL.MySQL.connect();
             else
-                BPSQL.SQLite.connect();
+                NBSQL.SQLite.connect();
 
             // Do this check to avoid restarting the saving interval if another one is
             // finishing.
-            if (!BPTaskManager.contains(BPTaskManager.MONEY_SAVING_TASK))
+            if (!NBTaskManager.contains(NBTaskManager.MONEY_SAVING_TASK))
                 EconomyUtils.restartSavingInterval();
 
             Bukkit.getOnlinePlayers().forEach(p -> {
-                BPPlayer player = PlayerRegistry.get(p);
+                NBPlayer player = PlayerRegistry.get(p);
                 if (player != null && player.getOpenedBank() != null)
                     p.closeInventory();
             });
         } catch (Exception e) {
-            BPLogger.Console.warn(e, "Something went wrong while trying to reload the plugin.");
+            NBLogger.Console.warn(e, "Something went wrong while trying to reload the plugin.");
             success = false;
         }
         return success;
@@ -135,7 +135,7 @@ public class BPData {
         plManager.registerEvents(new UpdateChecker(), plugin);
         plManager.registerEvents(new AFKListener(plugin), plugin);
         plManager.registerEvents(new InventoryCloseListener(), plugin);
-        plManager.registerEvents(new BPTransactionListener(), plugin);
+        plManager.registerEvents(new NBTransactionListener(), plugin);
 
         String chatPriority = ConfigValues.getPlayerChatPriority();
         if (chatPriority == null)

@@ -1,11 +1,11 @@
 package id.naturalsmp.naturalbank.placeholders.list;
 
-import id.naturalsmp.naturalbank.bankTop.BPBankTop;
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
+import id.naturalsmp.naturalbank.bankTop.NBBankTop;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholder;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 
-public class BankTopNamePlaceholder extends BPPlaceholder {
+public class BankTopNamePlaceholder extends NBPlaceholder {
 
     @Override
     public String getIdentifier() {
@@ -14,7 +14,8 @@ public class BankTopNamePlaceholder extends BPPlaceholder {
 
     @Override
     public String getPlaceholder(Player p, String target, String identifier) {
-        if (!ConfigValues.isBankTopEnabled()) return bankTopNotEnabled;
+        if (!ConfigValues.isBankTopEnabled())
+            return bankTopNotEnabled;
 
         String number = identifier.replace("banktop_name_", "");
         int position;
@@ -27,6 +28,6 @@ public class BankTopNamePlaceholder extends BPPlaceholder {
         if (position > ConfigValues.getBankTopSize())
             return "The banktop limit is " + ConfigValues.getBankTopSize() + "!";
 
-        return BPBankTop.getBankTopNamePlayer(position);
+        return NBBankTop.getBankTopNamePlayer(position);
     }
 }

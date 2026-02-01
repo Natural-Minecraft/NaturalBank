@@ -1,8 +1,8 @@
 package id.naturalsmp.naturalbank.bankSystem;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPLogger;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBLogger;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import id.naturalsmp.naturalbank.values.MultipleBanksValues;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -27,7 +27,7 @@ public class Bank {
     public static final String FILLER_IDENTIFIER = "Filler";
 
     private final String identifier;
-    private final BPEconomy bankEconomy;
+    private final NBEconomy bankEconomy;
     private final BankGui bankGui;
     // HashMap to keep track of the bank levels.
     private final HashMap<Integer, BankLevel> bankLevels = new HashMap<>();
@@ -37,7 +37,7 @@ public class Bank {
 
     public Bank(String identifier) {
         this.identifier = identifier;
-        this.bankEconomy = new BPEconomy(this);
+        this.bankEconomy = new NBEconomy(this);
         this.bankGui = new BankGui(this);
     }
 
@@ -45,7 +45,7 @@ public class Bank {
         return identifier;
     }
 
-    public BPEconomy getBankEconomy() {
+    public NBEconomy getBankEconomy() {
         return bankEconomy;
     }
 
@@ -78,7 +78,8 @@ public class Bank {
     }
 
     public void loadBankProperties() {
-        loadBankProperties(new File(NaturalBank.INSTANCE().getDataFolder(), "banks" + File.separator + identifier + ".yml"));
+        loadBankProperties(
+                new File(NaturalBank.INSTANCE().getDataFolder(), "banks" + File.separator + identifier + ".yml"));
     }
 
     /**
@@ -91,7 +92,8 @@ public class Bank {
         try {
             config.load(file);
         } catch (IOException | InvalidConfigurationException e) {
-            BPLogger.Console.warn(e, "Could not load \"" + identifier + "\" bank properties because it contains an invalid configuration!");
+            NBLogger.Console.warn(e, "Could not load \"" + identifier
+                    + "\" bank properties because it contains an invalid configuration!");
             return;
         }
 
@@ -107,18 +109,20 @@ public class Bank {
                 try {
                     level = Integer.parseInt(key);
                 } catch (NumberFormatException e) {
-                    BPLogger.Console.warn("The bank \"" + identifier + "\" contains an invalid level number! (" + key + ")");
+                    NBLogger.Console
+                            .warn("The bank \"" + identifier + "\" contains an invalid level number! (" + key + ")");
                     continue;
                 }
 
                 ConfigurationSection levelSection = levels.getConfigurationSection(key);
-                if (levelSection != null) bankLevels.put(level, BankUtils.buildBankLevel(levelSection, identifier));
+                if (levelSection != null)
+                    bankLevels.put(level, BankUtils.buildBankLevel(levelSection, identifier));
             }
         }
 
         bankGui.getBankItems().clear();
         if (!ConfigValues.isGuiModuleEnabled()) {
-            bankGui.setTitle(BPItems.DISPLAYNAME_NOT_FOUND);
+            bankGui.setTitle(NBItems.DISPLAYNAME_NOT_FOUND);
             bankGui.setSize(0);
             bankGui.setUpdateDelay(0);
             bankGui.setAvailableBankListItem(null);
@@ -133,9 +137,10 @@ public class Bank {
         if (items != null) {
             for (String itemName : items.getKeys(false)) {
                 ConfigurationSection itemSection = items.getConfigurationSection(itemName);
-                if (itemSection == null) continue;
+                if (itemSection == null)
+                    continue;
 
-                BankGui.BPGuiItem bankItem = BankGui.BPGuiItem.loadBankItem(itemSection);
+                BankGui.NBGuiItem bankItem = BankGui.NBGuiItem.loadBankItem(itemSection);
 
                 if (itemName.equals(FILLER_IDENTIFIER)) { // If it's the Filler item, update it in the bank.
                     bankGui.setFiller(bankItem);
@@ -143,19 +148,23 @@ public class Bank {
                 }
 
                 List<Integer> slots = itemSection.getIntegerList("Slot");
-                if (slots.isEmpty()) bankGui.setBankItem(itemSection.getInt("Slot") - 1, bankItem);
-                else for (int slot : slots) bankGui.setBankItem(slot - 1, bankItem);
+                if (slots.isEmpty())
+                    bankGui.setBankItem(itemSection.getInt("Slot") - 1, bankItem);
+                else
+                    for (int slot : slots)
+                        bankGui.setBankItem(slot - 1, bankItem);
             }
         }
 
         // If the multiple banks gui is not enabled, is not necessary to
         // load the available / unavailable items, saving a bit of space.
-        if (!MultipleBanksValues.enableMultipleBanksModule()) return;
+        if (!MultipleBanksValues.enableMultipleBanksModule())
+            return;
         ConfigurationSection availableSection = config.getConfigurationSection("Settings.BanksGuiItem.Available");
-        bankGui.setAvailableBankListItem(BankGui.BPGuiItem.loadBankItem(availableSection));
+        bankGui.setAvailableBankListItem(BankGui.NBGuiItem.loadBankItem(availableSection));
 
         ConfigurationSection unavailableSection = config.getConfigurationSection("Settings.BanksGuiItem.Unavailable");
-        bankGui.setUnavailableBankListItem(BankGui.BPGuiItem.loadBankItem(unavailableSection));
+        bankGui.setUnavailableBankListItem(BankGui.NBGuiItem.loadBankItem(unavailableSection));
     }
 
     public static class BankLevel {

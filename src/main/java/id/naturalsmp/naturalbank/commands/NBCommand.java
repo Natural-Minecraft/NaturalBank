@@ -1,9 +1,9 @@
 package id.naturalsmp.naturalbank.commands;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -15,9 +15,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static id.naturalsmp.naturalbank.commands.BPCmdRegistry.commands;
+import static id.naturalsmp.naturalbank.commands.NBCmdRegistry.commands;
 
-public abstract class BPCommand {
+public abstract class NBCommand {
 
     public final String silentArg = "silent=true";
 
@@ -30,11 +30,11 @@ public abstract class BPCommand {
     private final HashMap<String, Long> cooldowns = new HashMap<>();
     private final Set<String> confirm = new HashSet<>();
 
-    public BPCommand(FileConfiguration commandsConfig, String commandID) {
+    public NBCommand(FileConfiguration commandsConfig, String commandID) {
         this(commandsConfig, commandID, null);
     }
 
-    public BPCommand(FileConfiguration commandsConfig, String commandID, String... aliases) {
+    public NBCommand(FileConfiguration commandsConfig, String commandID, String... aliases) {
         this.commandID = commandID;
 
         String id = this.commandID.toLowerCase();
@@ -59,7 +59,7 @@ public abstract class BPCommand {
      */
     private List<String> getListOrSetDefault(FileConfiguration config, String path, List<String> fallBack) {
         List<String> result = fallBack;
-        if (!BPUtils.pathExist(config, path))
+        if (!NBUtils.pathExist(config, path))
             config.set(path, result);
         else {
             result = config.getStringList(path);
@@ -82,7 +82,7 @@ public abstract class BPCommand {
      */
     private int getIntOrSetDefault(FileConfiguration config, String path, int fallBack) {
         int result = fallBack;
-        if (BPUtils.pathExist(config, path))
+        if (NBUtils.pathExist(config, path))
             result = config.getInt(path);
         else
             config.set(path, result);
@@ -126,7 +126,7 @@ public abstract class BPCommand {
                 Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> confirm.remove(name),
                         confirmCooldown * 20L);
                 for (String message : confirmMessage)
-                    BPMessages.sendMessage(s, message);
+                    NBMessages.sendMessage(s, message);
                 confirm.add(name);
                 return false;
             }
@@ -144,12 +144,12 @@ public abstract class BPCommand {
      * @param args The cmd arguments.
      */
     public void execute(CommandSender s, String[] args) {
-        if (!BPUtils.hasPermission(s, permission) || (playerOnly() && !BPUtils.isPlayer(s)))
+        if (!NBUtils.hasPermission(s, permission) || (playerOnly() && !NBUtils.isPlayer(s)))
             return;
 
         if (!skipUsage() && args.length == 1) {
             for (String usage : usage) {
-                BPMessages.sendMessage(
+                NBMessages.sendMessage(
                         s,
                         usage
                                 .replace("[", "<dark_gray>[</dark_gray>")
@@ -160,8 +160,8 @@ public abstract class BPCommand {
         if (isInCooldown(s))
             return;
 
-        BPCmdExecution execution = onExecution(s, args);
-        if (execution.executionType == BPCmdExecution.ExecutionType.INVALID_EXECUTION)
+        NBCmdExecution execution = onExecution(s, args);
+        if (execution.executionType == NBCmdExecution.ExecutionType.INVALID_EXECUTION)
             return;
         if (!hasConfirmed(s))
             return;
@@ -192,7 +192,7 @@ public abstract class BPCommand {
             return false;
 
         for (String message : cooldownMessage)
-            BPMessages.sendMessage(s, message, "%time%$" + BPFormatter.formatTime(get - cur));
+            NBMessages.sendMessage(s, message, "%time%$" + NBFormatter.formatTime(get - cur));
         return true;
     }
 
@@ -221,7 +221,7 @@ public abstract class BPCommand {
 
     /**
      * Check if that command will skip the usage message.
-     * The usage message appears when typing only the cmd identifier. (Example: /bp
+     * The usage message appears when typing only the cmd identifier. (Example: /NB
      * deposit)
      * <p>
      * If the usage has been skipped, there is a chance that args[1] is null.
@@ -239,7 +239,7 @@ public abstract class BPCommand {
      * @param s    The command sender.
      * @param args The cmd arguments.
      */
-    public abstract BPCmdExecution onExecution(CommandSender s, String[] args);
+    public abstract NBCmdExecution onExecution(CommandSender s, String[] args);
 
     /**
      * Method to show the arguments when tab completing.

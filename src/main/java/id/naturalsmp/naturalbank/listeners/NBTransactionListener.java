@@ -1,13 +1,13 @@
 package id.naturalsmp.naturalbank.listeners;
 
-import id.naturalsmp.naturalbank.economy.BPEconomy;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
 import id.naturalsmp.naturalbank.economy.TransactionType;
-import id.naturalsmp.naturalbank.events.BPAfterTransactionEvent;
-import id.naturalsmp.naturalbank.events.BPPreTransactionEvent;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.events.NBAfterTransactionEvent;
+import id.naturalsmp.naturalbank.events.NBPreTransactionEvent;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class BPTransactionListener implements Listener {
+public class NBTransactionListener implements Listener {
 
     public record Pair<K, V>(K key, V value) {
 
@@ -29,16 +29,16 @@ public class BPTransactionListener implements Listener {
     private final HashMap<UUID, Pair<BigDecimal, Double>> logHolder = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onTransactionStart(BPPreTransactionEvent e) {
+    public void onTransactionStart(NBPreTransactionEvent e) {
         if (ConfigValues.isLoggingTransactions())
             logHolder.put(e.getPlayer().getUniqueId(), new Pair<>(e.getCurrentBalance(), e.getCurrentVaultBalance()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onTransactionEnd(BPAfterTransactionEvent e) {
+    public void onTransactionEnd(NBAfterTransactionEvent e) {
         if (ConfigValues.isLoggingTransactions()) log(e);
 
-        BPEconomy economy = BPEconomy.get(e.getBankName());
+        NBEconomy economy = NBEconomy.get(e.getBankName());
         if (economy == null) return;
 
         OfflinePlayer p = e.getPlayer();
@@ -51,12 +51,12 @@ public class BPTransactionListener implements Listener {
         BigDecimal newDebt = debt.subtract(removed);
         economy.setDebt(p, newDebt);
 
-        List<String> replacers = BPUtils.placeValues(e.getTransactionAmount().min(debt));
-        replacers.addAll(BPUtils.placeValues(newDebt, "debt"));
-        BPMessages.sendIdentifier(Bukkit.getPlayer(p.getUniqueId()), "Debt-Money-Taken", replacers);
+        List<String> replacers = NBUtils.placeValues(e.getTransactionAmount().min(debt));
+        replacers.addAll(NBUtils.placeValues(newDebt, "debt"));
+        NBMessages.sendIdentifier(Bukkit.getPlayer(p.getUniqueId()), "Debt-Money-Taken", replacers);
     }
 
-    private void log(BPAfterTransactionEvent e) {
+    private void log(NBAfterTransactionEvent e) {
         TransactionType type = e.getTransactionType();
         StringBuilder builder = new StringBuilder(e.getPlayer().getName() + " -> " + type.name());
 
@@ -73,14 +73,14 @@ public class BPTransactionListener implements Listener {
         Pair<BigDecimal, Double> pair = logHolder.get(e.getPlayer().getUniqueId());
         builder.append(
                 " - %1 [%2] Bank: [%3 -> %4] Vault: [%5 -> %6]\n"
-                        .replace("%1", BPFormatter.styleBigDecimal(e.getTransactionAmount()))
+                        .replace("%1", NBFormatter.styleBigDecimal(e.getTransactionAmount()))
                         .replace("%2", e.getBankName())
-                        .replace("%3", BPFormatter.styleBigDecimal(pair.key()))
-                        .replace("%4", BPFormatter.styleBigDecimal(e.getNewBalance()))
+                        .replace("%3", NBFormatter.styleBigDecimal(pair.key()))
+                        .replace("%4", NBFormatter.styleBigDecimal(e.getNewBalance()))
                         .replace("%5", pair.value() + "")
                         .replace("%6", e.getNewVaultBalance() + "")
         );
 
-        BPLogger.LogsFile.log(builder.toString());
+        NBLogger.LogsFile.log(builder.toString());
     }
 }

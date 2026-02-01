@@ -2,28 +2,28 @@ package id.naturalsmp.naturalbank.commands;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.commands.list.*;
-import id.naturalsmp.naturalbank.managers.BPConfigs;
-import id.naturalsmp.naturalbank.utils.BPLogger;
+import id.naturalsmp.naturalbank.managers.NBConfigs;
+import id.naturalsmp.naturalbank.utils.NBLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-public class BPCmdRegistry {
+public class NBCmdRegistry {
 
-    protected static final LinkedHashMap<String, BPCommand> commands = new LinkedHashMap<>();
+    protected static final LinkedHashMap<String, NBCommand> commands = new LinkedHashMap<>();
 
     public static void registerPluginCommands() {
         commands.clear();
 
-        BPConfigs configs = NaturalBank.INSTANCE().getConfigs();
+        NBConfigs configs = NaturalBank.INSTANCE().getConfigs();
         File commandsFile = configs.getFile("commands.yml");
         if (!commandsFile.exists()) {
             try {
                 commandsFile.createNewFile();
             } catch (IOException e) {
-                BPLogger.Console.warn(e, "Could not create \"commands.yml\" file.");
+                NBLogger.Console.warn(e, "Could not create \"commands.yml\" file.");
             }
         }
         FileConfiguration commandsConfig = configs.getConfig(commandsFile);
@@ -61,7 +61,7 @@ public class BPCmdRegistry {
         try {
             commandsConfig.save(commandsFile);
         } catch (IOException e) {
-            BPLogger.Console.warn(e, "Could not save \"commands.yml\" config file!");
+            NBLogger.Console.warn(e, "Could not save \"commands.yml\" config file!");
         }
     }
 }

@@ -3,11 +3,11 @@ package id.naturalsmp.naturalbank.commands.list;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-public class RemoveCmd extends BPCommand {
+public class RemoveCmd extends NBCommand {
 
     public RemoveCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -63,32 +63,32 @@ public class RemoveCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
         if (!target.hasPlayedBefore()) {
-            BPMessages.sendIdentifier(s, "Invalid-Player");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Invalid-Player");
+            return NBCmdExecution.invalidExecution();
         }
 
         if (args.length == 2) {
-            BPMessages.sendIdentifier(s, "Specify-Number");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Specify-Number");
+            return NBCmdExecution.invalidExecution();
         }
         String amount = args[2];
 
-        if (BPUtils.isInvalidNumber(amount, s)) return BPCmdExecution.invalidExecution();
+        if (NBUtils.isInvalidNumber(amount, s)) return NBCmdExecution.invalidExecution();
 
         Bank bank = BankRegistry.getBank(getPossibleBank(args, 3));
-        if (!BankUtils.exist(bank, s)) return BPCmdExecution.invalidExecution();
+        if (!BankUtils.exist(bank, s)) return NBCmdExecution.invalidExecution();
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 BigDecimal removed = bank.getBankEconomy().removeBankBalance(target, new BigDecimal(amount));
 
                 if (isSilent(args)) return;
-                if (removed.compareTo(BigDecimal.ZERO) <= 0) BPMessages.sendIdentifier(s, "Bank-Empty", "%player%$" + target.getName());
-                else BPMessages.sendIdentifier(s, "Remove-Message", BPUtils.placeValues(target, removed));
+                if (removed.compareTo(BigDecimal.ZERO) <= 0) NBMessages.sendIdentifier(s, "Bank-Empty", "%player%$" + target.getName());
+                else NBMessages.sendIdentifier(s, "Remove-Message", NBUtils.placeValues(target, removed));
             }
         };
     }
@@ -96,13 +96,13 @@ public class RemoveCmd extends BPCommand {
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
         if (args.length == 3)
-            return BPArgs.getArgs(args, "1", "2", "3");
+            return NBArgs.getArgs(args, "1", "2", "3");
 
         if (args.length == 4)
-            return BPArgs.getBanks(args);
+            return NBArgs.getBanks(args);
 
         if (args.length == 5)
-            return BPArgs.getArgs(args, "silent=true", "silent=false");
+            return NBArgs.getArgs(args, "silent=true", "silent=false");
         return null;
     }
 }

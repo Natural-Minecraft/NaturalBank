@@ -1,9 +1,9 @@
 package id.naturalsmp.naturalbank.commands.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Collections;
 import java.util.List;
 
-public class GiveInterestCmd extends BPCommand {
+public class GiveInterestCmd extends NBCommand {
 
     public GiveInterestCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -57,16 +57,16 @@ public class GiveInterestCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         if (!ConfigValues.isInterestEnabled()) {
-            BPMessages.sendIdentifier(s, "Interest-Disabled");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Interest-Disabled");
+            return NBCmdExecution.invalidExecution();
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                BPMessages.sendMessage(s, "%prefix% Successfully given the interest! The countdown has been restarted.");
+                NBMessages.sendMessage(s, "%prefix% Successfully given the interest! The countdown has been restarted.");
                 NaturalBank.INSTANCE().getInterest().giveInterest();
             }
         };

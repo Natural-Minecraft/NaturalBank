@@ -1,7 +1,7 @@
 package id.naturalsmp.naturalbank.values;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class MessageValues {
@@ -11,7 +11,7 @@ public class MessageValues {
     private static String interestMoney, interestNoMoney, multiInterestMoney, interestBankFull;
 
     public static void setupValues() {
-        BPMessages.loadMessages();
+        NBMessages.loadMessages();
 
         FileConfiguration messages = NaturalBank.INSTANCE().getConfigs().getConfig("messages.yml");
         isTitleCustomAmountEnabled = messages.getBoolean("Title-Custom-Transaction.Enabled");

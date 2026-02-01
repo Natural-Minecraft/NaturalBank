@@ -7,7 +7,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.math.BigDecimal;
 
-public class BPLoan {
+public class NBLoan {
 
     private OfflinePlayer sender, receiver;
     private final Bank senderBank, receiverBank, requestedBank;
@@ -26,7 +26,7 @@ public class BPLoan {
      * @param senderBank The sender bank.
      * @param receiverBank The receiver bank.
      */
-    public BPLoan(OfflinePlayer sender, OfflinePlayer receiver, BigDecimal amount, Bank senderBank, Bank receiverBank) {
+    public NBLoan(OfflinePlayer sender, OfflinePlayer receiver, BigDecimal amount, Bank senderBank, Bank receiverBank) {
         this.sender = sender;
         this.receiver = receiver;
         this.moneyGiven = amount;
@@ -46,7 +46,7 @@ public class BPLoan {
      * @param senderBank The sender bank.
      * @param receiverBank The receiver bank.
      */
-    public BPLoan(OfflinePlayer sender, OfflinePlayer receiver, Bank senderBank, Bank receiverBank) {
+    public NBLoan(OfflinePlayer sender, OfflinePlayer receiver, Bank senderBank, Bank receiverBank) {
         this.sender = sender;
         this.receiver = receiver;
         this.moneyGiven = BigDecimal.ZERO;
@@ -64,7 +64,7 @@ public class BPLoan {
      * @param bank The bank loan sender.
      * @param amount The loan amount.
      */
-    public BPLoan(OfflinePlayer receiver, Bank bank, BigDecimal amount) {
+    public NBLoan(OfflinePlayer receiver, Bank bank, BigDecimal amount) {
         this.sender = null; // The sender would be the bank.
         this.receiver = receiver;
         this.moneyGiven = amount;
@@ -81,7 +81,7 @@ public class BPLoan {
      * @param receiver The loan receiver
      * @param bank The bank loan sender.
      */
-    public BPLoan(OfflinePlayer receiver, Bank bank) {
+    public NBLoan(OfflinePlayer receiver, Bank bank) {
         this.sender = null; // The sender would be the bank.
         this.receiver = receiver;
         this.moneyGiven = BigDecimal.ZERO;

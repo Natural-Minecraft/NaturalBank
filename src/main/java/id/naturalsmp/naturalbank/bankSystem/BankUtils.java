@@ -1,11 +1,11 @@
 package id.naturalsmp.naturalbank.bankSystem;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import id.naturalsmp.naturalbank.values.MultipleBanksValues;
 import net.kyori.adventure.text.Component;
@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static id.naturalsmp.naturalbank.bankSystem.BPItems.AMOUNT_KEY;
+import static id.naturalsmp.naturalbank.bankSystem.NBItems.AMOUNT_KEY;
 
 /**
  * Class containing tons of useful methods to manage banks and retrieve useful
@@ -44,7 +44,7 @@ public class BankUtils {
     public static final String REMOVE_REQUIRED_ITEMS_FIELD = "Remove-Required-Items";
     public static final String INTEREST_LIMITER_FIELD = "Interest-Limiter";
 
-    public static final NamespacedKey customItemKey = new NamespacedKey(NaturalBank.INSTANCE(), "bp_custom_item");
+    public static final NamespacedKey customItemKey = new NamespacedKey(NaturalBank.INSTANCE(), "nb_custom_item");
 
     public BankUtils() throws Exception {
         throw new Exception("This class may not be initialized.");
@@ -69,7 +69,7 @@ public class BankUtils {
     public static boolean exist(Bank bank, CommandSender s) {
         boolean exist = bank != null;
         if (!exist)
-            BPMessages.sendIdentifier(s, "Invalid-Bank");
+            NBMessages.sendIdentifier(s, "Invalid-Bank");
         return exist;
     }
 
@@ -93,7 +93,7 @@ public class BankUtils {
     public static boolean exist(String bankName, CommandSender s) {
         boolean exist = BankRegistry.getBank(bankName) != null;
         if (!exist)
-            BPMessages.sendIdentifier(s, "Invalid-Bank");
+            NBMessages.sendIdentifier(s, "Invalid-Bank");
         return exist;
     }
 
@@ -340,7 +340,7 @@ public class BankUtils {
         if (bank == null)
             return 1;
 
-        BPEconomy economy = bank.getBankEconomy();
+        NBEconomy economy = bank.getBankEconomy();
         return economy == null ? 1 : economy.getBankLevel(p);
     }
 
@@ -451,7 +451,7 @@ public class BankUtils {
             return true;
 
         Player oP = p.getPlayer();
-        return oP != null ? oP.hasPermission(permission) : BPUtils.hasOfflinePermission(p, permission);
+        return oP != null ? oP.hasPermission(permission) : NBUtils.hasOfflinePermission(p, permission);
     }
 
     /**
@@ -489,7 +489,7 @@ public class BankUtils {
      */
     public static void upgradeBank(Bank bank, Player p) {
         if (!hasNextLevel(bank, p)) {
-            BPMessages.sendIdentifier(p, "Bank-Max-Level");
+            NBMessages.sendIdentifier(p, "Bank-Max-Level");
             return;
         }
 
@@ -516,8 +516,8 @@ public class BankUtils {
                     break;
                 }
                 if (!hasItem) {
-                    BPMessages.sendIdentifier(p, "Insufficient-Items",
-                            "%items%$" + BPUtils.getRequiredItemsFormatted(requiredItems));
+                    NBMessages.sendIdentifier(p, "Insufficient-Items",
+                            "%items%$" + NBUtils.getRequiredItemsFormatted(requiredItems));
                     return;
                 }
             }
@@ -525,13 +525,13 @@ public class BankUtils {
         }
 
         BigDecimal cost = getLevelCost(bank, nextLevel);
-        BPEconomy economy = bank.getBankEconomy();
+        NBEconomy economy = bank.getBankEconomy();
 
         if (ConfigValues.isUsingBankBalanceToUpgrade()) {
 
             BigDecimal balance = economy.getBankBalance(p);
             if (balance.doubleValue() < cost.doubleValue()) {
-                BPMessages.sendIdentifier(p, "Insufficient-Money");
+                NBMessages.sendIdentifier(p, "Insufficient-Money");
                 return;
             }
 
@@ -542,7 +542,7 @@ public class BankUtils {
             double balance = vaultEconomy.getBalance(p);
 
             if (balance < cost.doubleValue()) {
-                BPMessages.sendIdentifier(p, "Insufficient-Money");
+                NBMessages.sendIdentifier(p, "Insufficient-Money");
                 return;
             }
 
@@ -554,7 +554,7 @@ public class BankUtils {
                 p.getInventory().removeItem(requiredItem.item);
 
         setLevel(bank, p, nextLevel);
-        BPMessages.sendIdentifier(p, "Bank-Upgraded");
+        NBMessages.sendIdentifier(p, "Bank-Upgraded");
 
         if (!hasNextLevel(bank, nextLevel)) {
             for (String line : MultipleBanksValues.getAutoBanksUnlocker()) {
@@ -585,27 +585,27 @@ public class BankUtils {
     public static Bank.BankLevel buildBankLevel(ConfigurationSection levelSection, String bankName) {
         Bank.BankLevel bankLevel = new Bank.BankLevel();
 
-        bankLevel.cost = BPFormatter.getStyledBigDecimal(levelSection.getString(COST_FIELD));
+        bankLevel.cost = NBFormatter.getStyledBigDecimal(levelSection.getString(COST_FIELD));
 
         String capacity = levelSection.getString(CAPACITY_FIELD);
         bankLevel.capacity = capacity == null ? ConfigValues.getMaxBankCapacity()
-                : BPFormatter.getStyledBigDecimal(capacity);
+                : NBFormatter.getStyledBigDecimal(capacity);
 
         String interest = levelSection.getString(INTEREST_FIELD);
         bankLevel.interest = interest == null ? ConfigValues.getInterestRate()
-                : BPFormatter.getStyledBigDecimal(interest.replace("%", ""));
+                : NBFormatter.getStyledBigDecimal(interest.replace("%", ""));
 
         String offlineInterest = levelSection.getString(OFFLINE_INTEREST_FIELD);
         bankLevel.offlineInterest = offlineInterest == null ? ConfigValues.getOfflineInterestRate()
-                : BPFormatter.getStyledBigDecimal(offlineInterest.replace("%", ""));
+                : NBFormatter.getStyledBigDecimal(offlineInterest.replace("%", ""));
 
         String afkInterest = levelSection.getString(AFK_INTEREST_FIELD);
         bankLevel.afkInterest = afkInterest == null ? ConfigValues.getAfkInterestRate()
-                : BPFormatter.getStyledBigDecimal(afkInterest.replace("%", ""));
+                : NBFormatter.getStyledBigDecimal(afkInterest.replace("%", ""));
 
         String maxInterestAmount = levelSection.getString(MAX_INTEREST_AMOUNT_FIELD);
         bankLevel.maxInterestAmount = maxInterestAmount == null ? ConfigValues.getInterestMaxAmount()
-                : BPFormatter.getStyledBigDecimal(maxInterestAmount);
+                : NBFormatter.getStyledBigDecimal(maxInterestAmount);
 
         bankLevel.requiredItems = retrieveRequiredItems(levelSection, bankName);
 
@@ -628,21 +628,21 @@ public class BankUtils {
         if (itemSection == null)
             return lore;
 
-        List<String> configLore = itemSection.getStringList(BPItems.LORE_KEY);
+        List<String> configLore = itemSection.getStringList(NBItems.LORE_KEY);
         if (!configLore.isEmpty())
-            lore.put(0, BPUtils.stringListToComponentList(configLore));
+            lore.put(0, NBUtils.stringListToComponentList(configLore));
         else { // If its empty and the path exist, it contains level lore.
-            ConfigurationSection loreSection = itemSection.getConfigurationSection(BPItems.LORE_KEY);
+            ConfigurationSection loreSection = itemSection.getConfigurationSection(NBItems.LORE_KEY);
             if (loreSection == null)
                 return lore;
 
             for (String level : loreSection.getKeys(false)) {
-                List<Component> levelLore = BPUtils.stringListToComponentList(loreSection.getStringList(level));
+                List<Component> levelLore = NBUtils.stringListToComponentList(loreSection.getStringList(level));
 
                 // If it's the default, place it at position 0.
                 if (level.equalsIgnoreCase("Default"))
                     lore.put(0, levelLore);
-                else if (!BPUtils.isInvalidNumber(level))
+                else if (!NBUtils.isInvalidNumber(level))
                     lore.put(Integer.parseInt(level), levelLore);
             }
         }
@@ -672,22 +672,22 @@ public class BankUtils {
             for (String itemName : requiredItemsSection.getKeys(false)) {
                 ConfigurationSection itemSection = requiredItemsSection.getConfigurationSection(itemName);
                 if (itemSection == null) {
-                    BPLogger.Console.warn("The required item \"" + itemName + "\" has an invalid section.");
+                    NBLogger.Console.warn("The required item \"" + itemName + "\" has an invalid section.");
                     continue;
                 }
 
-                ItemStack item = BPItems.getItemStackFromSection(itemSection);
+                ItemStack item = NBItems.getItemStackFromSection(itemSection);
                 ItemMeta meta = item.getItemMeta();
                 PersistentDataContainer data = meta.getPersistentDataContainer();
 
                 // If an item specify ONLY Material or Amount, don't add the custom unique id.
                 // Custom required items are only items with meta modified. (lore, name,
                 // glowing..)
-                if (itemSection.get(BPItems.DISPLAYNAME_KEY) != null ||
-                        itemSection.get(BPItems.LORE_KEY) != null ||
-                        itemSection.get(BPItems.GLOWING_KEY) != null ||
-                        itemSection.get(BPItems.CUSTOM_MODEL_DATA_KEY) != null ||
-                        itemSection.get(BPItems.ITEM_FLAGS_KEY) != null) {
+                if (itemSection.get(NBItems.DISPLAYNAME_KEY) != null ||
+                        itemSection.get(NBItems.LORE_KEY) != null ||
+                        itemSection.get(NBItems.GLOWING_KEY) != null ||
+                        itemSection.get(NBItems.CUSTOM_MODEL_DATA_KEY) != null ||
+                        itemSection.get(NBItems.ITEM_FLAGS_KEY) != null) {
                     // Set an unique custom item ID to make it not replicable:
                     // bankName_bankLevel_itemName
                     data.set(customItemKey, PersistentDataType.STRING, startingItemID + itemName);
@@ -723,7 +723,7 @@ public class BankUtils {
                 try {
                     requiredItems.put(itemID, new Bank.RequiredItem(new ItemStack(Material.valueOf(itemID))));
                 } catch (IllegalArgumentException e) {
-                    BPLogger.Console.warn("The bank \"" + bankName
+                    NBLogger.Console.warn("The bank \"" + bankName
                             + "\" contains an invalid item in the \"Required-Items\" path at level *"
                             + levelSection.getName() + ".");
                 }
@@ -736,7 +736,7 @@ public class BankUtils {
                     id = String.valueOf(material);
                     item = new ItemStack(material);
                 } catch (IllegalArgumentException e) {
-                    BPLogger.Console.warn("The bank \"" + bankName
+                    NBLogger.Console.warn("The bank \"" + bankName
                             + "\" contains an invalid item in the \"Required-Items\" path at level *"
                             + levelSection.getName() + ".");
                     continue;
@@ -746,7 +746,7 @@ public class BankUtils {
                 try {
                     amount = Integer.parseInt(split[1]);
                 } catch (NumberFormatException e) {
-                    BPLogger.Console.warn("The bank \"" + bankName
+                    NBLogger.Console.warn("The bank \"" + bankName
                             + "\" contains an invalid number in the \"Required-Items\" path at level *"
                             + levelSection.getName() + ".");
                 }
@@ -800,11 +800,11 @@ public class BankUtils {
                 continue;
 
             String[] split1 = limiter.split(":");
-            if (BPUtils.isInvalidNumber(split1[1]))
+            if (NBUtils.isInvalidNumber(split1[1]))
                 continue;
 
             String[] split2 = split1[0].split("-");
-            if (BPUtils.isInvalidNumber(split2[0]) || BPUtils.isInvalidNumber(split2[1]))
+            if (NBUtils.isInvalidNumber(split2[0]) || NBUtils.isInvalidNumber(split2[1]))
                 continue;
 
             String interest = split1[1].replace("%", ""), from = split2[0], to = split2[1];

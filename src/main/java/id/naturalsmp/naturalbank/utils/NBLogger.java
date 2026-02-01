@@ -1,7 +1,7 @@
 package id.naturalsmp.naturalbank.utils;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.utils.texts.BPChat;
+import id.naturalsmp.naturalbank.utils.texts.NBChat;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedWriter;
@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-public class BPLogger {
+public class NBLogger {
 
     public static class LogsFile {
 
@@ -67,7 +67,7 @@ public class BPLogger {
         public static void error(boolean logToFile, Object error) {
             if (error == null)
                 error = "null";
-            log(BPChat.PREFIX + " <dark_gray>[<red>ERROR</red>] <red>" + error);
+            log(NBChat.PREFIX + " <dark_gray>[<red>ERROR</red>] <red>" + error);
             if (logToFile)
                 LogsFile.log("[ERROR] " + error);
         }
@@ -102,7 +102,7 @@ public class BPLogger {
         public static void warn(boolean logToFile, Object warn) {
             if (warn == null)
                 warn = "null";
-            log(BPChat.PREFIX + "<dark_gray>[<yellow>WARN</yellow>] <yellow>" + warn);
+            log(NBChat.PREFIX + "<dark_gray>[<yellow>WARN</yellow>] <yellow>" + warn);
             if (logToFile)
                 LogsFile.log("[WARN] " + warn);
         }
@@ -137,13 +137,13 @@ public class BPLogger {
         public static void info(boolean logToFile, Object info) {
             if (info == null)
                 info = "null";
-            log(BPChat.PREFIX + " <dark_gray>[<blue>INFO</blue>] <blue>" + info);
+            log(NBChat.PREFIX + " <dark_gray>[<blue>INFO</blue>] <blue>" + info);
             if (logToFile)
                 LogsFile.log("[INFO] " + info);
         }
 
         public static void log(String message) {
-            Bukkit.getConsoleSender().sendMessage(BPChat.color(message));
+            Bukkit.getConsoleSender().sendMessage(NBChat.color(message));
         }
     }
 }

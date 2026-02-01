@@ -2,10 +2,10 @@ package id.naturalsmp.naturalbank.commands.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-public class PlaceholdersCmd extends BPCommand {
+public class PlaceholdersCmd extends NBCommand {
 
     public PlaceholdersCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -59,23 +59,26 @@ public class PlaceholdersCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
-        return new BPCmdExecution() {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                List<String> placeholders =  NaturalBank.INSTANCE().getBpPlaceholders().getRegisteredPlaceholders();
+                List<String> placeholders = NaturalBank.INSTANCE().getNbPlaceholders().getRegisteredPlaceholders();
                 int size = placeholders.size();
 
-                BPMessages.sendMessage(s, "%prefix% Currently registered placeholders <dark_gray>(<aqua>" + size + "</aqua>)</dark_gray>:");
+                NBMessages.sendMessage(s, "%prefix% Currently registered placeholders <dark_gray>(<aqua>" + size
+                        + "</aqua>)</dark_gray>:");
 
                 StringBuilder builder = new StringBuilder(" <dark_gray>* ");
                 for (int i = 0; i < size; i++) {
                     builder.append("<dark_gray>[<green>").append(placeholders.get(i));
 
-                    if (i + 1 >= size) builder.append("<dark_gray>]<gray>.");
-                    else builder.append("<dark_gray>]<gray>, ");
+                    if (i + 1 >= size)
+                        builder.append("<dark_gray>]<gray>.");
+                    else
+                        builder.append("<dark_gray>]<gray>, ");
                 }
-                BPMessages.sendMessage(s, builder.toString());
+                NBMessages.sendMessage(s, builder.toString());
             }
         };
     }
@@ -85,7 +88,7 @@ public class PlaceholdersCmd extends BPCommand {
         Player p = (Player) s;
 
         if (args.length == 2)
-            return BPArgs.getArgs(args, BankUtils.getAvailableBankNames(p));
+            return NBArgs.getArgs(args, BankUtils.getAvailableBankNames(p));
         return null;
     }
 }

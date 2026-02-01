@@ -1,11 +1,11 @@
 package id.naturalsmp.naturalbank.placeholders.list;
 
-import id.naturalsmp.naturalbank.bankTop.BPBankTop;
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
+import id.naturalsmp.naturalbank.bankTop.NBBankTop;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholder;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 
-public class BankTopPositionPlaceholder extends BPPlaceholder {
+public class BankTopPositionPlaceholder extends NBPlaceholder {
 
     @Override
     public String getIdentifier() {
@@ -14,7 +14,8 @@ public class BankTopPositionPlaceholder extends BPPlaceholder {
 
     @Override
     public String getPlaceholder(Player p, String target, String identifier) {
-        if (!ConfigValues.isBankTopEnabled()) return bankTopNotEnabled;
-        return BPBankTop.getPlayerBankTopPosition(p) + "";
+        if (!ConfigValues.isBankTopEnabled())
+            return bankTopNotEnabled;
+        return NBBankTop.getPlayerBankTopPosition(p) + "";
     }
 }

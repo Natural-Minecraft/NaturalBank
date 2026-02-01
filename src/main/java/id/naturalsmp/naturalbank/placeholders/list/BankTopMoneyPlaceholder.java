@@ -1,14 +1,14 @@
 package id.naturalsmp.naturalbank.placeholders.list;
 
-import id.naturalsmp.naturalbank.bankTop.BPBankTop;
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
+import id.naturalsmp.naturalbank.bankTop.NBBankTop;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholder;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 
-public class BankTopMoneyPlaceholder extends BPPlaceholder {
+public class BankTopMoneyPlaceholder extends NBPlaceholder {
 
     @Override
     public String getIdentifier() {
@@ -17,7 +17,8 @@ public class BankTopMoneyPlaceholder extends BPPlaceholder {
 
     @Override
     public String getPlaceholder(Player p, String target, String identifier) {
-        if (!ConfigValues.isBankTopEnabled()) return bankTopNotEnabled;
+        if (!ConfigValues.isBankTopEnabled())
+            return bankTopNotEnabled;
 
         String number = identifier.replace("banktop_money_", "");
         int position;
@@ -30,16 +31,16 @@ public class BankTopMoneyPlaceholder extends BPPlaceholder {
         if (position > ConfigValues.getBankTopSize())
             return "The banktop limit is " + ConfigValues.getBankTopSize() + "!";
 
-        BigDecimal money = BPBankTop.getBankTopBalancePlayer(position);
+        BigDecimal money = NBBankTop.getBankTopBalancePlayer(position);
         switch (ConfigValues.getBankTopMoneyFormat()) {
             case "default_amount":
-                return BPFormatter.formatCommas(money);
+                return NBFormatter.formatCommas(money);
             case "amount_long":
                 return money.toPlainString();
             default:
-                return BPFormatter.formatPrecise(money);
+                return NBFormatter.formatPrecise(money);
             case "amount_formatted_long":
-                return BPFormatter.formatLong(money);
+                return NBFormatter.formatLong(money);
         }
     }
 }

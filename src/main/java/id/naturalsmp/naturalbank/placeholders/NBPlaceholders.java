@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BPPlaceholders extends PlaceholderExpansion {
+public class NBPlaceholders extends PlaceholderExpansion {
 
-    private final List<BPPlaceholder> placeholders = new ArrayList<>();
+    private final List<NBPlaceholder> placeholders = new ArrayList<>();
 
     @Override
     public boolean persist() {
@@ -25,12 +25,12 @@ public class BPPlaceholders extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "Pulsi_";
+        return "NaturalDevCreative";
     }
 
     @Override
     public String getIdentifier() {
-        return "NaturalBank";
+        return "naturalbank";
     }
 
     @Override
@@ -40,13 +40,14 @@ public class BPPlaceholders extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
-        if (p == null) return "Could not get player from PlaceholderAPI request.";
+        if (p == null)
+            return "Could not get player from PlaceholderAPI request.";
 
         String target = ConfigValues.getMainGuiName();
         if (identifier.contains("{") && identifier.endsWith("}"))
             target = identifier.substring(identifier.indexOf("{") + 1, identifier.indexOf("}"));
 
-        for (BPPlaceholder placeholder : placeholders) {
+        for (NBPlaceholder placeholder : placeholders) {
             if (identifier.toLowerCase().startsWith(placeholder.getIdentifier().toLowerCase()))
                 return placeholder.getPlaceholder(p, target, identifier);
         }
@@ -80,12 +81,12 @@ public class BPPlaceholders extends PlaceholderExpansion {
         placeholders.add(new OfflineInterestRatePlaceholder());
         placeholders.add(new WithdrawTaxesPlaceholder());
 
-        List<BPPlaceholder> orderedPlaceholders = new ArrayList<>(), copy = new ArrayList<>(placeholders);
+        List<NBPlaceholder> orderedPlaceholders = new ArrayList<>(), copy = new ArrayList<>(placeholders);
         while (!copy.isEmpty()) {
-            BPPlaceholder longest = null;
+            NBPlaceholder longest = null;
 
             int highestLength = 0;
-            for (BPPlaceholder placeholder : copy) {
+            for (NBPlaceholder placeholder : copy) {
                 String identifier = placeholder.getIdentifier();
                 int length = identifier.length();
 
@@ -105,6 +106,8 @@ public class BPPlaceholders extends PlaceholderExpansion {
 
     public List<String> getRegisteredPlaceholders() {
         List<String> placeholders = new ArrayList<>();
-        for (BPPlaceholder placeholder : this.placeholders) placeholders.add(placeholder.getIdentifier());
-        return placeholders; }
+        for (NBPlaceholder placeholder : this.placeholders)
+            placeholders.add(placeholder.getIdentifier());
+        return placeholders;
+    }
 }

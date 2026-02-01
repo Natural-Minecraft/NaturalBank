@@ -2,13 +2,13 @@ package id.naturalsmp.naturalbank.placeholders.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholder;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 
-public class CalculateDepositTaxesPlaceholder extends BPPlaceholder {
+public class CalculateDepositTaxesPlaceholder extends NBPlaceholder {
 
     @Override
     public String getIdentifier() {

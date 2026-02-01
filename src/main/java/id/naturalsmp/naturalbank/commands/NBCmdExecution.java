@@ -1,18 +1,19 @@
 package id.naturalsmp.naturalbank.commands;
 
-public abstract class BPCmdExecution {
+public abstract class NBCmdExecution {
 
     public ExecutionType executionType = ExecutionType.VALID_EXECUTION;
 
     public abstract void execute();
 
     public enum ExecutionType {
-        INVALID_EXECUTION, // When the cmd does not specify enough arguments, or specify incorrect arguments.
+        INVALID_EXECUTION, // When the cmd does not specify enough arguments, or specify incorrect
+                           // arguments.
         VALID_EXECUTION // When the cmd has correct arguments and is ready to execute.
     }
 
-    public static BPCmdExecution invalidExecution() {
-        BPCmdExecution execution = new BPCmdExecution() {
+    public static NBCmdExecution invalidExecution() {
+        NBCmdExecution execution = new NBCmdExecution() {
             @Override
             public void execute() {
             }

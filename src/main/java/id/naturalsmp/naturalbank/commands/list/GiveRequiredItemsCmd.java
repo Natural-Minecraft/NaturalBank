@@ -3,11 +3,11 @@ package id.naturalsmp.naturalbank.commands.list;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class GiveRequiredItemsCmd extends BPCommand {
+public class GiveRequiredItemsCmd extends NBCommand {
 
     public GiveRequiredItemsCmd(FileConfiguration commandsConfig, String commandID, String... aliases) {
         super(commandsConfig, commandID, aliases);
@@ -62,44 +62,44 @@ public class GiveRequiredItemsCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         Player target = Bukkit.getPlayerExact(args[1]);
         if (target == null) {
-            BPMessages.sendIdentifier(s, "Invalid-Player");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Invalid-Player");
+            return NBCmdExecution.invalidExecution();
         }
 
         Bank bank = BankRegistry.getBank(getPossibleBank(args, 2));
-        if (!BankUtils.exist(bank, s)) return BPCmdExecution.invalidExecution();
+        if (!BankUtils.exist(bank, s)) return NBCmdExecution.invalidExecution();
 
         if (args.length <= 3) {
-            BPMessages.sendIdentifier(s, "Specify-Number");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Specify-Number");
+            return NBCmdExecution.invalidExecution();
         }
 
         String levelString = args[3];
-        if (BPUtils.isInvalidNumber(levelString, s)) return BPCmdExecution.invalidExecution();
+        if (NBUtils.isInvalidNumber(levelString, s)) return NBCmdExecution.invalidExecution();
 
         int level = Integer.parseInt(levelString);
         if (!BankUtils.hasLevel(bank, level)) {
-            BPMessages.sendIdentifier(s, "Invalid-Bank-Level");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Invalid-Bank-Level");
+            return NBCmdExecution.invalidExecution();
         }
 
         HashMap<String, Bank.RequiredItem> requiredItems = BankUtils.getRequiredItems(bank, level);
         Set<Bank.RequiredItem> givenItems = new HashSet<>(requiredItems.values());
 
         if (requiredItems.isEmpty()) {
-            BPMessages.sendIdentifier(s, "No-Available-Items");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "No-Available-Items");
+            return NBCmdExecution.invalidExecution();
         }
 
         if (args.length > 4) {
             String choose = args[4];
             if (!choose.equalsIgnoreCase("all")) {
                 if (!requiredItems.containsKey(choose)) {
-                    BPMessages.sendIdentifier(s, "Invalid-Required-Item");
-                    return BPCmdExecution.invalidExecution();
+                    NBMessages.sendIdentifier(s, "Invalid-Required-Item");
+                    return NBCmdExecution.invalidExecution();
                 }
 
                 givenItems.clear();
@@ -107,7 +107,7 @@ public class GiveRequiredItemsCmd extends BPCommand {
             }
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 for (Bank.RequiredItem requiredItem : givenItems) target.getInventory().addItem(requiredItem.item);
@@ -119,10 +119,10 @@ public class GiveRequiredItemsCmd extends BPCommand {
     public List<String> tabCompletion(CommandSender s, String[] args) {
 
         if (args.length == 2)
-            return BPArgs.getOnlinePlayers(args);
+            return NBArgs.getOnlinePlayers(args);
 
         if (args.length == 3)
-            return BPArgs.getBanks(args);
+            return NBArgs.getBanks(args);
 
         Bank bank = BankRegistry.getBank(args[2]);
 
@@ -131,7 +131,7 @@ public class GiveRequiredItemsCmd extends BPCommand {
             for (String level : BankUtils.getLevels(bank))
                 if (!BankUtils.getRequiredItems(bank, Integer.parseInt(level)).isEmpty()) levelsWithItems.add(level);
 
-            return BPArgs.getArgs(args, levelsWithItems);
+            return NBArgs.getArgs(args, levelsWithItems);
         }
 
         if (args.length == 5) {
@@ -142,7 +142,7 @@ public class GiveRequiredItemsCmd extends BPCommand {
             choose.add("all");
             choose.addAll(requiredItems.keySet());
 
-            return BPArgs.getArgs(args, choose);
+            return NBArgs.getArgs(args, choose);
         }
 
         return null;

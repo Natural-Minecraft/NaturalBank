@@ -3,8 +3,8 @@ package id.naturalsmp.naturalbank.bankSystem;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.texts.BPChat;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.texts.NBChat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -22,9 +22,9 @@ import java.util.UUID;
 /**
  * Utility class about ItemStacks and Material generation.
  */
-public class BPItems {
+public class NBItems {
 
-    public static final Component DISPLAYNAME_NOT_FOUND = BPChat.color("<red>Displayname not found.");
+    public static final Component DISPLAYNAME_NOT_FOUND = NBChat.color("<red>Displayname not found.");
 
     public static final ItemStack UNKNOWN_ITEM = new ItemStack(Material.STONE);
 
@@ -43,9 +43,9 @@ public class BPItems {
      * @return An ItemStack.
      */
     public static ItemStack getItemStackFromSection(ConfigurationSection itemSection) {
-        if (itemSection == null) return BPItems.UNKNOWN_ITEM.clone();
+        if (itemSection == null) return NBItems.UNKNOWN_ITEM.clone();
 
-        ItemStack item = BPItems.createItemStack(itemSection.getString(MATERIAL_KEY));
+        ItemStack item = NBItems.createItemStack(itemSection.getString(MATERIAL_KEY));
 
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
@@ -53,17 +53,17 @@ public class BPItems {
         Component italicRemover = MiniMessage.miniMessage().deserialize("<!italic>");
 
         String displayname = itemSection.getString(DISPLAYNAME_KEY);
-        if (displayname != null) meta.displayName(italicRemover.append(BPChat.color(displayname)));
+        if (displayname != null) meta.displayName(italicRemover.append(NBChat.color(displayname)));
 
         List<Component> lore = new ArrayList<>();
-        for (String lines : itemSection.getStringList(LORE_KEY)) lore.add(italicRemover.append(BPChat.color(lines)));
+        for (String lines : itemSection.getStringList(LORE_KEY)) lore.add(italicRemover.append(NBChat.color(lines)));
         meta.lore(lore);
 
         for (String flag : itemSection.getStringList(ITEM_FLAGS_KEY)) {
             try {
                 meta.addItemFlags(ItemFlag.valueOf(flag));
             } catch (IllegalArgumentException e) {
-                BPLogger.Console.warn("Could not set item flag \"" + flag + "\" to item \"" + itemSection + "\" because it's not a valid item flag.");
+                NBLogger.Console.warn("Could not set item flag \"" + flag + "\" to item \"" + itemSection + "\" because it's not a valid item flag.");
             }
         }
 
@@ -72,7 +72,7 @@ public class BPItems {
             try {
                 meta.setCustomModelData(modelData);
             } catch (NoSuchMethodError e) { // Do that to add support for older minecraft versions.
-                BPLogger.Console.warn("Cannot set custom model data to the item: \"" + displayname + "\"&e. Custom model data is only available on 1.14.4+ servers!");
+                NBLogger.Console.warn("Cannot set custom model data to the item: \"" + displayname + "\"&e. Custom model data is only available on 1.14.4+ servers!");
             }
         }
         item.setItemMeta(meta);
@@ -89,9 +89,9 @@ public class BPItems {
      * @return An ItemStack.
      */
     public static ItemStack getNoLoreItemStackFromSection(ConfigurationSection itemSection) {
-        if (itemSection == null) return BPItems.UNKNOWN_ITEM.clone();
+        if (itemSection == null) return NBItems.UNKNOWN_ITEM.clone();
 
-        ItemStack item = BPItems.createItemStack(itemSection.getString(MATERIAL_KEY));
+        ItemStack item = NBItems.createItemStack(itemSection.getString(MATERIAL_KEY));
 
         int amount = itemSection.getInt(AMOUNT_KEY);
         if (amount > 1) item.setAmount(amount);
@@ -100,13 +100,13 @@ public class BPItems {
         if (meta == null) return item;
 
         String displayname = itemSection.getString(DISPLAYNAME_KEY);
-        if (displayname != null) meta.displayName(BPChat.color(displayname));
+        if (displayname != null) meta.displayName(NBChat.color(displayname));
 
         for (String flag : itemSection.getStringList(ITEM_FLAGS_KEY)) {
             try {
                 meta.addItemFlags(ItemFlag.valueOf(flag));
             } catch (IllegalArgumentException e) {
-                BPLogger.Console.warn("Could not set item flag \"" + flag + "\" to item \"" + itemSection + "\" because it's not a valid item flag.");
+                NBLogger.Console.warn("Could not set item flag \"" + flag + "\" to item \"" + itemSection + "\" because it's not a valid item flag.");
             }
         }
 
@@ -115,7 +115,7 @@ public class BPItems {
             try {
                 meta.setCustomModelData(modelData);
             } catch (NoSuchMethodError e) { // Do that to add support for older minecraft versions.
-                BPLogger.Console.warn("Cannot set custom model data to the item: \"" + displayname + "\"&e. Custom model data is only available on 1.14.4+ servers!");
+                NBLogger.Console.warn("Cannot set custom model data to the item: \"" + displayname + "\"&e. Custom model data is only available on 1.14.4+ servers!");
             }
         }
         item.setItemMeta(meta);
@@ -151,7 +151,7 @@ public class BPItems {
             try {
                 result = new ItemStack(Material.valueOf(itemData[0]), 1, Byte.parseByte(itemData[1]));
             } catch (IllegalArgumentException e) {
-                BPLogger.Console.warn("Could not update item because \"" + itemData[0] + "\" is not a valid material!");
+                NBLogger.Console.warn("Could not update item because \"" + itemData[0] + "\" is not a valid material!");
             }
         }
         return result;
@@ -192,7 +192,7 @@ public class BPItems {
             head.setItemMeta(skullMeta);
             return head;
         } catch (Error | Exception e) {
-            BPLogger.Console.warn(e, "Skull exception");
+            NBLogger.Console.warn(e, "Skull exception");
             return Bukkit.getUnsafe().modifyItemStack(head, "{SkullOwner:{Id:\"" + id + "\",Properties:{textures:[{Value:\"" + value + "\"}]}}}");
         }
     }

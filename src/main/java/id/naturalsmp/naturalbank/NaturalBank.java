@@ -1,13 +1,13 @@
 package id.naturalsmp.naturalbank;
 
-import id.naturalsmp.naturalbank.interest.BPInterest;
-import id.naturalsmp.naturalbank.managers.BPAFK;
-import id.naturalsmp.naturalbank.managers.BPConfigs;
-import id.naturalsmp.naturalbank.managers.BPData;
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholders;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPVersions;
-import id.naturalsmp.naturalbank.utils.texts.BPChat;
+import id.naturalsmp.naturalbank.interest.NBInterest;
+import id.naturalsmp.naturalbank.managers.NBAFK;
+import id.naturalsmp.naturalbank.managers.NBConfigs;
+import id.naturalsmp.naturalbank.managers.NBData;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholders;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBVersions;
+import id.naturalsmp.naturalbank.utils.texts.NBChat;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -30,11 +30,11 @@ public final class NaturalBank extends JavaPlugin {
     private Economy vaultEconomy = null;
     private Permission perms = null;
 
-    private BPPlaceholders bpPlaceholders;
-    private BPConfigs bpConfigs;
-    private BPData bpData;
-    private BPAFK BPAfk;
-    private BPInterest interest;
+    private NBPlaceholders nbPlaceholders;
+    private NBConfigs nbConfigs;
+    private NBData nbData;
+    private NBAFK nbAfk;
+    private NBInterest interest;
 
     private boolean isPlaceholderApiHooked = false, isEssentialsXHooked = false, isCmiHooked = false, isUpdated;
 
@@ -46,24 +46,26 @@ public final class NaturalBank extends JavaPlugin {
 
         PluginManager plManager = Bukkit.getPluginManager();
         if (plManager.getPlugin("Vault") == null) {
-            BPLogger.Console.log("");
-            BPLogger.Console.log("<red>Cannot load " + BPChat.PREFIX + ", Vault is not installed.");
-            BPLogger.Console.log("<red>Please download it in order to use this plugin.");
-            BPLogger.Console.log("");
+            NBLogger.Console.log("");
+            NBLogger.Console.log("<red>Cannot load " + NBChat.PREFIX + ", Vault is not installed.");
+            NBLogger.Console.log("<red>Please download it in order to use this plugin.");
+            NBLogger.Console.log("");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
         if (!setupEconomy()) {
             if (tries < 4) {
-                BPLogger.Console.warn("NaturalBank didn't find any economy plugin on this server, the plugin will re-search in 2 seconds. (" + tries + " try)");
+                NBLogger.Console.warn(
+                        "NaturalBank didn't find any economy plugin on this server, the plugin will re-search in 2 seconds. ("
+                                + tries + " try)");
                 Bukkit.getScheduler().runTaskLater(this, this::onEnable, 40);
                 tries++;
                 return;
             }
-            BPLogger.Console.log("");
-            BPLogger.Console.log("<red>Cannot load " + BPChat.PREFIX + ", No economy plugin found.");
-            BPLogger.Console.log("<red>Please download an economy plugin to use this plugin.");
-            BPLogger.Console.log("");
+            NBLogger.Console.log("");
+            NBLogger.Console.log("<red>Cannot load " + NBChat.PREFIX + ", No economy plugin found.");
+            NBLogger.Console.log("<red>Please download an economy plugin to use this plugin.");
+            NBLogger.Console.log("");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -71,45 +73,47 @@ public final class NaturalBank extends JavaPlugin {
         String v = getServer().getVersion();
         serverVersion = v.substring(v.lastIndexOf("MC:"), v.length() - 1).replace("MC: ", "");
 
-        this.bpConfigs = new BPConfigs(this);
-        this.bpData = new BPData(this);
-        this.BPAfk = new BPAFK(this);
-        this.interest = new BPInterest();
+        this.nbConfigs = new NBConfigs(this);
+        this.nbData = new NBData(this);
+        this.nbAfk = new NBAFK(this);
+        this.interest = new NBInterest();
 
-        if (!BPConfigs.isUpdated()) {
-            BPVersions.renameInterestMoneyGiveToRate();
-            BPVersions.convertPlayerFilesToNewStyle();
-            BPVersions.changeBankUpgradesSection();
+        if (!NBConfigs.isUpdated()) {
+            NBVersions.renameInterestMoneyGiveToRate();
+            NBVersions.convertPlayerFilesToNewStyle();
+            NBVersions.changeBankUpgradesSection();
         }
 
         RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-        if (rsp != null) perms = rsp.getProvider();
+        if (rsp != null)
+            perms = rsp.getProvider();
 
-        bpData.setupPlugin();
+        nbData.setupPlugin();
 
         if (plManager.getPlugin("PlaceholderAPI") != null) {
-            BPLogger.Console.info("Hooked into PlaceholderAPI!");
-            bpPlaceholders = new BPPlaceholders();
-            bpPlaceholders.registerPlaceholders();
-            bpPlaceholders.register();
+            NBLogger.Console.info("Hooked into PlaceholderAPI!");
+            nbPlaceholders = new NBPlaceholders();
+            nbPlaceholders.registerPlaceholders();
+            nbPlaceholders.register();
             isPlaceholderApiHooked = true;
         }
         if (plManager.getPlugin("Essentials") != null) {
-            BPLogger.Console.info("Hooked into Essentials!");
+            NBLogger.Console.info("Hooked into Essentials!");
             isEssentialsXHooked = true;
         }
         if (plManager.getPlugin("CMI") != null) {
-            BPLogger.Console.info("Hooked into CMI!");
+            NBLogger.Console.info("Hooked into CMI!");
             isCmiHooked = true;
         }
 
         if (ConfigValues.isUpdateCheckerEnabled())
-            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> isUpdated = isPluginUpdated(), 0, (8 * 1200) * 60 /*8 hours*/);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> isUpdated = isPluginUpdated(), 0,
+                    (8 * 1200) * 60 /* 8 hours */);
     }
 
     @Override
     public void onDisable() {
-        bpData.shutdownPlugin();
+        nbData.shutdownPlugin();
     }
 
     public static NaturalBank INSTANCE() {
@@ -148,30 +152,32 @@ public final class NaturalBank extends JavaPlugin {
         return isUpdated;
     }
 
-    public BPConfigs getConfigs() {
-        return bpConfigs;
+    public NBConfigs getConfigs() {
+        return nbConfigs;
     }
 
-    public BPData getDataManager() {
-        return bpData;
+    public NBData getDataManager() {
+        return nbData;
     }
 
-    public BPAFK getAfkManager() {
-        return BPAfk;
+    public NBAFK getAfkManager() {
+        return nbAfk;
     }
 
-    public BPInterest getInterest() {
+    public NBInterest getInterest() {
         return interest;
     }
 
-    public BPPlaceholders getBpPlaceholders() {
-        return bpPlaceholders;
+    public NBPlaceholders getNbPlaceholders() {
+        return nbPlaceholders;
     }
 
     private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) return false;
+        if (getServer().getPluginManager().getPlugin("Vault") == null)
+            return false;
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) return false;
+        if (rsp == null)
+            return false;
         vaultEconomy = rsp.getProvider();
         return true;
     }
@@ -181,24 +187,28 @@ public final class NaturalBank extends JavaPlugin {
         boolean updated = true;
         try {
             newVersion = new BufferedReader(new InputStreamReader(
-                    URI.create("https://api.spigotmc.org/legacy/update.php?resource=93130").toURL().openConnection().getInputStream()
-            )).readLine();
+                    URI.create("https://api.spigotmc.org/legacy/update.php?resource=93130").toURL().openConnection()
+                            .getInputStream()))
+                    .readLine();
 
             updated = actualVersion.equals(newVersion);
         } catch (Exception e) {
-            BPLogger.Console.warn("Could not check for updates. (No internet connection)");
+            NBLogger.Console.warn("Could not check for updates. (No internet connection)");
         }
 
         if (isAlphaVersion() && !ConfigValues.isSilentInfoMessages())
-            BPLogger.Console.info("You are using an alpha version of the plugin, please report any bug or problem found in my discord!");
+            NBLogger.Console.info(
+                    "You are using an alpha version of the plugin, please report any bug or problem found in my discord!");
 
         if (updated) {
-            if (!ConfigValues.isSilentInfoMessages()) BPLogger.Console.info("The plugin is updated!");
+            if (!ConfigValues.isSilentInfoMessages())
+                NBLogger.Console.info("The plugin is updated!");
         } else {
             // Even if the info is disabled, notify when there is a new update
             // because it is important to keep users at the latest version.
-            BPLogger.Console.info("New version of the plugin available! (v" + newVersion + ").");
-            BPLogger.Console.info("Please download the latest version here: https://www.spigotmc.org/resources/%E2%9C%A8-NaturalBank-%E2%9C%A8.93130/.");
+            NBLogger.Console.info("New version of the plugin available! (v" + newVersion + ").");
+            NBLogger.Console.info(
+                    "Please download the latest version here: https://www.spigotmc.org/resources/%E2%9C%A8-NaturalBank-%E2%9C%A8.93130/.");
         }
         return updated;
     }

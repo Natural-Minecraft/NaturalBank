@@ -1,14 +1,14 @@
 package id.naturalsmp.naturalbank.listeners;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.account.BPPlayer;
+import id.naturalsmp.naturalbank.account.NBPlayer;
 import id.naturalsmp.naturalbank.account.PlayerRegistry;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
 import id.naturalsmp.naturalbank.economy.EconomyUtils;
-import id.naturalsmp.naturalbank.sql.BPSQL;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.sql.NBSQL;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,11 +27,11 @@ public class PlayerServerListener implements Listener {
         Player p = e.getPlayer();
 
         Bukkit.getScheduler().runTaskAsynchronously(NaturalBank.INSTANCE(), () -> {
-            boolean wasRegistered = BPSQL.isRegistered(p, ConfigValues.getMainGuiName());
+            boolean wasRegistered = NBSQL.isRegistered(p, ConfigValues.getMainGuiName());
             if (!wasRegistered && ConfigValues.isNotifyingNewPlayer())
-                    BPLogger.Console.info("Successfully registered " + p.getName() + "!");
+                    NBLogger.Console.info("Successfully registered " + p.getName() + "!");
 
-            BPSQL.fillRecords(p);
+            NBSQL.fillRecords(p);
 
             int loadDelay = ConfigValues.getLoadDelay();
             if (loadDelay <= 0) PlayerRegistry.loadPlayer(p, wasRegistered);
@@ -40,19 +40,19 @@ public class PlayerServerListener implements Listener {
             if (!ConfigValues.isNotifyingOfflineInterest()) return;
 
             BigDecimal amount = BigDecimal.ZERO;
-            for (BPEconomy economy : BPEconomy.list()) {
-                BigDecimal offlineInterest = BPSQL.getInterest(p, economy.getOriginBank().getIdentifier());
+            for (NBEconomy economy : NBEconomy.list()) {
+                BigDecimal offlineInterest = NBSQL.getInterest(p, economy.getOriginBank().getIdentifier());
                 if (offlineInterest.compareTo(BigDecimal.ZERO) <= 0) continue;
 
                 amount = amount.add(offlineInterest);
-                BPSQL.setInterest(p, economy.getOriginBank().getIdentifier(), BigDecimal.ZERO);
+                NBSQL.setInterest(p, economy.getOriginBank().getIdentifier(), BigDecimal.ZERO);
             }
 
             BigDecimal finalAmount = amount;
-            String mess = BPMessages.applyMessagesPrefix(ConfigValues.getOfflineInterestMessage());
+            String mess = NBMessages.applyMessagesPrefix(ConfigValues.getOfflineInterestMessage());
             if (finalAmount.compareTo(BigDecimal.ZERO) > 0)
                 Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () ->
-                                BPMessages.sendMessage(p, mess, BPUtils.placeValues(finalAmount)),
+                                NBMessages.sendMessage(p, mess, NBUtils.placeValues(finalAmount)),
                         ConfigValues.getNotifyOfflineInterestDelay() * 20L);
         });
     }
@@ -61,7 +61,7 @@ public class PlayerServerListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
 
-        BPPlayer player = PlayerRegistry.get(p);
+        NBPlayer player = PlayerRegistry.get(p);
         if (player != null) {
             BukkitTask updating = player.getBankUpdatingTask();
             if (updating != null) updating.cancel();

@@ -3,12 +3,12 @@ package id.naturalsmp.naturalbank.commands.list;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BalanceCmd extends BPCommand {
+public class BalanceCmd extends NBCommand {
 
     public BalanceCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -63,54 +63,54 @@ public class BalanceCmd extends BPCommand {
         return true;
     }
 
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         Player p = (Player) s;
 
         List<Bank> banks = new ArrayList<>();
         if (args.length == 1) {
             banks.addAll(BankUtils.getAvailableBanks(p));
             if (banks.isEmpty()) {
-                BPMessages.sendIdentifier(p, "No-Available-Banks");
-                return BPCmdExecution.invalidExecution();
+                NBMessages.sendIdentifier(p, "No-Available-Banks");
+                return NBCmdExecution.invalidExecution();
             }
 
         } else {
             Bank bank = BankRegistry.getBank(args[1]);
-            if (!BankUtils.exist(bank, s)) return BPCmdExecution.invalidExecution();
+            if (!BankUtils.exist(bank, s)) return NBCmdExecution.invalidExecution();
 
             if (!BankUtils.isAvailable(bank, p)) {
-                BPMessages.sendIdentifier(s, "Cannot-Access-Bank");
-                return BPCmdExecution.invalidExecution();
+                NBMessages.sendIdentifier(s, "Cannot-Access-Bank");
+                return NBCmdExecution.invalidExecution();
             }
             banks.add(bank);
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 if (banks.size() > 1)
-                    BPMessages.sendIdentifier(
+                    NBMessages.sendIdentifier(
                             p,
                             "Multiple-Personal-Bank",
-                            BPUtils.placeValues(p, BPEconomy.getBankBalancesSum(p))
+                            NBUtils.placeValues(p, NBEconomy.getBankBalancesSum(p))
                     );
                 else {
                     Bank bank = banks.getFirst();
-                    BPMessages.sendIdentifier(
+                    NBMessages.sendIdentifier(
                             p,
                             "Personal-Bank",
-                            BPUtils.placeValues(p, bank.getBankEconomy().getBankBalance(p), BankUtils.getCurrentLevel(bank, p))
+                            NBUtils.placeValues(p, bank.getBankEconomy().getBankBalance(p), BankUtils.getCurrentLevel(bank, p))
                     );
                 }
 
-                if (ConfigValues.isViewSoundEnabled()) BPUtils.playSound(ConfigValues.getPersonalSound(), p);
+                if (ConfigValues.isViewSoundEnabled()) NBUtils.playSound(ConfigValues.getPersonalSound(), p);
             }
         };
     }
 
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
-        if (args.length == 2) return BPArgs.getArgs(args, BankUtils.getAvailableBankNames((Player) s));
+        if (args.length == 2) return NBArgs.getArgs(args, BankUtils.getAvailableBankNames((Player) s));
         return null;
     }
 }

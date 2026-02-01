@@ -1,12 +1,12 @@
 package id.naturalsmp.naturalbank.commands.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
 import id.naturalsmp.naturalbank.economy.EconomyUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ResetAllCmd extends BPCommand {
+public class ResetAllCmd extends NBCommand {
 
     private final Economy vaultEconomy;
 
@@ -79,17 +79,17 @@ public class ResetAllCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         String mode = args[1];
         if (!mode.equalsIgnoreCase("delete") && !mode.equalsIgnoreCase("maintain")) {
-            BPMessages.sendMessage(s, "%prefix% Invalid reset mode! Choose one between <aqua>\"delete\"</aqua> and <aqua>\"maintain\"</aqua>.");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendMessage(s, "%prefix% Invalid reset mode! Choose one between <aqua>\"delete\"</aqua> and <aqua>\"maintain\"</aqua>.");
+            return NBCmdExecution.invalidExecution();
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                BPMessages.sendMessage(s, "%prefix% Successfully reset all players money! <dark_gray>(</dark_gray>With <white>" + mode + "</white> mode<dark_gray>)");
+                NBMessages.sendMessage(s, "%prefix% Successfully reset all players money! <dark_gray>(</dark_gray>With <white>" + mode + "</white> mode<dark_gray>)");
                 resetAll(Arrays.asList(Bukkit.getOfflinePlayers()), mode);
             }
         };
@@ -98,13 +98,13 @@ public class ResetAllCmd extends BPCommand {
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
         if (args.length == 2)
-            return BPArgs.getArgs(args, "delete", "maintain");
+            return NBArgs.getArgs(args, "delete", "maintain");
         return null;
     }
 
     private void resetAll(List<OfflinePlayer> offlinePlayers, String mode) {
         List<OfflinePlayer> copy = new ArrayList<>(offlinePlayers);
-        List<BPEconomy> economies = BPEconomy.list();
+        List<NBEconomy> economies = NBEconomy.list();
 
         for (int i = 0; i < 50; i++) {
             if (copy.isEmpty()) {
@@ -113,9 +113,9 @@ public class ResetAllCmd extends BPCommand {
             }
             OfflinePlayer p = copy.removeFirst();
 
-            if (mode.equalsIgnoreCase("maintain")) vaultEconomy.depositPlayer(p, BPEconomy.getBankBalancesSum(p).doubleValue());
+            if (mode.equalsIgnoreCase("maintain")) vaultEconomy.depositPlayer(p, NBEconomy.getBankBalancesSum(p).doubleValue());
 
-            for (BPEconomy economy : economies) {
+            for (NBEconomy economy : economies) {
                 economy.setBankBalance(p, BigDecimal.ZERO);
                 economy.setDebt(p, BigDecimal.ZERO);
                 economy.setBankLevel(p, 1);

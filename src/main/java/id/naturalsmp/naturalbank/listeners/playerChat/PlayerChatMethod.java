@@ -2,12 +2,12 @@ package id.naturalsmp.naturalbank.listeners.playerChat;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.account.BPPlayer;
+import id.naturalsmp.naturalbank.account.NBPlayer;
 import id.naturalsmp.naturalbank.account.PlayerRegistry;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankGui;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -20,16 +20,16 @@ public class PlayerChatMethod {
 
     public static void process(AsyncChatEvent e) {
         Player p = e.getPlayer();
-        BPPlayer bpPlayer = PlayerRegistry.get(p);
-        if (bpPlayer == null) return;
+        NBPlayer NBPlayer = PlayerRegistry.get(p);
+        if (NBPlayer == null) return;
 
-        if (!bpPlayer.isDepositing() && !bpPlayer.isWithdrawing()) return;
+        if (!NBPlayer.isDepositing() && !NBPlayer.isWithdrawing()) return;
         e.setCancelled(true);
         e.viewers().clear(); // Try stopping chat plugins from still sending the message.
 
-        Bank openedBank = bpPlayer.getOpenedBank();
+        Bank openedBank = NBPlayer.getOpenedBank();
         if (openedBank == null) {
-            removeFromTyping(bpPlayer);
+            removeFromTyping(NBPlayer);
             return;
         }
 
@@ -38,21 +38,21 @@ public class PlayerChatMethod {
         // If some chat format plugin is adding a "." at the end, remove it.
         if (text.endsWith(".")) text = text.substring(0, text.length() - 1);
 
-        if (hasTypedExit(text, p)) reopenBank(bpPlayer, openedBank.getBankGui());
+        if (hasTypedExit(text, p)) reopenBank(NBPlayer, openedBank.getBankGui());
         else {
             BigDecimal amount;
             try {
                 amount = new BigDecimal(text);
             } catch (NumberFormatException ex) {
-                BPMessages.sendIdentifier(p, "Invalid-Number");
+                NBMessages.sendIdentifier(p, "Invalid-Number");
                 return;
             }
 
-            BPEconomy economy = openedBank.getBankEconomy();
-            if (bpPlayer.isDepositing()) economy.deposit(p, amount);
+            NBEconomy economy = openedBank.getBankEconomy();
+            if (NBPlayer.isDepositing()) economy.deposit(p, amount);
             else economy.withdraw(p, amount);
 
-            reopenBank(bpPlayer, openedBank.getBankGui());
+            reopenBank(NBPlayer, openedBank.getBankGui());
         }
     }
 
@@ -62,18 +62,18 @@ public class PlayerChatMethod {
         return true;
     }
 
-    private static void removeFromTyping(BPPlayer bpPlayer) {
-        bpPlayer.setDepositing(false);
-        bpPlayer.setWithdrawing(false);
+    private static void removeFromTyping(NBPlayer NBPlayer) {
+        NBPlayer.setDepositing(false);
+        NBPlayer.setWithdrawing(false);
     }
 
-    public static void reopenBank(BPPlayer bpPlayer, BankGui openedBankGui) {
+    public static void reopenBank(NBPlayer NBPlayer, BankGui openedBankGui) {
         Bukkit.getScheduler().runTask(NaturalBank.INSTANCE(), () -> {
-            BukkitTask task = bpPlayer.getClosingTask();
+            BukkitTask task = NBPlayer.getClosingTask();
             if (task != null) task.cancel();
 
-            removeFromTyping(bpPlayer);
-            if (ConfigValues.isReopeningBankAfterChat() && ConfigValues.isGuiModuleEnabled()) openedBankGui.openBankGui(bpPlayer.getPlayer(), true);
+            removeFromTyping(NBPlayer);
+            if (ConfigValues.isReopeningBankAfterChat() && ConfigValues.isGuiModuleEnabled()) openedBankGui.openBankGui(NBPlayer.getPlayer(), true);
         });
     }
 

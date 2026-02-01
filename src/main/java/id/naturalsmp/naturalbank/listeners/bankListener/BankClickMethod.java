@@ -1,13 +1,13 @@
 package id.naturalsmp.naturalbank.listeners.bankListener;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.account.BPPlayer;
+import id.naturalsmp.naturalbank.account.NBPlayer;
 import id.naturalsmp.naturalbank.account.PlayerRegistry;
 import id.naturalsmp.naturalbank.bankSystem.*;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class BankClickMethod {
         if (bankInventory == null || bankInventory.getHolder() == null || !(bankInventory.getHolder() instanceof BankHolder)) return;
         e.setCancelled(true);
 
-        BPPlayer player = PlayerRegistry.get(p);
+        NBPlayer player = PlayerRegistry.get(p);
         if (player.getOpenedBank() == null) return;
 
         int slot = e.getSlot();
@@ -39,10 +39,10 @@ public class BankClickMethod {
             return;
         }
 
-        BankGui.BPGuiItem clickedItem = openedBank.getBankItems().get(slot);
+        BankGui.NBGuiItem clickedItem = openedBank.getBankItems().get(slot);
         if (clickedItem == null) return;
 
-        BPEconomy economy = openedBank.getOriginBank().getBankEconomy();
+        NBEconomy economy = openedBank.getOriginBank().getBankEconomy();
         String bankName = openedBank.getOriginBank().getIdentifier();
         for (String action : clickedItem.getActions()) {
             String identifier = action.substring(action.indexOf("["), action.indexOf("]") + 1), value = action.replace(identifier + " ", "").replace("%player%", p.getName());
@@ -53,7 +53,7 @@ public class BankClickMethod {
                     break;
 
                 case "[deposit]": {
-                    if (ConfigValues.isGuiActionsNeedingPermissions() && !BPUtils.hasPermission(p, "NaturalBank.deposit")) return;
+                    if (ConfigValues.isGuiActionsNeedingPermissions() && !NBUtils.hasPermission(p, "NaturalBank.deposit")) return;
 
                     if (value.equalsIgnoreCase("CUSTOM")) {
                         economy.customDeposit(p);
@@ -62,13 +62,13 @@ public class BankClickMethod {
 
                     BigDecimal amount;
                     try {
-                        if (!value.endsWith("%")) amount = BPFormatter.getStyledBigDecimal(value);
+                        if (!value.endsWith("%")) amount = NBFormatter.getStyledBigDecimal(value);
                         else {
-                            BigDecimal percentage = BPFormatter.getStyledBigDecimal(value.replace("%", "")).divide(BigDecimal.valueOf(100));
+                            BigDecimal percentage = NBFormatter.getStyledBigDecimal(value.replace("%", "")).divide(BigDecimal.valueOf(100));
                             amount = BigDecimal.valueOf(NaturalBank.INSTANCE().getVaultEconomy().getBalance(p)).multiply(percentage);
                         }
                     } catch (NumberFormatException ex) {
-                        BPLogger.Console.warn("Could not deposit because an invalid number has been specified! (Bank gui: " + bankName + ", Item slot: " + slot + ", Value: " + value + ")");
+                        NBLogger.Console.warn("Could not deposit because an invalid number has been specified! (Bank gui: " + bankName + ", Item slot: " + slot + ", Value: " + value + ")");
                         continue;
                     }
                     economy.deposit(p, amount);
@@ -80,7 +80,7 @@ public class BankClickMethod {
                     break;
 
                 case "[withdraw]": {
-                    if (ConfigValues.isGuiActionsNeedingPermissions() && !BPUtils.hasPermission(p, "NaturalBank.withdraw")) return;
+                    if (ConfigValues.isGuiActionsNeedingPermissions() && !NBUtils.hasPermission(p, "NaturalBank.withdraw")) return;
 
                     if (value.equals("CUSTOM")) {
                         economy.customWithdraw(p);
@@ -91,11 +91,11 @@ public class BankClickMethod {
                     try {
                         if (!value.endsWith("%")) amount = new BigDecimal(value);
                         else {
-                            BigDecimal percentage = BPFormatter.getStyledBigDecimal(value.replace("%", "")).divide(BigDecimal.valueOf(100));
+                            BigDecimal percentage = NBFormatter.getStyledBigDecimal(value.replace("%", "")).divide(BigDecimal.valueOf(100));
                             amount = economy.getBankBalance(p).multiply(percentage);
                         }
                     } catch (NumberFormatException ex) {
-                        BPLogger.Console.warn("Could not withdraw because an invalid number has been specified! (Bank gui: " + bankName + ", Item slot: " + slot + ", Value: " + value + ")");
+                        NBLogger.Console.warn("Could not withdraw because an invalid number has been specified! (Bank gui: " + bankName + ", Item slot: " + slot + ", Value: " + value + ")");
                         continue;
                     }
                     economy.withdraw(p, amount);

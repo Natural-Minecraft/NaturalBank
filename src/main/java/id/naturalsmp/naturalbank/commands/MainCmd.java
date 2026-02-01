@@ -4,9 +4,9 @@ import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankListGui;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import id.naturalsmp.naturalbank.values.MultipleBanksValues;
 import org.bukkit.command.Command;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static id.naturalsmp.naturalbank.commands.BPCmdRegistry.commands;
+import static id.naturalsmp.naturalbank.commands.NBCmdRegistry.commands;
 
 public class MainCmd implements CommandExecutor, TabCompleter {
 
@@ -26,25 +26,25 @@ public class MainCmd implements CommandExecutor, TabCompleter {
         if (!ConfigValues.getWorldsBlacklist().isEmpty() && s instanceof Player p) {
             if (ConfigValues.getWorldsBlacklist().contains(p.getWorld().getName())
                     && !p.hasPermission("NaturalBank.worlds.blacklist.bypass")) {
-                BPMessages.sendIdentifier(p, "Cannot-Use-Bank-Here");
+                NBMessages.sendIdentifier(p, "Cannot-Use-Bank-Here");
                 return true;
             }
         }
 
         if (args.length == 0) {
-            if (!BPUtils.hasPermission(s, "NaturalBank.use"))
+            if (!NBUtils.hasPermission(s, "NaturalBank.use"))
                 return true;
 
             if (s instanceof Player p) {
                 if (BankUtils.getAvailableBankNames((Player) s).isEmpty()) {
                     if (ConfigValues.isShowingHelpWhenNoBanksAvailable())
-                        BPMessages.sendIdentifier(s, "Help-Message");
+                        NBMessages.sendIdentifier(s, "Help-Message");
                     else
-                        BPMessages.sendIdentifier(s, "No-Available-Banks");
+                        NBMessages.sendIdentifier(s, "No-Available-Banks");
                     return true;
                 }
             } else {
-                BPMessages.sendIdentifier(s, "Help-Message");
+                NBMessages.sendIdentifier(s, "Help-Message");
                 return true;
             }
 
@@ -63,10 +63,10 @@ public class MainCmd implements CommandExecutor, TabCompleter {
                     }
                 }
             } else {
-                BPMessages.sendIdentifier(p, "Multiple-Personal-Bank",
-                        BPUtils.placeValues(p, BPEconomy.getBankBalancesSum(p)));
+                NBMessages.sendIdentifier(p, "Multiple-Personal-Bank",
+                        NBUtils.placeValues(p, NBEconomy.getBankBalancesSum(p)));
                 if (ConfigValues.isPersonalSoundEnabled())
-                    BPUtils.playSound(ConfigValues.getPersonalSound(), p);
+                    NBUtils.playSound(ConfigValues.getPersonalSound(), p);
             }
             return true;
         }
@@ -74,11 +74,11 @@ public class MainCmd implements CommandExecutor, TabCompleter {
         String identifier = args[0].toLowerCase();
 
         if (!commands.containsKey(identifier)) {
-            BPMessages.sendIdentifier(s, "Unknown-Command");
+            NBMessages.sendIdentifier(s, "Unknown-Command");
             return true;
         }
 
-        BPCommand cmd = commands.get(identifier);
+        NBCommand cmd = commands.get(identifier);
         cmd.execute(s, args);
         return true;
     }
@@ -92,7 +92,7 @@ public class MainCmd implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             List<String> cmds = new ArrayList<>();
-            for (BPCommand cmd : commands.values())
+            for (NBCommand cmd : commands.values())
                 if (s.hasPermission(cmd.permission))
                     cmds.add(cmd.commandID);
 
@@ -103,7 +103,7 @@ public class MainCmd implements CommandExecutor, TabCompleter {
             return result;
         }
 
-        BPCommand cmd = commands.get(args0);
+        NBCommand cmd = commands.get(args0);
         if (cmd == null || !s.hasPermission(cmd.permission) || (cmd.playerOnly() && !(s instanceof Player)))
             return null;
 

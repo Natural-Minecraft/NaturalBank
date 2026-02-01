@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 /**
  * This event will be fired AFTER the transaction is done, often used to read useful information.
  * <p>
- * To get the information BEFORE the transaction check {@link BPPreTransactionEvent this}
+ * To get the information BEFORE the transaction check {@link NBPreTransactionEvent this}
  */
-public class BPAfterTransactionEvent extends Event {
+public class NBAfterTransactionEvent extends Event {
 
     public static final HandlerList HANDLER_LIST = new HandlerList();
     private final OfflinePlayer player;
@@ -23,7 +23,7 @@ public class BPAfterTransactionEvent extends Event {
     private final BigDecimal transactionAmount;
     private final String bankName;
 
-    public BPAfterTransactionEvent(OfflinePlayer player, TransactionType transactionType, BigDecimal newBalance, double newVaultBalance, BigDecimal transactionAmount, String bankName) {
+    public NBAfterTransactionEvent(OfflinePlayer player, TransactionType transactionType, BigDecimal newBalance, double newVaultBalance, BigDecimal transactionAmount, String bankName) {
         this.player = player;
         this.transactionType = transactionType;
         this.newBalance = newBalance;

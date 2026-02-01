@@ -1,16 +1,16 @@
 package id.naturalsmp.naturalbank.commands.list;
 
 import id.naturalsmp.naturalbank.NaturalBank;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ReloadCmd extends BPCommand {
+public class ReloadCmd extends NBCommand {
 
     public ReloadCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -56,16 +56,16 @@ public class ReloadCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
-        return new BPCmdExecution() {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 long time = System.currentTimeMillis();
-                BPMessages.sendMessage(s, "%prefix% The plugin will now try to reload...");
+                NBMessages.sendMessage(s, "%prefix% The plugin will now try to reload...");
 
                 boolean reloaded = NaturalBank.INSTANCE().getDataManager().reloadPlugin();
-                if (reloaded) BPMessages.sendIdentifier(s, "Reload-Success", "%time%$" + (System.currentTimeMillis() - time));
-                else BPMessages.sendIdentifier(s, "Reload-Fail");
+                if (reloaded) NBMessages.sendIdentifier(s, "Reload-Success", "%time%$" + (System.currentTimeMillis() - time));
+                else NBMessages.sendIdentifier(s, "Reload-Fail");
             }
         };
     }

@@ -4,7 +4,7 @@ import id.naturalsmp.naturalbank.bankSystem.Bank;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-public class BPPlayer {
+public class NBPlayer {
 
     private final Player player;
 
@@ -14,7 +14,7 @@ public class BPPlayer {
     // Values to check if the player is doing a deposit or withdraw through chat.
     private boolean depositing, withdrawing;
 
-    public BPPlayer(Player player) {
+    public NBPlayer(Player player) {
         this.player = player;
     }
 

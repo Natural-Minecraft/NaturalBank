@@ -1,15 +1,15 @@
 package id.naturalsmp.naturalbank.commands.list;
 
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Collections;
 import java.util.List;
 
-public class HelpCmd extends BPCommand {
+public class HelpCmd extends NBCommand {
 
     public HelpCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -55,11 +55,11 @@ public class HelpCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
-        return new BPCmdExecution() {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                BPMessages.sendIdentifier(s, "Help-Message");
+                NBMessages.sendIdentifier(s, "Help-Message");
             }
         };
     }

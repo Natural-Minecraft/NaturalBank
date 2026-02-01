@@ -1,17 +1,17 @@
 package id.naturalsmp.naturalbank.commands.list;
 
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
 import id.naturalsmp.naturalbank.debug.Debug;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Collections;
 import java.util.List;
 
-public class DebugCmd extends BPCommand {
+public class DebugCmd extends NBCommand {
 
     public DebugCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -57,15 +57,15 @@ public class DebugCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         String debugType = args[1].toLowerCase();
 
         if (!debugType.equals("banktop") && !debugType.equals("interest")) {
-            BPMessages.sendIdentifier(s, "Invalid-Action");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Invalid-Action");
+            return NBCmdExecution.invalidExecution();
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 switch (debugType) {
@@ -83,7 +83,7 @@ public class DebugCmd extends BPCommand {
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
         if (args.length == 2)
-            return BPArgs.getArgs(args, "bankTop", "interest");
+            return NBArgs.getArgs(args, "bankTop", "interest");
 
         return null;
     }

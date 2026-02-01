@@ -2,9 +2,9 @@ package id.naturalsmp.naturalbank.economy;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.account.PlayerRegistry;
-import id.naturalsmp.naturalbank.managers.BPTaskManager;
-import id.naturalsmp.naturalbank.sql.BPSQL;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
+import id.naturalsmp.naturalbank.managers.NBTaskManager;
+import id.naturalsmp.naturalbank.sql.NBSQL;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -24,10 +24,11 @@ public class EconomyUtils {
      * @param p The player.
      */
     public static void savePlayer(OfflinePlayer p, boolean unload) {
-        for (BPEconomy economy : BPEconomy.list())
-            BPSQL.savePlayer(p, economy);
+        for (NBEconomy economy : NBEconomy.list())
+            NBSQL.savePlayer(p, economy);
 
-        if (unload) PlayerRegistry.unloadPlayer(p);
+        if (unload)
+            PlayerRegistry.unloadPlayer(p);
     }
 
     /**
@@ -41,11 +42,13 @@ public class EconomyUtils {
     /**
      * Save everyone's balance.
      *
-     * @param async Choose if saving asynchronously to have less impact on the server performance. DON'T USE ON SERVER SHUTDOWN
+     * @param async Choose if saving asynchronously to have less impact on the
+     *              server performance. DON'T USE ON SERVER SHUTDOWN
      */
     public static void saveEveryone(boolean async) {
         Set<UUID> loadedUUIDs = new HashSet<>();
-        for (BPEconomy economy : BPEconomy.list()) // It's safe to call #addAll since Sets don't allow duplicated entries.
+        for (NBEconomy economy : NBEconomy.list()) // It's safe to call #addAll since Sets don't allow duplicated
+                                                   // entries.
             loadedUUIDs.addAll(economy.getLoadedPlayers());
 
         if (async) {
@@ -69,9 +72,11 @@ public class EconomyUtils {
      */
     public static void restartSavingInterval() {
         long delay = ConfigValues.getSaveDelay();
-        if (delay <= 0) return;
+        if (delay <= 0)
+            return;
 
         long minutes = delay * 1200L;
-        BPTaskManager.setTask(BPTaskManager.MONEY_SAVING_TASK, Bukkit.getScheduler().runTaskTimer(NaturalBank.INSTANCE(), () -> saveEveryone(true), minutes, minutes));
+        NBTaskManager.setTask(NBTaskManager.MONEY_SAVING_TASK,
+                Bukkit.getScheduler().runTaskTimer(NaturalBank.INSTANCE(), () -> saveEveryone(true), minutes, minutes));
     }
 }

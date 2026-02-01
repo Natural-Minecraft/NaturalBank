@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class BPAFK {
+public class NBAFK {
 
     private final Map<UUID, Long> afkCooldown = new HashMap<>();
     private final List<Player> afkPlayers = new ArrayList<>();
@@ -16,7 +16,7 @@ public class BPAFK {
 
     private final NaturalBank plugin;
 
-    public BPAFK(NaturalBank plugin) {
+    public NBAFK(NaturalBank plugin) {
         this.plugin = plugin;
     }
 

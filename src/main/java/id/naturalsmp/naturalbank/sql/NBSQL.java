@@ -2,8 +2,8 @@ package id.naturalsmp.naturalbank.sql;
 
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.utils.BPLogger;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.utils.NBLogger;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.OfflinePlayer;
 
@@ -25,7 +25,7 @@ import java.util.List;
  * closed, the data will continue to be saved locally, and once the
  * database will connect again the local data will be updated.
  */
-public class BPSQL {
+public class NBSQL {
 
     public enum SQLSearch {
         BANK_LEVEL,
@@ -50,7 +50,8 @@ public class BPSQL {
     }
 
     /**
-     * Return a string representing all the default arguments for that specified player.
+     * Return a string representing all the default arguments for that specified
+     * player.
      * More specifically, returns the following values:
      * - UUID
      * - Name
@@ -84,13 +85,14 @@ public class BPSQL {
     }
 
     public static void disconnect() {
-        if (connection == null) return;
+        if (connection == null)
+            return;
 
         try {
             connection.close();
             connection = null;
         } catch (SQLException e) {
-            BPLogger.Console.error(e, "Could not close SQL connection.");
+            NBLogger.Console.error(e, "Could not close SQL connection.");
         }
     }
 
@@ -103,7 +105,8 @@ public class BPSQL {
      */
     public static int getBankLevel(OfflinePlayer player, String bankName) {
         String level = get(player, bankName, SQLSearch.BANK_LEVEL);
-        if (level.isEmpty()) return 0;
+        if (level.isEmpty())
+            return 0;
 
         return Integer.parseInt(level);
     }
@@ -117,7 +120,8 @@ public class BPSQL {
      */
     public static BigDecimal getDebt(OfflinePlayer player, String bankName) {
         String debt = get(player, bankName, SQLSearch.DEBT);
-        if (debt.isEmpty()) return BigDecimal.ZERO;
+        if (debt.isEmpty())
+            return BigDecimal.ZERO;
 
         return new BigDecimal(debt);
     }
@@ -131,7 +135,8 @@ public class BPSQL {
      */
     public static BigDecimal getInterest(OfflinePlayer player, String bankName) {
         String interest = get(player, bankName, SQLSearch.INTEREST);
-        if (interest.isEmpty()) return BigDecimal.ZERO;
+        if (interest.isEmpty())
+            return BigDecimal.ZERO;
 
         return new BigDecimal(interest);
     }
@@ -145,36 +150,41 @@ public class BPSQL {
      */
     public static BigDecimal getMoney(OfflinePlayer player, String bankName) {
         String money = get(player, bankName, SQLSearch.MONEY);
-        if (money.isEmpty()) return BigDecimal.ZERO;
+        if (money.isEmpty())
+            return BigDecimal.ZERO;
 
         return new BigDecimal(money);
     }
 
     /**
-     * Set the debt of the specified player in the specified bank to the selected amount.
+     * Set the debt of the specified player in the specified bank to the selected
+     * amount.
      *
      * @param player   The player.
      * @param bankName The bank.
      * @param newValue The new value for the money.
      */
-    public static void setBankLevel(OfflinePlayer player, String bankName, BigDecimal newValue) {
-        set(player, bankName, SQLSearch.INTEREST, newValue.toPlainString());
+    public static void setBankLevel(OfflinePlayer player, String bankName, int newValue) {
+        set(player, bankName, SQLSearch.BANK_LEVEL, String.valueOf(newValue));
     }
 
     /**
-     * Set the debt of the specified player in the specified bank to the selected amount.
+     * Set the debt of the specified player in the specified bank to the selected
+     * amount.
      *
      * @param player   The player.
      * @param bankName The bank.
      * @param newValue The new value for the money.
      */
     public static void setDebt(OfflinePlayer player, String bankName, BigDecimal newValue) {
-        set(player, bankName, SQLSearch.INTEREST, newValue.toPlainString());
+        set(player, bankName, SQLSearch.DEBT, newValue.toPlainString());
     }
 
     /**
-     * Set the interest (interest earned while being offline to show to the player when
-     * entering the server) of the specified player in the specified bank to the selected amount.
+     * Set the interest (interest earned while being offline to show to the player
+     * when
+     * entering the server) of the specified player in the specified bank to the
+     * selected amount.
      *
      * @param player   The player.
      * @param bankName The bank.
@@ -185,7 +195,8 @@ public class BPSQL {
     }
 
     /**
-     * Set the money of the specified player in the specified bank to the selected amount.
+     * Set the money of the specified player in the specified bank to the selected
+     * amount.
      *
      * @param player   The player.
      * @param bankName The bank.
@@ -198,10 +209,10 @@ public class BPSQL {
     /**
      * Save all the player's current bank statistics to the database.
      *
-     * @param player   The player to save.
+     * @param player      The player to save.
      * @param bankEconomy The economy of the bank.
      */
-    public static void savePlayer(OfflinePlayer player, BPEconomy bankEconomy) {
+    public static void savePlayer(OfflinePlayer player, NBEconomy bankEconomy) {
         String bankName = bankEconomy.getOriginBank().getIdentifier();
 
         int level = bankEconomy.getBankLevel(player);
@@ -214,28 +225,36 @@ public class BPSQL {
         String set = "bank_level='" + level + "', " + "debt='" + debt + "', " + "money='" + money + "'";
 
         String query;
-        if (ConfigValues.isMySqlEnabled()) query = insert + " ON DUPLICATE KEY UPDATE " + set;
-        else query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
+        if (ConfigValues.isMySqlEnabled())
+            query = insert + " ON DUPLICATE KEY UPDATE " + set;
+        else
+            query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
 
         try {
             connection.prepareStatement(query).executeUpdate();
         } catch (SQLException e) {
-            BPLogger.Console.error(e, "Cannot save player " + player.getName() + " in bank " + bankName + ".");
+            NBLogger.Console.error(e, "Cannot save player " + player.getName() + " in bank " + bankName + ".");
         }
     }
 
     /**
-     * Check if the specified player is registered in the given bank table (= bank name)
-     * @param player The player to check.
+     * Check if the specified player is registered in the given bank table (= bank
+     * name)
+     * 
+     * @param player   The player to check.
      * @param bankName The table name.
      * @return true if a record with its uuid exists, false otherwise.
      */
     public static boolean isRegistered(OfflinePlayer player, String bankName) {
         try {
-            ResultSet set = connection.prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "' LIMIT 1").executeQuery();
+            ResultSet set = connection
+                    .prepareStatement(
+                            "SELECT 1 FROM " + bankName + " WHERE uuid='" + player.getUniqueId() + "' LIMIT 1")
+                    .executeQuery();
             return set.next();
         } catch (SQLException e) {
-            BPLogger.Console.error(e, "Cannot check if player " + player.getName() + " is registered in the bank " + bankName + ".");
+            NBLogger.Console.error(e,
+                    "Cannot check if player " + player.getName() + " is registered in the bank " + bankName + ".");
             return false;
         }
     }
@@ -249,23 +268,27 @@ public class BPSQL {
      */
     public static void fillRecords(OfflinePlayer player) {
         if (ConfigValues.isMySqlEnabled())
-            for (String bank : BPEconomy.nameList()) {
+            for (String bank : NBEconomy.nameList()) {
                 try {
                     connection.prepareStatement(
-                            "INSERT IGNORE INTO " + bank + " VALUES (" + GET_DEFAULT_PLAYER_ARGUMENTS(player, bank) + ")"
-                    ).executeUpdate();
+                            "INSERT IGNORE INTO " + bank + " VALUES (" + GET_DEFAULT_PLAYER_ARGUMENTS(player, bank)
+                                    + ")")
+                            .executeUpdate();
                 } catch (SQLException e) {
-                    BPLogger.Console.error(e, "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
+                    NBLogger.Console.error(e,
+                            "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
                 }
             }
         else
-            for (String bank : BPEconomy.nameList()) {
+            for (String bank : NBEconomy.nameList()) {
                 try {
                     connection.prepareStatement(
-                            "INSERT OR IGNORE INTO " + bank + " VALUES (" + GET_DEFAULT_PLAYER_ARGUMENTS(player, bank) + ")"
-                    ).executeUpdate();
+                            "INSERT OR IGNORE INTO " + bank + " VALUES (" + GET_DEFAULT_PLAYER_ARGUMENTS(player, bank)
+                                    + ")")
+                            .executeUpdate();
                 } catch (SQLException e) {
-                    BPLogger.Console.error(e, "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
+                    NBLogger.Console.error(e,
+                            "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
                 }
             }
     }
@@ -278,7 +301,7 @@ public class BPSQL {
          */
         public static void connect() {
             if (connection != null) {
-                BPLogger.Console.warn("MySQL is already connected.");
+                NBLogger.Console.warn("MySQL is already connected.");
                 return;
             }
 
@@ -286,20 +309,22 @@ public class BPSQL {
             String port = ConfigValues.getMySqlPort();
             String database = ConfigValues.getMySqlDatabase();
 
-            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=" + ConfigValues.isMySqlUsingSSL();
+            String url = "jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL="
+                    + ConfigValues.isMySqlUsingSSL();
 
             try {
-                connection = DriverManager.getConnection(url, ConfigValues.getMySqlUsername(), ConfigValues.getMySqlPassword());
+                connection = DriverManager.getConnection(url, ConfigValues.getMySqlUsername(),
+                        ConfigValues.getMySqlPassword());
 
                 // Create all the missing tables.
-                for (String bankName : BPEconomy.nameList()) {
+                for (String bankName : NBEconomy.nameList()) {
                     String query = "CREATE TABLE IF NOT EXISTS " + bankName + " (" + GET_TABLE_ARGUMENTS() + ")";
                     connection.prepareStatement(query).execute();
                 }
             } catch (SQLException e) {
-                BPLogger.Console.error(e, "Could not connect to MySQL database.");
+                NBLogger.Console.error(e, "Could not connect to MySQL database.");
             }
-            BPLogger.Console.info("MySQL database successfully connected.");
+            NBLogger.Console.info("MySQL database successfully connected.");
         }
     }
 
@@ -307,32 +332,34 @@ public class BPSQL {
 
         public static void connect() {
             if (connection != null) {
-                BPLogger.Console.warn("SQLite is already connected.");
+                NBLogger.Console.warn("SQLite is already connected.");
                 return;
             }
 
             File dbFile = new File(NaturalBank.INSTANCE().getDataFolder(), "data.db");
 
-            if (!dbFile.getParentFile().exists()) dbFile.getParentFile().mkdirs();
+            if (!dbFile.getParentFile().exists())
+                dbFile.getParentFile().mkdirs();
 
             String url = "jdbc:sqlite:" + dbFile.getAbsolutePath();
             try {
                 connection = DriverManager.getConnection(url);
 
-                for (String bankName : BPEconomy.nameList()) {
+                for (String bankName : NBEconomy.nameList()) {
                     String query = "CREATE TABLE IF NOT EXISTS " + bankName + " (" + GET_TABLE_ARGUMENTS() + ")";
                     connection.prepareStatement(query).execute();
                 }
             } catch (SQLException e) {
-                BPLogger.Console.error(e, "Could not connect to SQLite database.");
+                NBLogger.Console.error(e, "Could not connect to SQLite database.");
                 return;
             }
-            BPLogger.Console.info("SQLite successfully connected.");
+            NBLogger.Console.info("SQLite successfully connected.");
         }
     }
 
     /**
-     * Method to retrieve the specified value from the selected player in a particular bank.
+     * Method to retrieve the specified value from the selected player in a
+     * particular bank.
      *
      * @param player   The player.
      * @param bankName The bank where to search the value.
@@ -348,7 +375,7 @@ public class BPSQL {
             case MONEY -> columnName = "money";
 
             default -> {
-                BPLogger.Console.warn("Invalid SQLSearch specified as parameter for query.");
+                NBLogger.Console.warn("Invalid SQLSearch specified as parameter for query.");
                 return "";
             }
         }
@@ -365,7 +392,7 @@ public class BPSQL {
         try {
             return set.getString(columnName);
         } catch (SQLException e) {
-            BPLogger.Console.error(e, "Could not get data for player " + player.getName() + ".");
+            NBLogger.Console.error(e, "Could not get data for player " + player.getName() + ".");
             return "";
         }
     }
@@ -388,22 +415,26 @@ public class BPSQL {
             case MONEY -> columnName = "money";
 
             default -> {
-                BPLogger.Console.warn("Invalid SQLSearch specified as parameter for query.");
+                NBLogger.Console.warn("Invalid SQLSearch specified as parameter for query.");
                 return;
             }
         }
 
         String query;
 
-        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES(" + player.getUniqueId() + ", " + newValue + ")";
+        String insert = "INSERT INTO " + bankName + " (uuid, " + columnName + ") VALUES(" + player.getUniqueId() + ", "
+                + newValue + ")";
         String set = columnName + "='" + newValue + "'";
-        if (ConfigValues.isMySqlEnabled()) query = insert + " ON DUPLICATE KEY UPDATE " + set;
-        else query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
+        if (ConfigValues.isMySqlEnabled())
+            query = insert + " ON DUPLICATE KEY UPDATE " + set;
+        else
+            query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
 
         try {
             connection.prepareStatement(query).executeUpdate();
         } catch (SQLException e) {
-            BPLogger.Console.error(e, "Cannot set " + columnName + " for player " + player.getName() + " in bank " + bankName + ".");
+            NBLogger.Console.error(e,
+                    "Cannot set " + columnName + " for player " + player.getName() + " in bank " + bankName + ".");
         }
     }
 }

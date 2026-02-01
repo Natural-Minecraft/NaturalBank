@@ -4,8 +4,8 @@ import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class BPUtils {
+public class NBUtils {
 
     /**
-     * NaturalBank does not accept negative numbers, if a number is lower than 0, it will return true.
+     * NaturalBank does not accept negative numbers, if a number is lower than 0, it
+     * will return true.
      *
      * @param number The number to check.
      * @return true if is invalid or false if is not.
@@ -39,7 +40,8 @@ public class BPUtils {
     }
 
     /**
-     * NaturalBank does not accept negative numbers, if a number is lower than 0, it will return true.
+     * NaturalBank does not accept negative numbers, if a number is lower than 0, it
+     * will return true.
      *
      * @param number The number to check.
      * @param s      The command sender to automatically alert if number is invalid.
@@ -47,33 +49,36 @@ public class BPUtils {
      */
     public static boolean isInvalidNumber(String number, CommandSender s) {
         if (number == null || number.isEmpty()) {
-            BPMessages.sendIdentifier(s, "Invalid-Number");
+            NBMessages.sendIdentifier(s, "Invalid-Number");
             return true;
         }
-        if (number.contains("%")) number = number.replace("%", "");
+        if (number.contains("%"))
+            number = number.replace("%", "");
 
         try {
             BigDecimal num = new BigDecimal(number);
             if (num.doubleValue() < 0) {
-                BPMessages.sendIdentifier(s, "Cannot-Use-Negative-Number");
+                NBMessages.sendIdentifier(s, "Cannot-Use-Negative-Number");
                 return true;
             }
             return false;
         } catch (NumberFormatException e) {
-            BPMessages.sendIdentifier(s, "Invalid-Number");
+            NBMessages.sendIdentifier(s, "Invalid-Number");
             return true;
         }
     }
 
     public static boolean isPlayer(CommandSender s) {
-        if (s instanceof Player) return true;
-        BPMessages.sendIdentifier(s, "Not-Player");
+        if (s instanceof Player)
+            return true;
+        NBMessages.sendIdentifier(s, "Not-Player");
         return false;
     }
 
     public static boolean hasPermission(CommandSender s, String permission) {
-        if (s.hasPermission(permission)) return true;
-        BPMessages.sendIdentifier(s, "No-Permission", "%permission%$" + permission);
+        if (s.hasPermission(permission))
+            return true;
+        NBMessages.sendIdentifier(s, "No-Permission", "%permission%$" + permission);
         return false;
     }
 
@@ -94,7 +99,8 @@ public class BPUtils {
      * the fallback value in case the string is not a valid number.
      *
      * @param number       The number string to convert.
-     * @param fallBack     The fall-back value in case the string is not a valid number.
+     * @param fallBack     The fall-back value in case the string is not a valid
+     *                     number.
      * @param errorMessage The message to show in the console warning.
      * @return The converted string or fall-back.
      */
@@ -110,13 +116,15 @@ public class BPUtils {
                 default -> fallBack;
             };
         } catch (NumberFormatException e) {
-            if (errorMessage != null) BPLogger.Console.warn(errorMessage);
+            if (errorMessage != null)
+                NBLogger.Console.warn(errorMessage);
         }
         return fallBack;
     }
 
     /**
-     * Send the specified title to the player, analyzing and splitting the title in different values.
+     * Send the specified title to the player, analyzing and splitting the title in
+     * different values.
      * <p>
      * The format is: Title,Subtitle,fadeInTicks,stayTicks,fadeOutTicks.
      *
@@ -124,7 +132,8 @@ public class BPUtils {
      * @param p           The receiver of the title.
      */
     public static void sendTitle(String titleString, Player p) {
-        if (titleString == null || p == null) return;
+        if (titleString == null || p == null)
+            return;
 
         MiniMessage mm = MiniMessage.miniMessage();
         Component title, subtitle;
@@ -140,18 +149,22 @@ public class BPUtils {
             title = mm.deserialize(values[0]);
             subtitle = mm.deserialize(values[1]);
             if (l > 2)
-                fadeIn = convertToNumber(values[2], fadeIn, "The fadeIn value in the title \"" + titleString + "\" is invalid.");
+                fadeIn = convertToNumber(values[2], fadeIn,
+                        "The fadeIn value in the title \"" + titleString + "\" is invalid.");
             if (l > 3)
-                stay = convertToNumber(values[3], stay, "The stay value in the title \"" + titleString + "\" is invalid.");
+                stay = convertToNumber(values[3], stay,
+                        "The stay value in the title \"" + titleString + "\" is invalid.");
             if (l > 4)
-                fadeOut = convertToNumber(values[4], fadeOut, "The fadeOut value in the title \"" + titleString + "\" is invalid.");
+                fadeOut = convertToNumber(values[4], fadeOut,
+                        "The fadeOut value in the title \"" + titleString + "\" is invalid.");
         }
 
         p.showTitle(Title.title(title, subtitle, Title.Times.times(toTicks(fadeIn), toTicks(stay), toTicks(fadeOut))));
     }
 
     /**
-     * Play the specified title to the player, analyzing and splitting the sound in different values.
+     * Play the specified title to the player, analyzing and splitting the sound in
+     * different values.
      * <p>
      * The format is: Sound,Volume,Pitch.
      *
@@ -159,33 +172,39 @@ public class BPUtils {
      * @param p           The receiver of the sound.
      */
     public static void playSound(String soundString, Player p) {
-        if (soundString == null || p == null) return;
+        if (soundString == null || p == null)
+            return;
 
         String soundName;
         float volume = 5, pitch = 1;
 
         // Catch IllegalArgumentException for registry
-        if (!soundString.contains(",")) soundName = soundString;
+        if (!soundString.contains(","))
+            soundName = soundString;
         else {
             String[] values = soundString.split(",");
             int l = values.length;
 
             soundName = values[0]; // If there is a "," there will be 2 values.
-            volume = convertToNumber(values[1], volume, "The volume value in the sound \"" + soundString + "\" is invalid.");
+            volume = convertToNumber(values[1], volume,
+                    "The volume value in the sound \"" + soundString + "\" is invalid.");
             if (l > 2)
-                pitch = convertToNumber(values[2], pitch, "The pitch value in the sound \"" + soundString + "\" is invalid.");
+                pitch = convertToNumber(values[2], pitch,
+                        "The pitch value in the sound \"" + soundString + "\" is invalid.");
         }
 
         Sound sound;
         try {
             sound = Registry.SOUNDS.get(NamespacedKey.minecraft(soundName));
         } catch (IllegalArgumentException e) {
-            BPLogger.Console.warn("The sound \"" + soundString + "\" has an invalid sound namespacekey.");
+            NBLogger.Console.warn("The sound \"" + soundString + "\" has an invalid sound namespacekey.");
             return;
         }
 
-        if (sound != null) p.playSound(p.getLocation(), sound, volume, pitch);
-        else BPLogger.Console.warn("The sound \"" + soundString + "\" has an invalid sound namespacekey.");
+        if (sound != null)
+            p.playSound(p.getLocation(), sound, volume, pitch);
+        else
+            NBLogger.Console.warn("The sound \"" + soundString + "\" has an invalid sound namespacekey.");
     }
 
     /**
@@ -207,7 +226,8 @@ public class BPUtils {
     public static List<Component> stringListToComponentList(List<String> list) {
         List<Component> result = new ArrayList<>();
         MiniMessage mm = MiniMessage.miniMessage();
-        for (String line : list) result.add(mm.deserialize(line));
+        for (String line : list)
+            result.add(mm.deserialize(line));
         return result;
     }
 
@@ -220,7 +240,8 @@ public class BPUtils {
     public static List<String> componentListToStringList(List<Component> list) {
         List<String> result = new ArrayList<>();
         MiniMessage mm = MiniMessage.miniMessage();
-        for (Component line : list) result.add(mm.serialize(line));
+        for (Component line : list)
+            result.add(mm.serialize(line));
         return result;
     }
 
@@ -250,11 +271,11 @@ public class BPUtils {
 
     public static boolean checkPreRequisites(BigDecimal money, BigDecimal amount, Player p) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            BPMessages.sendIdentifier(p, "Cannot-Use-Negative-Number");
+            NBMessages.sendIdentifier(p, "Cannot-Use-Negative-Number");
             return false;
         }
         if (money.compareTo(BigDecimal.ZERO) == 0) {
-            BPMessages.sendIdentifier(p, "Insufficient-Money");
+            NBMessages.sendIdentifier(p, "Insufficient-Money");
             return false;
         }
         return true;
@@ -265,7 +286,8 @@ public class BPUtils {
         boolean hasPermission = false;
         if (perm != null && permission != null && !permission.isEmpty()) {
             for (World world : Bukkit.getWorlds()) {
-                if (!perm.playerHas(world.getName(), p, permission)) continue;
+                if (!perm.playerHas(world.getName(), p, permission))
+                    continue;
 
                 hasPermission = true;
                 break;
@@ -298,21 +320,24 @@ public class BPUtils {
         return placeValues(p, null, amount, identifier, 0);
     }
 
-    public static List<String> placeValues(OfflinePlayer p, String bank, BigDecimal amount, String identifier, int level) {
+    public static List<String> placeValues(OfflinePlayer p, String bank, BigDecimal amount, String identifier,
+            int level) {
         List<String> values = new ArrayList<>();
         if (p != null) {
             values.add("%player%$" + p.getName());
             values.add("%player_name%$" + p.getName());
         }
 
-        if (bank != null) values.add("%bank%$" + bank);
+        if (bank != null)
+            values.add("%bank%$" + bank);
 
-        values.add("%" + identifier + "%$" + BPFormatter.formatCommas(amount));
+        values.add("%" + identifier + "%$" + NBFormatter.formatCommas(amount));
         values.add("%" + identifier + "_long%$" + amount.toPlainString());
-        values.add("%" + identifier + "_formatted%$" + BPFormatter.formatPrecise(amount));
-        values.add("%" + identifier + "_formatted_long%$" + BPFormatter.formatLong(amount));
+        values.add("%" + identifier + "_formatted%$" + NBFormatter.formatPrecise(amount));
+        values.add("%" + identifier + "_formatted_long%$" + NBFormatter.formatLong(amount));
 
-        if (level > 0) values.add("%level%$" + level);
+        if (level > 0)
+            values.add("%level%$" + level);
         return values;
     }
 
@@ -322,10 +347,11 @@ public class BPUtils {
 
     public static boolean isBankFull(Player p, Bank bank) {
         BigDecimal capacity = BankUtils.getCapacity(bank, p);
-        if (capacity.compareTo(BigDecimal.ZERO) <= 0) return false;
+        if (capacity.compareTo(BigDecimal.ZERO) <= 0)
+            return false;
 
         if (bank.getBankEconomy().getBankBalance(p).compareTo(capacity) >= 0) {
-            BPMessages.sendIdentifier(p, "Cannot-Deposit-Anymore");
+            NBMessages.sendIdentifier(p, "Cannot-Deposit-Anymore");
             return true;
         }
         return false;
@@ -333,13 +359,14 @@ public class BPUtils {
 
     public static boolean hasFailed(Player p, EconomyResponse response) {
         if (!response.transactionSuccess()) {
-            BPMessages.sendIdentifier(p, "Internal-Error");
-            BPLogger.Console.warn("Vault has failed his transaction task. To avoid dupe bugs, NaturalBank has also cancelled the transaction.");
-            BPLogger.Console.warn("Additional Vault error info:");
-            BPLogger.Console.warn("  Error message: " + response.errorMessage);
-            BPLogger.Console.warn("  Transaction amount: " + response.amount);
-            BPLogger.Console.warn("  Transaction type: " + response.type);
-            BPLogger.Console.warn("  Player wallet: " + response.balance);
+            NBMessages.sendIdentifier(p, "Internal-Error");
+            NBLogger.Console.warn(
+                    "Vault has failed his transaction task. To avoid dupe bugs, NaturalBank has also cancelled the transaction.");
+            NBLogger.Console.warn("Additional Vault error info:");
+            NBLogger.Console.warn("  Error message: " + response.errorMessage);
+            NBLogger.Console.warn("  Transaction amount: " + response.amount);
+            NBLogger.Console.warn("  Transaction type: " + response.type);
+            NBLogger.Console.warn("  Player wallet: " + response.balance);
             return true;
         }
         return false;
@@ -351,7 +378,8 @@ public class BPUtils {
 
     /**
      * Return a string with all the required items using the following format:
-     * - "[itemAmount] [itemName], [itemAmount] [itemName] and [itemAmount] [itemName]"
+     * - "[itemAmount] [itemName], [itemAmount] [itemName] and [itemAmount]
+     * [itemName]"
      *
      * @param requiredItems A list of required items.
      * @return A string of required items.
@@ -367,13 +395,18 @@ public class BPUtils {
 
             Component displayname;
             ItemMeta meta = item.getItemMeta();
-            if (meta != null && meta.hasDisplayName()) displayname = meta.displayName();
-            else displayname = item.displayName();
+            if (meta != null && meta.hasDisplayName())
+                displayname = meta.displayName();
+            else
+                displayname = item.displayName();
 
             builder.append(amount).append(" ").append(mm.serialize(displayname));
-            if (i == requiredItems.size() - 1) continue;
-            if (i + 1 == requiredItems.size() - 1) builder.append(" and ");
-            else builder.append(", ");
+            if (i == requiredItems.size() - 1)
+                continue;
+            if (i + 1 == requiredItems.size() - 1)
+                builder.append(" and ");
+            else
+                builder.append(", ");
             i++;
         }
         return builder.toString();

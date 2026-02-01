@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 /**
  * This event will be fired BEFORE the transaction is done, meaning that you can still edit values like transaction amount and cancel the event.
  * <p>
- * To get the information AFTER the transaction check {@link BPAfterTransactionEvent this}
+ * To get the information AFTER the transaction check {@link NBAfterTransactionEvent this}
  */
-public class  BPPreTransactionEvent extends Event implements Cancellable {
+public class  NBPreTransactionEvent extends Event implements Cancellable {
 
     public static final HandlerList HANDLER_LIST = new HandlerList();
 
@@ -26,7 +26,7 @@ public class  BPPreTransactionEvent extends Event implements Cancellable {
     private BigDecimal transactionAmount;
     private final String bankName;
 
-    public BPPreTransactionEvent(OfflinePlayer player, TransactionType transactionType, BigDecimal currentBalance, double currentVaultBalance, BigDecimal transactionAmount, String bankName) {
+    public NBPreTransactionEvent(OfflinePlayer player, TransactionType transactionType, BigDecimal currentBalance, double currentVaultBalance, BigDecimal transactionAmount, String bankName) {
         this.player = player;
         this.transactionType = transactionType;
         this.currentBalance = currentBalance;

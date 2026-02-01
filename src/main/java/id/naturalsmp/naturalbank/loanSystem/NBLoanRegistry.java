@@ -4,12 +4,12 @@ import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
 import id.naturalsmp.naturalbank.economy.TransactionType;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
 import id.naturalsmp.naturalbank.utils.SavesFile;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class BPLoanRegistry {
+public class NBLoanRegistry {
 
-    private static final List<BPLoan> loans = new ArrayList<>();
+    private static final List<NBLoan> loans = new ArrayList<>();
     private static final HashMap<UUID, LoanRequest> requests = new HashMap<>();
 
     /**
@@ -35,7 +35,7 @@ public class BPLoanRegistry {
      *
      * @return A list of loans.
      */
-    public static List<BPLoan> getLoans() {
+    public static List<NBLoan> getLoans() {
         return loans;
     }
 
@@ -72,44 +72,44 @@ public class BPLoanRegistry {
                 String senderUUID = values.getString("sender");
                 if (senderUUID != null) sender = Bukkit.getOfflinePlayer(UUID.fromString(senderUUID));
             } catch (IllegalArgumentException e) {
-                BPLogger.Console.warn(e, "Could not load \"" + receiverUUID + "\" loan! (Invalid UUID specified)");
+                NBLogger.Console.warn(e, "Could not load \"" + receiverUUID + "\" loan! (Invalid UUID specified)");
                 continue;
             }
 
             String moneyToReturn = values.getString("money-to-return");
-            if (moneyToReturn == null || BPUtils.isInvalidNumber(moneyToReturn)) {
-                BPLogger.Console.warn("Could not load \"" + receiverUUID + "\" loan! (An invalid money-to-return amount has been specified)");
+            if (moneyToReturn == null || NBUtils.isInvalidNumber(moneyToReturn)) {
+                NBLogger.Console.warn("Could not load \"" + receiverUUID + "\" loan! (An invalid money-to-return amount has been specified)");
                 continue;
             }
 
-            BPLoan loan;
+            NBLoan loan;
 
             String requestedBank = values.getString("requested-bank");
             if (requestedBank != null) {
                 if (!BankUtils.exist(requestedBank)) {
-                    BPLogger.Console.warn("The loan \"" + receiverUUID + "\" specified an invalid bank to take the money, using the main bank.");
+                    NBLogger.Console.warn("The loan \"" + receiverUUID + "\" specified an invalid bank to take the money, using the main bank.");
                     requestedBank = ConfigValues.getMainGuiName();
                 }
 
-                loan = new BPLoan(receiver, BankRegistry.getBank(requestedBank));
+                loan = new NBLoan(receiver, BankRegistry.getBank(requestedBank));
             } else {
 
                 String fromBank = ConfigValues.getMainGuiName(), toBank = ConfigValues.getMainGuiName();
                 String fromBankString = values.getString("from"), toBankString = values.getString("to");
 
-                if (fromBankString == null) BPLogger.Console.warn("The loan \"" + receiverUUID + "\" did not specify a bank to take the money, using the main bank.");
+                if (fromBankString == null) NBLogger.Console.warn("The loan \"" + receiverUUID + "\" did not specify a bank to take the money, using the main bank.");
                 else if (!BankUtils.exist(fromBankString)) {
-                    BPLogger.Console.warn("The loan \"" + receiverUUID + "\" specified an invalid bank to take the money, using the main bank.");
+                    NBLogger.Console.warn("The loan \"" + receiverUUID + "\" specified an invalid bank to take the money, using the main bank.");
                     fromBank = fromBankString;
                 }
 
-                if (toBankString == null) BPLogger.Console.warn("The loan \"" + receiverUUID + "\" did not specify a bank to give the money, using the main bank.");
+                if (toBankString == null) NBLogger.Console.warn("The loan \"" + receiverUUID + "\" did not specify a bank to give the money, using the main bank.");
                 else if (!BankUtils.exist(toBankString)) {
-                    BPLogger.Console.warn("The loan \"" + receiverUUID + "\" specified an invalid bank to give the money, using the main bank.");
+                    NBLogger.Console.warn("The loan \"" + receiverUUID + "\" specified an invalid bank to give the money, using the main bank.");
                     toBank = toBankString;
                 }
 
-                loan = new BPLoan(sender, receiver, BankRegistry.getBank(fromBank), BankRegistry.getBank(toBank));
+                loan = new NBLoan(sender, receiver, BankRegistry.getBank(fromBank), BankRegistry.getBank(toBank));
             }
 
             loan.setMoneyToReturn(new BigDecimal(moneyToReturn));
@@ -139,7 +139,7 @@ public class BPLoanRegistry {
     public static void saveAllLoans() {
         File file = SavesFile.getFile();
         FileConfiguration config = SavesFile.getConfig();
-        for (BPLoan loan : loans) {
+        for (NBLoan loan : loans) {
             String path = "loans." + loan.getReceiver().getUniqueId() + ".";
 
             if (loan.getSender() != null) config.set(path + "sender", loan.getSender().getUniqueId());
@@ -155,7 +155,7 @@ public class BPLoanRegistry {
         try {
             config.save(file);
         } catch (IOException e) {
-            BPLogger.Console.warn("Could not save loans to saves.yml file: " + e.getMessage());
+            NBLogger.Console.warn("Could not save loans to saves.yml file: " + e.getMessage());
         }
     }
 
@@ -165,11 +165,11 @@ public class BPLoanRegistry {
      *
      * @param loan The loan to register.
      */
-    public static void registerLoan(BPLoan loan) {
+    public static void registerLoan(NBLoan loan) {
         loans.add(loan);
 
         // Check that because not every loan is brand new, there could be loans that have a different time left.
-        int delay = loan.getTimeLeft() <= 0 ? ConfigValues.getLoanDelay() : BPUtils.millisecondsInTicks(loan.getTimeLeft());
+        int delay = loan.getTimeLeft() <= 0 ? ConfigValues.getLoanDelay() : NBUtils.millisecondsInTicks(loan.getTimeLeft());
         loan.setTask(Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> advanceReturningTask(loan), delay));
     }
 
@@ -185,8 +185,8 @@ public class BPLoanRegistry {
         Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), () -> requests.remove(uuid), ConfigValues.getLoanAcceptTime() * 20L);
     }
 
-    private static void advanceReturningTask(BPLoan loan) {
-        loan.setTimeLeft(System.currentTimeMillis() + BPUtils.ticksInMilliseconds(ConfigValues.getLoanDelay()));
+    private static void advanceReturningTask(NBLoan loan) {
+        loan.setTimeLeft(System.currentTimeMillis() + NBUtils.ticksInMilliseconds(ConfigValues.getLoanDelay()));
         loan.setInstalmentsPoint(loan.getInstalmentsPoint() + 1);
         int instalments = loan.getInstalments();
 
@@ -202,25 +202,25 @@ public class BPLoanRegistry {
         if (!isBankToPlayer) {
             // Add back a part of the amount to the sender of the loan.
             BigDecimal addedToSender = senderBank.getBankEconomy().addBankBalance(sender, currentTaskAmount, TransactionType.LOAN), extra = currentTaskAmount.subtract(addedToSender);
-            if (extra.compareTo(BigDecimal.ZERO) <= 0) BPMessages.sendIdentifier(sender.getPlayer(), "Loan-Payback", BPUtils.placeValues(receiver, addedToSender));
+            if (extra.compareTo(BigDecimal.ZERO) <= 0) NBMessages.sendIdentifier(sender.getPlayer(), "Loan-Payback", NBUtils.placeValues(receiver, addedToSender));
             else {
-                List<String> replacers = BPUtils.placeValues(currentTaskAmount);
-                replacers.addAll(BPUtils.placeValues(receiver, extra, "extra"));
-                BPMessages.sendIdentifier(sender.getPlayer(), "Loan-Payback-Full", replacers);
+                List<String> replacers = NBUtils.placeValues(currentTaskAmount);
+                replacers.addAll(NBUtils.placeValues(receiver, extra, "extra"));
+                NBMessages.sendIdentifier(sender.getPlayer(), "Loan-Payback-Full", replacers);
                 NaturalBank.INSTANCE().getVaultEconomy().depositPlayer(sender, extra.doubleValue());
             }
         }
 
         // Remove a part of the amount from the receiver of the loan.
-        BPEconomy receiverBankEconomy = receiverBank.getBankEconomy();
+        NBEconomy receiverBankEconomy = receiverBank.getBankEconomy();
         BigDecimal removedToReceiver = receiverBankEconomy.removeBankBalance(receiver, currentTaskAmount, TransactionType.LOAN), debt = currentTaskAmount.subtract(removedToReceiver);
         if (debt.doubleValue() <= 0D) {
-            if (isBankToPlayer) BPMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned-Bank", BPUtils.placeValues(loan.getRequestedBank().getIdentifier(), currentTaskAmount));
-            else BPMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned", BPUtils.placeValues(sender, currentTaskAmount));
+            if (isBankToPlayer) NBMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned-Bank", NBUtils.placeValues(loan.getRequestedBank().getIdentifier(), currentTaskAmount));
+            else NBMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned", NBUtils.placeValues(sender, currentTaskAmount));
         } else {
             BigDecimal newDebt = receiverBankEconomy.getDebt(receiver).add(debt);
-            if (isBankToPlayer) BPMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned-Debt-Bank", BPUtils.placeValues(loan.getRequestedBank().getIdentifier(), newDebt));
-            else BPMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned-Debt", BPUtils.placeValues(sender, newDebt));
+            if (isBankToPlayer) NBMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned-Debt-Bank", NBUtils.placeValues(loan.getRequestedBank().getIdentifier(), newDebt));
+            else NBMessages.sendIdentifier(receiver.getPlayer(), "Loan-Returned-Debt", NBUtils.placeValues(sender, newDebt));
             receiverBankEconomy.setDebt(receiver, newDebt);
         }
 
@@ -232,10 +232,10 @@ public class BPLoanRegistry {
     public static class LoanRequest {
         private boolean senderIsReceiver;
         private Player sender, receiver;
-        private BPLoan loan;
+        private NBLoan loan;
 
         /**
-         * Check if the sender of that request will be the receiver of the money (in cases the player executed "/bp loan request")
+         * Check if the sender of that request will be the receiver of the money (in cases the player executed "/NB loan request")
          */
         public boolean senderIsReceiver() {
             return senderIsReceiver;
@@ -249,7 +249,7 @@ public class BPLoanRegistry {
             return receiver;
         }
 
-        public BPLoan getLoan() {
+        public NBLoan getLoan() {
             return loan;
         }
 
@@ -265,7 +265,7 @@ public class BPLoanRegistry {
             this.receiver = receiver;
         }
 
-        public void setLoan(BPLoan loan) {
+        public void setLoan(NBLoan loan) {
             this.loan = loan;
         }
     }

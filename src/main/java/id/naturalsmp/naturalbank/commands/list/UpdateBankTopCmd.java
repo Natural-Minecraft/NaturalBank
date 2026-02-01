@@ -1,16 +1,16 @@
 package id.naturalsmp.naturalbank.commands.list;
 
-import id.naturalsmp.naturalbank.bankTop.BPBankTop;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.bankTop.NBBankTop;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Collections;
 import java.util.List;
 
-public class UpdateBankTopCmd extends BPCommand {
+public class UpdateBankTopCmd extends NBCommand {
 
     public UpdateBankTopCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -56,13 +56,13 @@ public class UpdateBankTopCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
-        return new BPCmdExecution() {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
-                BPBankTop.updateBankTop();
-                BPBankTop.restartBankTopUpdateTask();
-                BPMessages.sendIdentifier(s, "BankTop-Updated");
+                NBBankTop.updateBankTop();
+                NBBankTop.restartBankTopUpdateTask();
+                NBMessages.sendIdentifier(s, "BankTop-Updated");
             }
         };
     }

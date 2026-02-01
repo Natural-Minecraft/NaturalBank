@@ -1,10 +1,10 @@
 package id.naturalsmp.naturalbank.commands.list;
 
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
 import id.naturalsmp.naturalbank.economy.EconomyUtils;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Collections;
 import java.util.List;
 
-public class SaveAllDataCmd extends BPCommand {
+public class SaveAllDataCmd extends NBCommand {
 
     public SaveAllDataCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -58,15 +58,15 @@ public class SaveAllDataCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
-        return new BPCmdExecution() {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 EconomyUtils.saveEveryone(true);
                 EconomyUtils.restartSavingInterval();
 
-                if (ConfigValues.isBroadcastingSaves()) BPLogger.Console.info("All player data have been saved!");
-                BPMessages.sendMessage(s, "%prefix% Successfully saved all player data!");
+                if (ConfigValues.isBroadcastingSaves()) NBLogger.Console.info("All player data have been saved!");
+                NBMessages.sendMessage(s, "%prefix% Successfully saved all player data!");
             }
         };
     }

@@ -1,14 +1,14 @@
 package id.naturalsmp.naturalbank.placeholders.list;
 
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.economy.BPEconomy;
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
+import id.naturalsmp.naturalbank.economy.NBEconomy;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholder;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 
-public class CalculateWithdrawTaxesPlaceholder extends BPPlaceholder {
+public class CalculateWithdrawTaxesPlaceholder extends NBPlaceholder {
 
     @Override
     public String getIdentifier() {
@@ -43,13 +43,14 @@ public class CalculateWithdrawTaxesPlaceholder extends BPPlaceholder {
 
             BigDecimal amount, balance;
 
-            if (target == null) balance = BPEconomy.getBankBalancesSum(p);
+            if (target == null)
+                balance = NBEconomy.getBankBalancesSum(p);
             else {
                 if (!BankUtils.exist(target))
                     return "The selected bank does not exist.";
 
                 number = number.replace("{" + target + "}", "");
-                balance = BPEconomy.get(target).getBankBalance(p);
+                balance = NBEconomy.get(target).getBankBalance(p);
             }
 
             try {

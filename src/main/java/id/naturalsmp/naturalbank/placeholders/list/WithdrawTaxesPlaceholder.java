@@ -1,11 +1,11 @@
 package id.naturalsmp.naturalbank.placeholders.list;
 
-import id.naturalsmp.naturalbank.placeholders.BPPlaceholder;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
+import id.naturalsmp.naturalbank.placeholders.NBPlaceholder;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.entity.Player;
 
-public class WithdrawTaxesPlaceholder extends BPPlaceholder {
+public class WithdrawTaxesPlaceholder extends NBPlaceholder {
 
     @Override
     public String getIdentifier() {
@@ -14,6 +14,6 @@ public class WithdrawTaxesPlaceholder extends BPPlaceholder {
 
     @Override
     public String getPlaceholder(Player p, String target, String identifier) {
-        return BPFormatter.styleBigDecimal(ConfigValues.getWithdrawTaxes());
+        return NBFormatter.styleBigDecimal(ConfigValues.getWithdrawTaxes());
     }
 }

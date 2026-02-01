@@ -3,10 +3,10 @@ package id.naturalsmp.naturalbank.commands.list;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-public class OpenCmd extends BPCommand {
+public class OpenCmd extends NBCommand {
 
     public OpenCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -60,17 +60,17 @@ public class OpenCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         Bank bank = BankRegistry.getBank(getPossibleBank(args, 1));
-        if (!BankUtils.exist(bank, s)) return BPCmdExecution.invalidExecution();
+        if (!BankUtils.exist(bank, s)) return NBCmdExecution.invalidExecution();
 
         Player p = (Player) s;
         if (!BankUtils.isAvailable(bank, p)) {
-            BPMessages.sendIdentifier(s, "Cannot-Access-Bank");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Cannot-Access-Bank");
+            return NBCmdExecution.invalidExecution();
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 bank.getBankGui().openBankGui(p);
@@ -81,7 +81,7 @@ public class OpenCmd extends BPCommand {
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
         if (args.length == 2)
-            return BPArgs.getArgs(args, BankUtils.getAvailableBankNames((Player) s));
+            return NBArgs.getArgs(args, BankUtils.getAvailableBankNames((Player) s));
         return null;
     }
 }

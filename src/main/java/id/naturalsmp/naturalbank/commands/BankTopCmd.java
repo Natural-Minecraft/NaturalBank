@@ -1,11 +1,11 @@
 package id.naturalsmp.naturalbank.commands;
 
-import id.naturalsmp.naturalbank.bankTop.BPBankTop;
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPChat;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.bankTop.NBBankTop;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBChat;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,18 +19,21 @@ public class BankTopCmd implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (!ConfigValues.isBankTopEnabled()) {
-            BPMessages.sendIdentifier(s, "BankTop-Disabled");
+            NBMessages.sendIdentifier(s, "BankTop-Disabled");
             return false;
         }
-        if (!BPUtils.hasPermission(s, "NaturalBank.banktop")) return false;
+        if (!NBUtils.hasPermission(s, "NaturalBank.banktop"))
+            return false;
 
         List<String> format = ConfigValues.getBankTopFormat();
-        for (String line : format) s.sendMessage(BPChat.color(placeName(placeMoney(line))));
+        for (String line : format)
+            s.sendMessage(NBChat.color(placeName(placeMoney(line))));
         return true;
     }
 
     private String placeMoney(String message) {
-        if (!message.contains("%NaturalBank_banktop_money_")) return message;
+        if (!message.contains("%NaturalBank_banktop_money_"))
+            return message;
 
         String split = message.split("%NaturalBank_banktop_money_")[1];
         int i = split.indexOf("%");
@@ -39,37 +42,38 @@ public class BankTopCmd implements CommandExecutor {
         try {
             position = Integer.parseInt(numbers);
         } catch (NumberFormatException e) {
-            BPLogger.Console.error("Invalid number for the BankTop money placeholder!");
-            BPLogger.Console.error("Message: " + message);
+            NBLogger.Console.error("Invalid number for the BankTop money placeholder!");
+            NBLogger.Console.error("Message: " + message);
             return message;
         }
         if (position > ConfigValues.getBankTopSize()) {
-            BPLogger.Console.error("Limit of the BankTop: " + ConfigValues.getBankTopSize());
-            BPLogger.Console.error("Message: " + message);
+            NBLogger.Console.error("Limit of the BankTop: " + ConfigValues.getBankTopSize());
+            NBLogger.Console.error("Message: " + message);
             return message;
         }
 
         String stringToReplace;
-        BigDecimal money = BPBankTop.getBankTopBalancePlayer(position);
+        BigDecimal money = NBBankTop.getBankTopBalancePlayer(position);
         switch (ConfigValues.getBankTopMoneyFormat()) {
             case "default_amount":
-                stringToReplace = BPFormatter.formatCommas(money);
+                stringToReplace = NBFormatter.formatCommas(money);
                 break;
             case "amount_long":
                 stringToReplace = String.valueOf(money);
                 break;
             default:
-                stringToReplace = BPFormatter.formatPrecise(money);
+                stringToReplace = NBFormatter.formatPrecise(money);
                 break;
             case "amount_formatted_long":
-                stringToReplace = BPFormatter.formatLong(money);
+                stringToReplace = NBFormatter.formatLong(money);
                 break;
         }
         return message.replace("%NaturalBank_banktop_money_" + position + "%", stringToReplace);
     }
 
     private String placeName(String message) {
-        if (!message.contains("%NaturalBank_banktop_name_")) return message;
+        if (!message.contains("%NaturalBank_banktop_name_"))
+            return message;
 
         String split = message.split("%NaturalBank_banktop_name_")[1];
         int i = split.indexOf("%");
@@ -78,17 +82,17 @@ public class BankTopCmd implements CommandExecutor {
         try {
             position = Integer.parseInt(numbers);
         } catch (NumberFormatException e) {
-            BPLogger.Console.error("Invalid number for the BankTop name placeholder!");
-            BPLogger.Console.error("Message: " + message);
+            NBLogger.Console.error("Invalid number for the BankTop name placeholder!");
+            NBLogger.Console.error("Message: " + message);
             return message;
         }
         if (position > ConfigValues.getBankTopSize()) {
-            BPLogger.Console.error("Limit of the BankTop: " + ConfigValues.getBankTopSize());
-            BPLogger.Console.error("Message: " + message);
+            NBLogger.Console.error("Limit of the BankTop: " + ConfigValues.getBankTopSize());
+            NBLogger.Console.error("Message: " + message);
             return message;
         }
 
-        String name = BPBankTop.getBankTopNamePlayer(position);
+        String name = NBBankTop.getBankTopNamePlayer(position);
         return message.replace("%NaturalBank_banktop_name_" + position + "%", name);
     }
 }

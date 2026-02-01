@@ -6,13 +6,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
-public class BPFormatter {
+public class NBFormatter {
 
-    private static final String[] order = new String[]
-            {
-                    "", ConfigValues.getK(), ConfigValues.getM(), ConfigValues.getB(),
-                    ConfigValues.getT(), ConfigValues.getQ(), ConfigValues.getQq()
-            };
+    private static final String[] order = new String[] {
+            "", ConfigValues.getK(), ConfigValues.getM(), ConfigValues.getB(),
+            ConfigValues.getT(), ConfigValues.getQ(), ConfigValues.getQq()
+    };
 
     private static final int limit = order.length - 1;
 
@@ -51,7 +50,8 @@ public class BPFormatter {
 
     /**
      * Return numbers like as 657k, 123k, 97M.
-     * This formatting method correspond to the placeholder %balance_formatted_long%.
+     * This formatting method correspond to the placeholder
+     * %balance_formatted_long%.
      *
      * @param amount The amount.
      * @return A string.
@@ -169,7 +169,8 @@ public class BPFormatter {
                     time = days;
                     break;
             }
-            if (time <= 0) format = format.replace("%" + identifier, "");
+            if (time <= 0)
+                format = format.replace("%" + identifier, "");
         }
 
         parts = format.split("%");
@@ -199,7 +200,9 @@ public class BPFormatter {
             }
 
             int last = i + 2;
-            String separator = last > amount ? "" : last == amount ? ConfigValues.getInterestTimeFinalSeparator() : ConfigValues.getInterestTimeSeparator();
+            String separator = last > amount ? ""
+                    : last == amount ? ConfigValues.getInterestTimeFinalSeparator()
+                            : ConfigValues.getInterestTimeSeparator();
             String replacer = time <= 0 ? "" : time + getTimeIdentifier(timeIdentifier, time) + separator;
 
             format = format.replace("%" + identifier, replacer);

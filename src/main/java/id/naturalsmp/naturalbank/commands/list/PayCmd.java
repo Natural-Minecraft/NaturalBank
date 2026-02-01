@@ -3,11 +3,11 @@ package id.naturalsmp.naturalbank.commands.list;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankRegistry;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.commands.BPCmdExecution;
-import id.naturalsmp.naturalbank.commands.BPCommand;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPArgs;
-import id.naturalsmp.naturalbank.utils.texts.BPMessages;
+import id.naturalsmp.naturalbank.commands.NBCmdExecution;
+import id.naturalsmp.naturalbank.commands.NBCommand;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBArgs;
+import id.naturalsmp.naturalbank.utils.texts.NBMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PayCmd extends BPCommand {
+public class PayCmd extends NBCommand {
 
     public PayCmd(FileConfiguration commandsConfig, String commandID) {
         super(commandsConfig, commandID);
@@ -69,38 +69,38 @@ public class PayCmd extends BPCommand {
     }
 
     @Override
-    public BPCmdExecution onExecution(CommandSender s, String[] args) {
+    public NBCmdExecution onExecution(CommandSender s, String[] args) {
         Player sender = (Player) s, target = Bukkit.getPlayerExact(args[1]);
         if (target == null || target.equals(s)) {
-            BPMessages.sendIdentifier(s, "Invalid-Player");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Invalid-Player");
+            return NBCmdExecution.invalidExecution();
         }
 
         if (args.length == 2) {
-            BPMessages.sendIdentifier(s, "Specify-Number");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Specify-Number");
+            return NBCmdExecution.invalidExecution();
         }
 
         String num = args[2];
-        if (BPUtils.isInvalidNumber(num, s)) return BPCmdExecution.invalidExecution();
+        if (NBUtils.isInvalidNumber(num, s)) return NBCmdExecution.invalidExecution();
 
         Bank fromBank = BankRegistry.getBank(getPossibleBank(args, 3));
 
-        if (!BankUtils.exist(fromBank, s)) return BPCmdExecution.invalidExecution();
+        if (!BankUtils.exist(fromBank, s)) return NBCmdExecution.invalidExecution();
         if (!BankUtils.isAvailable(fromBank, sender)) {
-            BPMessages.sendIdentifier(s, "Cannot-Access-Bank");
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Cannot-Access-Bank");
+            return NBCmdExecution.invalidExecution();
         }
 
         Bank toBank = BankRegistry.getBank(getPossibleBank(args, 4));
 
-        if (!BankUtils.exist(toBank, s)) return BPCmdExecution.invalidExecution();
+        if (!BankUtils.exist(toBank, s)) return NBCmdExecution.invalidExecution();
         if (!BankUtils.isAvailable(toBank, target)) {
-            BPMessages.sendIdentifier(s, "Cannot-Access-Bank-Others", "%player%$" + target.getName());
-            return BPCmdExecution.invalidExecution();
+            NBMessages.sendIdentifier(s, "Cannot-Access-Bank-Others", "%player%$" + target.getName());
+            return NBCmdExecution.invalidExecution();
         }
 
-        return new BPCmdExecution() {
+        return new NBCmdExecution() {
             @Override
             public void execute() {
                 fromBank.getBankEconomy().pay(sender, target, new BigDecimal(num), toBank);
@@ -111,13 +111,13 @@ public class PayCmd extends BPCommand {
     @Override
     public List<String> tabCompletion(CommandSender s, String[] args) {
         if (args.length == 3)
-            return BPArgs.getArgs(args, "1", "2", "3");
+            return NBArgs.getArgs(args, "1", "2", "3");
 
         if (args.length == 4)
-            return BPArgs.getArgs(args, BankUtils.getAvailableBankNames((Player) s));
+            return NBArgs.getArgs(args, BankUtils.getAvailableBankNames((Player) s));
 
         if (args.length == 5)
-            return BPArgs.getArgs(args, BankUtils.getAvailableBankNames(Bukkit.getPlayerExact(args[1])));
+            return NBArgs.getArgs(args, BankUtils.getAvailableBankNames(Bukkit.getPlayerExact(args[1])));
         return null;
     }
 }

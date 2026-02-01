@@ -3,8 +3,8 @@ package id.naturalsmp.naturalbank.interest;
 import id.naturalsmp.naturalbank.NaturalBank;
 import id.naturalsmp.naturalbank.bankSystem.Bank;
 import id.naturalsmp.naturalbank.bankSystem.BankUtils;
-import id.naturalsmp.naturalbank.managers.BPTaskManager;
-import id.naturalsmp.naturalbank.utils.BPUtils;
+import id.naturalsmp.naturalbank.managers.NBTaskManager;
+import id.naturalsmp.naturalbank.utils.NBUtils;
 import id.naturalsmp.naturalbank.utils.SavesFile;
 import id.naturalsmp.naturalbank.values.ConfigValues;
 import org.bukkit.Bukkit;
@@ -13,7 +13,7 @@ import org.bukkit.OfflinePlayer;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class BPInterest {
+public class NBInterest {
 
     public static final String INTEREST_SAVE_PATH = "interest-save";
 
@@ -22,6 +22,7 @@ public class BPInterest {
 
     /**
      * Get the time left, in milliseconds, before the interest will be given.
+     * 
      * @return Time left in milliseconds.
      */
     public long getInterestCooldownMillis() {
@@ -38,10 +39,13 @@ public class BPInterest {
         isOfflineInterestEnabled = ConfigValues.isOfflineInterestEnabled();
 
         long interestSave = 0;
-        if (loadFromFile) interestSave = SavesFile.getLong(INTEREST_SAVE_PATH);
+        if (loadFromFile)
+            interestSave = SavesFile.getLong(INTEREST_SAVE_PATH);
 
-        if (interestSave > 0) cooldown = System.currentTimeMillis() + interestSave;
-        else cooldown = System.currentTimeMillis() + ConfigValues.getInterestDelay();
+        if (interestSave > 0)
+            cooldown = System.currentTimeMillis() + interestSave;
+        else
+            cooldown = System.currentTimeMillis() + ConfigValues.getInterestDelay();
         loopInterest();
     }
 
@@ -56,8 +60,10 @@ public class BPInterest {
             OfflineInterestMethod offlineInterestMethod = new OfflineInterestMethod();
 
             for (OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-                if (p.isOnline()) onlineInterestMethod.giveInterest(p);
-                else if (isOfflineInterestEnabled) offlineInterestMethod.giveInterest(p);
+                if (p.isOnline())
+                    onlineInterestMethod.giveInterest(p);
+                else if (isOfflineInterestEnabled)
+                    offlineInterestMethod.giveInterest(p);
             }
         });
     }
@@ -71,7 +77,7 @@ public class BPInterest {
 
     public boolean isInterestActive() {
         if (!ConfigValues.isInterestEnabled()) {
-            BPTaskManager.removeTask(BPTaskManager.INTEREST_TASK);
+            NBTaskManager.removeTask(NBTaskManager.INTEREST_TASK);
             wasDisabled = true;
             return false;
         }
@@ -84,9 +90,12 @@ public class BPInterest {
     }
 
     private void loopInterest() {
-        if (!isInterestActive()) return;
-        if (getInterestCooldownMillis() <= 0) giveInterest();
-        BPTaskManager.setTask(BPTaskManager.INTEREST_TASK, Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), this::loopInterest, 10L));
+        if (!isInterestActive())
+            return;
+        if (getInterestCooldownMillis() <= 0)
+            giveInterest();
+        NBTaskManager.setTask(NBTaskManager.INTEREST_TASK,
+                Bukkit.getScheduler().runTaskLater(NaturalBank.INSTANCE(), this::loopInterest, 10L));
     }
 
     public abstract static class InterestMethod {
@@ -94,17 +103,21 @@ public class BPInterest {
         /**
          * Method to give the interest to the specified player.
          *
-         * @param p The player, as default offline, but could be online, should be checked.
+         * @param p The player, as default offline, but could be online, should be
+         *          checked.
          */
         public abstract void giveInterest(OfflinePlayer p);
 
         /**
-         * Calculate the amount of money that the player would receive with the current interest rate.
+         * Calculate the amount of money that the player would receive with the current
+         * interest rate.
          *
          * @param bank            The bank where to calculate the interest.
-         * @param p               The player to retrieve bank level and other information.
+         * @param p               The player to retrieve bank level and other
+         *                        information.
          * @param defaultInterest The interest rate as fallback.
-         * @return The amount of money with all calculations (interest limiter) already made.
+         * @return The amount of money with all calculations (interest limiter) already
+         *         made.
          */
         public static BigDecimal getInterestMoney(Bank bank, OfflinePlayer p, BigDecimal defaultInterest) {
             BigDecimal playerBalance = bank.getBankEconomy().getBankBalance(p);
@@ -116,18 +129,23 @@ public class BPInterest {
             BigDecimal result = BigDecimal.ZERO, count = playerBalance;
 
             for (String line : limiter) {
-                if (!line.contains(":")) continue;
+                if (!line.contains(":"))
+                    continue;
 
                 String[] split1 = line.split(":");
-                if (BPUtils.isInvalidNumber(split1[1])) continue;
+                if (NBUtils.isInvalidNumber(split1[1]))
+                    continue;
 
                 String[] split2 = split1[0].split("-");
-                if (BPUtils.isInvalidNumber(split2[0]) || BPUtils.isInvalidNumber(split2[1])) continue;
+                if (NBUtils.isInvalidNumber(split2[0]) || NBUtils.isInvalidNumber(split2[1]))
+                    continue;
 
                 String interest = split1[1].replace("%", ""), from = split2[0], to = split2[1];
-                BigDecimal interestRate = new BigDecimal(interest), fromNumber = new BigDecimal(from), toNumber = new BigDecimal(to);
+                BigDecimal interestRate = new BigDecimal(interest), fromNumber = new BigDecimal(from),
+                        toNumber = new BigDecimal(to);
 
-                if (fromNumber.compareTo(toNumber) > 0) toNumber = fromNumber;
+                if (fromNumber.compareTo(toNumber) > 0)
+                    toNumber = fromNumber;
 
                 if (toNumber.compareTo(count) < 0) {
                     result = result.add(toNumber.multiply(interestRate).divide(BigDecimal.valueOf(100)));
@@ -141,13 +159,15 @@ public class BPInterest {
         }
 
         /**
-         * Check if the specified player is offline from more than the limit set in the config file.
+         * Check if the specified player is offline from more than the limit set in the
+         * config file.
          *
          * @param p The player to check.
          * @return true if it's offline for more than the limit.
          */
         public static boolean offlineTimeExpired(OfflinePlayer p) {
-            if (ConfigValues.getOfflineInterestLimit() <= 0L) return false;
+            if (ConfigValues.getOfflineInterestLimit() <= 0L)
+                return false;
             long lastSeen;
             try {
                 lastSeen = p.getLastSeen();

@@ -1,8 +1,8 @@
 package id.naturalsmp.naturalbank.values;
 
-import id.naturalsmp.naturalbank.utils.BPLogger;
-import id.naturalsmp.naturalbank.utils.BPUtils;
-import id.naturalsmp.naturalbank.utils.texts.BPFormatter;
+import id.naturalsmp.naturalbank.utils.NBLogger;
+import id.naturalsmp.naturalbank.utils.NBUtils;
+import id.naturalsmp.naturalbank.utils.texts.NBFormatter;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.math.BigDecimal;
@@ -19,42 +19,45 @@ public class ValueLoader {
      */
     protected static BigDecimal getBigDecimal(FileConfiguration config, String path) {
         String amount = config.getString(path);
-        if (BPUtils.isInvalidNumber(amount))
-            BPLogger.Console.warn("\"" + path + "\" is an invalid number, please correct it in the config.yml.");
-        return BPFormatter.getStyledBigDecimal(amount);
+        if (NBUtils.isInvalidNumber(amount))
+            NBLogger.Console.warn("\"" + path + "\" is an invalid number, please correct it in the config.yml.");
+        return NBFormatter.getStyledBigDecimal(amount);
     }
 
     /**
      * Get the delay from the given path.
+     * 
      * @param config The config.
-     * @param path The path.
+     * @param path   The path.
      * @return The delay in milliseconds.
      */
     protected static long getDelayMilliseconds(FileConfiguration config, String path) {
         long delayMillis = 0;
         String time = config.getString(path);
-        if (time == null) return delayMillis;
-        if (!time.contains(" ")) return BPUtils.minutesInMilliseconds(Integer.parseInt(time));
+        if (time == null)
+            return delayMillis;
+        if (!time.contains(" "))
+            return NBUtils.minutesInMilliseconds(Integer.parseInt(time));
 
         String[] split = time.split(" ");
         int delay;
         try {
             delay = Integer.parseInt(split[0]);
         } catch (NumberFormatException e) {
-            BPLogger.Console.warn("\"" + path + "\" is an invalid number, please correct it in the config.yml.");
-            return BPUtils.minutesInMilliseconds(5);
+            NBLogger.Console.warn("\"" + path + "\" is an invalid number, please correct it in the config.yml.");
+            return NBUtils.minutesInMilliseconds(5);
         }
 
         String delayType = split[1];
         switch (delayType) {
             case "s":
-                return BPUtils.secondsInMilliseconds(delay);
+                return NBUtils.secondsInMilliseconds(delay);
             default:
-                return BPUtils.minutesInMilliseconds(delay);
+                return NBUtils.minutesInMilliseconds(delay);
             case "h":
-                return BPUtils.hoursInMilliseconds(delay);
+                return NBUtils.hoursInMilliseconds(delay);
             case "d":
-                return BPUtils.daysInMilliseconds(delay);
+                return NBUtils.daysInMilliseconds(delay);
         }
     }
 }
