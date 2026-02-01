@@ -216,19 +216,28 @@ public class NBSQL {
         String debt = bankEconomy.getDebt(player).toPlainString();
         String money = bankEconomy.getBankBalance(player).toPlainString();
 
-        String insert = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) " + "VALUES(" +
-                player.getUniqueId() + ", " + level + ", " + debt + ", " + money + ")";
+        String sql;
+        if (ConfigValues.isMySqlEnabled()) {
+            sql = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) VALUES (?, ?, ?, ?) " +
+                  "ON DUPLICATE KEY UPDATE bank_level = ?, debt = ?, money = ?";
+        } else {
+            sql = "INSERT INTO " + bankName + " (uuid, bank_level, debt, money) VALUES (?, ?, ?, ?) " +
+                  "ON CONFLICT(uuid) DO UPDATE SET bank_level = ?, debt = ?, money = ?";
+        }
 
-        String set = "bank_level='" + level + "', " + "debt='" + debt + "', " + "money='" + money + "'";
+        try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            // INSERT values
+            pstmt.setString(1, player.getUniqueId().toString());
+            pstmt.setInt(2, level);
+            pstmt.setString(3, debt);
+            pstmt.setString(4, money);
+            
+            // UPDATE values
+            pstmt.setInt(5, level);
+            pstmt.setString(6, debt);
+            pstmt.setString(7, money);
 
-        String query;
-        if (ConfigValues.isMySqlEnabled())
-            query = insert + " ON DUPLICATE KEY UPDATE " + set;
-        else
-            query = insert + " ON CONFLICT(uuid) DO UPDATE SET " + set;
-
-        try {
-            connection.prepareStatement(query).executeUpdate();
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             NBLogger.Console.error(e, "Cannot save player " + player.getName() + " in bank " + bankName + ".");
         }
