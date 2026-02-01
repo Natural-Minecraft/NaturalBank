@@ -191,7 +191,7 @@ public final class NaturalBank extends JavaPlugin {
                             .getInputStream()))
                     .readLine();
 
-            updated = actualVersion.equals(newVersion);
+            updated = true; // effectively disable legacy checking
         } catch (Exception e) {
             NBLogger.Console.warn("Could not check for updates. (No internet connection)");
         }

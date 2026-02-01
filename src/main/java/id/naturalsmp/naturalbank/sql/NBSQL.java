@@ -313,10 +313,10 @@ public class NBSQL {
                     String query = "CREATE TABLE IF NOT EXISTS " + bankName + " (" + GET_TABLE_ARGUMENTS() + ")";
                     connection.prepareStatement(query).execute();
                 }
+                NBLogger.Console.info("MySQL database successfully connected.");
             } catch (SQLException e) {
                 NBLogger.Console.error(e, "Could not connect to MySQL database.");
             }
-            NBLogger.Console.info("MySQL database successfully connected.");
         }
     }
 
@@ -341,11 +341,11 @@ public class NBSQL {
                     String query = "CREATE TABLE IF NOT EXISTS " + bankName + " (" + GET_TABLE_ARGUMENTS() + ")";
                     connection.prepareStatement(query).execute();
                 }
+                NBLogger.Console.info("SQLite successfully connected.");
             } catch (SQLException e) {
                 NBLogger.Console.error(e, "Could not connect to SQLite database.");
                 return;
             }
-            NBLogger.Console.info("SQLite successfully connected.");
         }
     }
 
@@ -359,6 +359,7 @@ public class NBSQL {
      * @return A string representing the bank level, debt, interest or money value.
      */
     private static String get(OfflinePlayer player, String bankName, SQLSearch search) {
+        if (connection == null) return "";
         String columnName;
         switch (search) {
             case BANK_LEVEL -> columnName = "bank_level";
@@ -396,6 +397,7 @@ public class NBSQL {
      * @param newValue The new value.
      */
     private static void set(OfflinePlayer player, String bankName, SQLSearch search, String newValue) {
+        if (connection == null) return;
         String columnName;
         switch (search) {
             case BANK_LEVEL -> columnName = "bank_level";
