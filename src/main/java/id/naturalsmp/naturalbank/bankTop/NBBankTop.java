@@ -46,6 +46,7 @@ public class NBBankTop {
 
             bankTop.clear();
             for (int i = 1; i <= ConfigValues.getBankTopSize(); i++) {
+                if (players.isEmpty()) break;
                 BankTopPlayer highestPlayerBal = players.getFirst();
 
                 for (BankTopPlayer player : players)
