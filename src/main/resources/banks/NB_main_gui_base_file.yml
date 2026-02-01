@@ -55,7 +55,7 @@ Items:
     Material: "GRAY_STAINED_GLASS_PANE"
 
   WithdrawButton1:
-    Material: "PAPER"
+    Material: "STICK"
     CustomModelData: 10021 # Assuming custom textures for NaturalCore
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK TUNAI</b></gradient> <white>$500"
     Slot: 11
@@ -70,7 +70,7 @@ Items:
       - "[WITHDRAW] 500"
 
   WithdrawButton2:
-    Material: "PAPER"
+    Material: "STICK"
     CustomModelData: 10021
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK TUNAI</b></gradient> <white>25%"
     Slot: 12
@@ -85,7 +85,7 @@ Items:
       - "[WITHDRAW] 25%"
 
   WithdrawButton3:
-    Material: "PAPER"
+    Material: "STICK"
     CustomModelData: 10022
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK TUNAI</b></gradient> <white>SEMUA"
     Slot: 20
@@ -100,7 +100,7 @@ Items:
       - "[WITHDRAW] 100%"
 
   WithdrawButton4:
-    Material: "PAPER"
+    Material: "WRITEABLE_BOOK"
     CustomModelData: 10000
     Displayname: "<gradient:#ff0000:#8b0000><b>TARIK CUSTOM</b></gradient>"
     Slot: 21
@@ -131,7 +131,7 @@ Items:
       - "<dark_gray>Pajak Tarik: %naturalbank_withdraw_taxes% | Simpan: %naturalbank_deposit_taxes%"
 
   Upgrade:
-    Material: "NETHER_STAR"
+    Material: "PAPER"
     Displayname: "<gradient:#fbff00:#ffaa00><b>UPGRADE BANK</b></gradient>"
     Slot: 10131
     Lore:
@@ -157,7 +157,7 @@ Items:
       - "[UPGRADE]"
 
   DepositButton1:
-    Material: "PAPER"
+    Material: "STICK"
     CustomModelData: 10021
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>$500"
     Slot: 16
@@ -172,7 +172,7 @@ Items:
       - "[DEPOSIT] 500"
 
   DepositButton2:
-    Material: "PAPER"
+    Material: "STICK"
     CustomModelData: 10021
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>25%"
     Slot: 17
@@ -187,7 +187,7 @@ Items:
       - "[DEPOSIT] 25%"
 
   DepositButton3:
-    Material: "PAPER"
+    Material: "STICK"
     CustomModelData: 10022
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN UANG</b></gradient> <white>SEMUA"
     Slot: 26
@@ -202,7 +202,7 @@ Items:
       - "[DEPOSIT] 100%"
 
   DepositButton4:
-    Material: "PAPER"
+    Material: "WRITEABLE_BOOK"
     CustomModelData: 10000
     Displayname: "<gradient:#00ff00:#006400><b>SIMPAN CUSTOM</b></gradient>"
     Slot: 25
