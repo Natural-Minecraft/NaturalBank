@@ -22,7 +22,7 @@ import java.net.URI;
 
 public final class NaturalBank extends JavaPlugin {
 
-    public static final String actualVersion = "1.0.0";
+    public static final String actualVersion = "1.0.1";
 
     private static String serverVersion;
     private static NaturalBank INSTANCE;
