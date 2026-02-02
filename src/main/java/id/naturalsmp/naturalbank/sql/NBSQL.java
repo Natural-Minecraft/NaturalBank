@@ -40,9 +40,9 @@ public class NBSQL {
         return "uuid varchar(255)," +
                 "account_name varchar(255) DEFAULT ''," +
                 "bank_level varchar(255) DEFAULT '1'," +
-                "money varchar(255) DEFAULT '0'," +
-                "interest varchar(255) DEFAULT '0'," +
-                "debt varchar(255) DEFAULT '0'," +
+                "money TEXT," +
+                "interest TEXT," +
+                "debt TEXT," +
                 "PRIMARY KEY (uuid)";
     }
 
