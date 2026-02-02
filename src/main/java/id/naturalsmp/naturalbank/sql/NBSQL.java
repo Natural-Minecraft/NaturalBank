@@ -325,6 +325,14 @@ public class NBSQL {
                 for (String bankName : NBEconomy.nameList()) {
                     String query = "CREATE TABLE IF NOT EXISTS " + bankName + " (" + GET_TABLE_ARGUMENTS() + ")";
                     connection.prepareStatement(query).execute();
+
+                    // Migration: Ensure money, interest, debt are TEXT (for existing tables)
+                    updateColumnType(bankName, "money", "TEXT");
+                    updateColumnType(bankName, "interest", "TEXT");
+                    updateColumnType(bankName, "debt", "TEXT");
+
+                    // Ensure account_name exists (for very old tables)
+                    addColumnIfMissing(bankName, "account_name", "varchar(255) DEFAULT ''");
                 }
                 NBLogger.Console.info("MySQL database successfully connected.");
             } catch (SQLException e) {
@@ -443,6 +451,28 @@ public class NBSQL {
         } catch (SQLException e) {
             NBLogger.Console.error(e,
                     "Cannot set " + columnName + " for player " + player.getName() + " in bank " + bankName + ".");
+        }
+    }
+
+    private static void updateColumnType(String table, String column, String type) {
+        if (connection == null)
+            return;
+        try {
+            if (ConfigValues.isMySqlEnabled()) {
+                String query = "ALTER TABLE " + table + " MODIFY COLUMN " + column + " " + type;
+                connection.prepareStatement(query).execute();
+            }
+        } catch (SQLException ignored) {
+        }
+    }
+
+    private static void addColumnIfMissing(String table, String column, String definition) {
+        if (connection == null)
+            return;
+        try {
+            String query = "ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition;
+            connection.prepareStatement(query).execute();
+        } catch (SQLException ignored) {
         }
     }
 }
