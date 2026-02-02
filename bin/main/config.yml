@@ -194,7 +194,7 @@ Interest:
   # IMPORTANT! This amount is defined in the BANK FILE!
   # This option is only a fallback value in case the
   # level of the bank does not specify its amount!
-  Rate: "5%"
+  Rate: "0.1%"
 
   # Enabled this option to deliver the interest on
   # the vault bank balance instead of the bank balance.
@@ -222,7 +222,7 @@ Interest:
   Max-Amount: "500000"
 
   # Choose if also giving interest to offline players.
-  Give-To-Offline-Players: true
+  Give-To-Offline-Players: false
 
   # The time before the offline interest
   # will stop working if the player doesn't join.
@@ -233,7 +233,7 @@ Interest:
 
   # The interest rate of offline players.
   # It works the same as "Interest.Money-Given"
-  Offline-Rate: "5%"
+  Offline-Rate: "0.05%"
 
   # The permission for offline players to receive interest.
   # You can put "" if you don't want to use a permission.
@@ -276,7 +276,7 @@ Interest:
     # If a player is AFK, it won't receive the interest.
     # AFK = When a player is online on the server but
     # is not doing anything for the specified time.
-    Ignore-AFK-Players: false
+    Ignore-AFK-Players: true
 
     # The interest rate that AFK players will receive.
     # The option "Ignore-AFK-Players" needs
