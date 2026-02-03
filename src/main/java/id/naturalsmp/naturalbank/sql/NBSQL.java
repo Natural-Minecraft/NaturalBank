@@ -94,6 +94,83 @@ public class NBSQL {
     }
 
     /**
+     * Check if the specified player is registered in the given bank table (= bank
+     * name)
+     *
+     * @param player   The player to check.
+     * @param bankName The table name.
+     * @return true if a record with its uuid exists, false otherwise.
+     */
+    public static boolean isRegistered(OfflinePlayer player, String bankName) {
+        ensureConnection();
+        if (connection == null)
+            return false;
+        try (java.sql.PreparedStatement pstmt = connection
+                .prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid=? LIMIT 1")) {
+            pstmt.setString(1, player.getUniqueId().toString());
+            try (ResultSet set = pstmt.executeQuery()) {
+                return set.next();
+            }
+        } catch (SQLException e) {
+            NBLogger.Console.error(e,
+                    "Cannot check if player " + player.getName() + " is registered in the bank " + bankName + ".");
+            return false;
+        }
+    }
+
+    /**
+     * Fill all the different tables with the base values as if a
+     * new player join, this method will only place the values
+     * if they are not there, otherwise it won't update anything.
+     *
+     * @param player The player to register.
+     */
+    public static void fillRecords(OfflinePlayer player) {
+        ensureConnection();
+        String sql = ConfigValues.isMySqlEnabled()
+                ? "INSERT IGNORE INTO %table% (uuid, account_name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)"
+                : "INSERT OR IGNORE INTO %table% (uuid, account_name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)";
+
+        for (String bank : NBEconomy.nameList()) {
+            if (connection == null)
+                return;
+            try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql.replace("%table%", bank))) {
+                pstmt.setString(1, player.getUniqueId().toString());
+                pstmt.setString(2, player.getName());
+                pstmt.setInt(3, 1);
+                pstmt.setString(4,
+                        (ConfigValues.getMainGuiName().equals(bank) ? ConfigValues.getStartAmount().toString() : "0"));
+                pstmt.setString(5, "0");
+                pstmt.setString(6, "0");
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                NBLogger.Console.error(e,
+                        "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
+            }
+        }
+    }
+
+    private static boolean isValid() {
+        try {
+            return connection != null && !connection.isClosed() && connection.isValid(1);
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public static void ensureConnection() {
+        if (!isValid()) {
+            NBLogger.Console.warn("SQL connection lost. Attempting to reconnect...");
+            connection = null;
+            if (ConfigValues.isMySqlEnabled()) {
+                MySQL.connect();
+            } else {
+                SQLite.connect();
+            }
+        }
+    }
+
+    /**
      * Get the bank level of the specified player in the specified bank.
      *
      * @param player   The player.
@@ -210,6 +287,9 @@ public class NBSQL {
      * @param bankEconomy The economy of the bank.
      */
     public static void savePlayer(OfflinePlayer player, NBEconomy bankEconomy) {
+        ensureConnection();
+        if (connection == null)
+            return;
         String bankName = bankEconomy.getOriginBank().getIdentifier();
 
         int level = bankEconomy.getBankLevel(player);
@@ -243,61 +323,6 @@ public class NBSQL {
         }
     }
 
-    /**
-     * Check if the specified player is registered in the given bank table (= bank
-     * name)
-     * 
-     * @param player   The player to check.
-     * @param bankName The table name.
-     * @return true if a record with its uuid exists, false otherwise.
-     */
-    public static boolean isRegistered(OfflinePlayer player, String bankName) {
-        if (connection == null)
-            return false;
-        try (java.sql.PreparedStatement pstmt = connection
-                .prepareStatement("SELECT 1 FROM " + bankName + " WHERE uuid=? LIMIT 1")) {
-            pstmt.setString(1, player.getUniqueId().toString());
-            try (ResultSet set = pstmt.executeQuery()) {
-                return set.next();
-            }
-        } catch (SQLException e) {
-            NBLogger.Console.error(e,
-                    "Cannot check if player " + player.getName() + " is registered in the bank " + bankName + ".");
-            return false;
-        }
-    }
-
-    /**
-     * Fill all the different tables with the base values as if a
-     * new player join, this method will only place the values
-     * if they are not there, otherwise it won't update anything.
-     *
-     * @param player The player to register.
-     */
-    public static void fillRecords(OfflinePlayer player) {
-        String sql = ConfigValues.isMySqlEnabled()
-                ? "INSERT IGNORE INTO %table% (uuid, account_name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)"
-                : "INSERT OR IGNORE INTO %table% (uuid, account_name, bank_level, money, interest, debt) VALUES (?, ?, ?, ?, ?, ?)";
-
-        for (String bank : NBEconomy.nameList()) {
-            if (connection == null)
-                return;
-            try (java.sql.PreparedStatement pstmt = connection.prepareStatement(sql.replace("%table%", bank))) {
-                pstmt.setString(1, player.getUniqueId().toString());
-                pstmt.setString(2, player.getName());
-                pstmt.setInt(3, 1);
-                pstmt.setString(4,
-                        (ConfigValues.getMainGuiName().equals(bank) ? ConfigValues.getStartAmount().toString() : "0"));
-                pstmt.setString(5, "0");
-                pstmt.setString(6, "0");
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                NBLogger.Console.error(e,
-                        "Cannot insert base value in bank " + bank + " for player " + player.getName() + ".");
-            }
-        }
-    }
-
     public static class MySQL {
 
         /**
@@ -305,8 +330,7 @@ public class NBSQL {
          * This method also enables the SQLMethods.
          */
         public static void connect() {
-            if (connection != null) {
-                NBLogger.Console.warn("MySQL is already connected.");
+            if (isValid()) {
                 return;
             }
 
@@ -324,7 +348,9 @@ public class NBSQL {
                 // Create all the missing tables.
                 for (String bankName : NBEconomy.nameList()) {
                     String query = "CREATE TABLE IF NOT EXISTS " + bankName + " (" + GET_TABLE_ARGUMENTS() + ")";
-                    connection.prepareStatement(query).execute();
+                    try (java.sql.PreparedStatement pstmt = connection.prepareStatement(query)) {
+                        pstmt.execute();
+                    }
 
                     // Migration: Ensure money, interest, debt are TEXT (for existing tables)
                     updateColumnType(bankName, "money", "TEXT");
@@ -380,6 +406,7 @@ public class NBSQL {
      * @return A string representing the bank level, debt, interest or money value.
      */
     private static String get(OfflinePlayer player, String bankName, SQLSearch search) {
+        ensureConnection();
         if (connection == null)
             return "";
         String columnName;
@@ -419,6 +446,7 @@ public class NBSQL {
      * @param newValue The new value.
      */
     private static void set(OfflinePlayer player, String bankName, SQLSearch search, String newValue) {
+        ensureConnection();
         if (connection == null)
             return;
         String columnName;
