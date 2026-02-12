@@ -1,7 +1,7 @@
 # Configuration File of NaturalBank
 
 # Check for new updates of the plugin.
-Update-Checker: true
+Update-Checker: false
 
 General-Settings:
   # Choose if automatically update your
@@ -187,7 +187,7 @@ General-Settings:
 # Players must have the "NaturalBank.receive.interest" permission to receive the interest.
 Interest:
   # Enable or disable the interest feature.
-  Enabled: true
+  Enabled: false
 
   # The interest rate. (Default: 5%)
   #
