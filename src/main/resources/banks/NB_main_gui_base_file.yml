@@ -1,6 +1,6 @@
 # If you want to know more about bank guis: https://github.com/Pulsih/NaturalBank/wiki/Bank-Config
-Title: "Natural Bank"
-Lines: 5
+Title: "<gradient:#33c9ff:#00ff62><b>Natural Bank</b>"
+Lines: 4
 Update-Delay: 20
 
 Settings:
@@ -134,7 +134,7 @@ Items:
     Material: "PAPER"
     CustomModelData: 10131
     Displayname: "<gradient:#fbff00:#ffaa00><b>UPGRADE BANK</b></gradient>"
-    Slot: 23
+    Slot: 32
     Lore:
       Default:
         - "<dark_gray>Tingkatkan kapasitas bank anda."
