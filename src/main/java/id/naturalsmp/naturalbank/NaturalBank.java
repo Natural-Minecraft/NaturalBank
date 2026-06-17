@@ -109,6 +109,18 @@ public final class NaturalBank extends JavaPlugin {
         if (ConfigValues.isUpdateCheckerEnabled())
             Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> isUpdated = isPluginUpdated(), 0,
                     (8 * 1200) * 60 /* 8 hours */);
+        org.bukkit.Bukkit.getConsoleSender().sendMessage(
+                org.bukkit.ChatColor.translateAlternateColorCodes('&',
+                    "\n&a===============\n" +
+                    "&a _   _       _                  _     &e ____              _    \n" +
+                    "&a| \ | | __ _| |_ _   _ _ __ __ _| |   &e| __ )  __ _ _ __ | | __\n" +
+                    "&a|  \| |/ _` | __| | | | '__/ _` | |   &e|  _ \ / _` | '_ \ |/ /\n" +
+                    "&a| |\  | (_| | |_| |_| | | | (_| | |   &e| |_) | (_| | | | |   < \n" +
+                    "&a|_| \_|\__,_|\__|\__,_|_|  \__,_|_|   &e|____/ \__,_|_| |_|_|\_\\n" +
+                    "       >> &eNaturalBank v" + getDescription().getVersion() + " Enabled! <<\n" +
+                    "&a===============\n"
+                )
+        );
     }
 
     @Override
