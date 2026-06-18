@@ -112,7 +112,7 @@ public final class NaturalBank extends JavaPlugin {
         org.bukkit.Bukkit.getConsoleSender().sendMessage(
                 org.bukkit.ChatColor.translateAlternateColorCodes('&',
                     "\n&a================================================================================\n" +
-                    "&a _   _       _                               _      &e ____              _\n" +
+                    "&a _   _       _                             _        &e ____              _\n" +
                     "&a| \\ | | __ _| |_ _   _ _ __ __ _  | |   &e| __ )   __ _ _ __ | | __\n" +
                     "&a|  \\| |/ _` | __| | | | '__/ _` | | |   &e|  _ \\  / _` | '_ \\| |/ /\n" +
                     "&a| |\\  | (_| | |_| |_| | | | (_| | | |   &e| |_) || (_| | | | |   <\n" +
